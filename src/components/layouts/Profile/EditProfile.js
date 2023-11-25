@@ -45,6 +45,18 @@ const EditProfile = () => {
     });
   };
 
+  const handleRemove = (index) => {
+    if (index !== 0) {
+      setSocialLinks((prevLinks) => {
+        const newLinks = [...prevLinks];
+        newLinks.splice(index, 1);
+        return newLinks;
+      });
+    } else {
+        setSocialLinks([""])
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     router.push("/");
@@ -172,7 +184,7 @@ const EditProfile = () => {
             {socialLinks.map((link, index) => (
               <div
                 key={index}
-                className="flex w-full items-center gap-[20.423px]"
+                className="flex w-full items-center gap-5 px-[34.038px] py-4 focus:outline-none bg-black/20 rounded-[34.038px]"
               >
                 <input
                   type="url"
@@ -182,8 +194,16 @@ const EditProfile = () => {
                   value={link}
                   onChange={(e) => handleSocialChange(index, e.target.value)}
                   placeholder={`e.g: https://yoursite.io/item/${index + 1}`}
-                  className="flex w-full items-center gap-[20.423px] px-[34.038px] py-4 focus:outline-none bg-black/20 rounded-[34.038px]"
+                  className="focus:outline-none bg-transparent w-full"
                 />
+                <button
+                  onClick={() => handleRemove(index)}
+                  className={`w-[38px] ${
+                    link === "" ? "hidden" : "flex"
+                  } h-[38px] justify-center items-center text-2xl rounded-full shrink-0 bg-[#DE1E5C] text-white`}
+                >
+                  <RiDeleteBin5Fill />
+                </button>
               </div>
             ))}
             <div className="flex w-full justify-center">
