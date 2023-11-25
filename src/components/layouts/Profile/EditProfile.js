@@ -200,7 +200,14 @@ const EditProfile = () => {
               </button>
             </div>
           </div>
-          <button type="submit" className="hidden"></button>
+          <div className="flex justify-center w-full">
+            <button
+              type="submit"
+              className="flex w-[526.402px] bg-[#0858F7] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6 justify-center items-center gap-[12.242px] px-[30.605px] py-[24.484px] rounded-[18.363px]"
+            >
+              Done
+            </button>
+          </div>
         </form>
       </div>
     </main>
