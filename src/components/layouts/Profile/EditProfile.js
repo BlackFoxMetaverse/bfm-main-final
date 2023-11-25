@@ -175,7 +175,7 @@ const EditProfile = () => {
                 className="flex w-full items-center gap-[20.423px]"
               >
                 <input
-                  type="text"
+                  type="url"
                   name="social"
                   id={`social-${index}`}
                   required
