@@ -15,9 +15,9 @@ const Login = () => {
   };
 
   return (
-    <main className="flex max-w-[1512px] max-h-[982px] justify-center items-center px-[268px] py-[107px]">
-      <div className="flex max-w-[976px] max-h-[768px] items-start justify-between gap-[148px] shrink-0 overflow-hidden">
-        <div className="flex-[1_0_0] self-stretch flex justify-center items-center overflow-hidden w-full aspect-[9/16] shrink-0">
+    <main className="flex max-w-[1512px] max-h-[982px] h-screen overflow-hidden justify-center items-center xl:px-[268px] xl:py-[107px]">
+      <div className="flex max-w-[976px] max-h-[768px] items-start justify-between gap-[69px] shrink-0 overflow-hidden">
+        <div className="flex-[1_0_0] self-stretch lg:flex hidden justify-center items-center overflow-hidden w-full aspect-[9/16] shrink-0">
           <Image
             src={loginplaceholder}
             alt=""
@@ -26,13 +26,13 @@ const Login = () => {
         </div>
         <form
           onSubmit={handleSubmit}
-          className="flex max-w-[397px] flex-col justify-center items-start gap-[39px] shrink-0 self-stretch pl-[27px] pr-[26px] py-[188px]"
+          className="flex max-w-[397px] flex-col justify-center items-start gap-[39px] shrink-0 self-stretch lg:pl-[27px] px-5 lg:pr-[26px] lg:py-[188px]"
         >
           <h1 className="self-stretch text-[color:var(--mono-90,#18181B)] text-[28px] not-italic font-bold leading-8 tracking-[-0.28px]">
             Welcome to Black Fox MetaVerse
           </h1>
           <div className="flex flex-col items-start gap-8 self-stretch">
-            <div className="flex max-w-[344px] rounded-xl items-center gap-1 px-4 py-4 bg-black/10">
+            <div className="flex lg:max-w-[344px] rounded-xl items-center gap-1 p-4 bg-black/10">
               <select
                 name="select country"
                 required

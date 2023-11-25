@@ -27,16 +27,16 @@ const Register = () => {
     }
 
   return (
-    <main className="flex max-w-[1512px] max-h-[982px] justify-center items-center px-[268px] py-[107px] overflow-hidden">
+    <main className="flex max-w-[1512px] max-h-[982px] h-screen justify-center items-center lg:px-[268px] lg:py-[107px] overflow-hidden">
       <div className="flex max-w-[976px] max-h-[768px] items-center justify-between gap-[148px] shrink-0">
-        <div className="flex-[1_0_0] self-stretch flex justify-center items-center overflow-hidden w-full aspect-[9/16] shrink-0">
+        <div className="flex-[1_0_0] self-stretch lg:flex hidden justify-center items-center overflow-hidden w-full aspect-[9/16] shrink-0">
           <Image
             src={loginplaceholder}
             alt=""
             className="w-full h-full object-cover shrink-0"
           />
         </div>
-        <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col items-start gap-[23px] self-stretch">
+        <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col items-start gap-[23px] px-5 self-stretch">
           <div className="flex items-center gap-5">
             <div className="flex justify-center items-center gap-[13.451px] rounded-[13.451px]">
               {image ? (

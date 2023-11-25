@@ -41,16 +41,16 @@ const Otp = () => {
   };
 
   return (
-    <main className="flex max-w-[1512px] max-h-[982px] overflow-hidden justify-center items-center">
-      <div className="flex max-w-[1232px] max-h-[768px] items-start gap-4 shrink-0">
-        <div className="flex-[1_0_0] self-stretch flex justify-center items-center overflow-hidden w-full aspect-[9/16] shrink-0">
+    <main className="flex max-w-[1512px] max-h-[982px] h-screen overflow-hidden justify-center items-center">
+      <div className="flex max-w-[1232px] max-h-[768px] items-start gap-4">
+        <div className="flex-[1_0_0] self-stretch lg:flex hidden justify-center items-center overflow-hidden w-full aspect-[9/16] shrink-0">
           <Image
             src={loginplaceholder}
             alt=""
             className="w-full h-full object-cover shrink-0"
           />
         </div>
-        <div className="flex flex-col justify-center items-start gap-10 flex-[1_0_0] self-stretch px-[132px] py-60">
+        <div className="flex flex-col justify-center items-start gap-10 flex-[1_0_0] self-stretch lg:px-[132px] lg:py-60 px-5">
           <div className="flex flex-col items-start gap-4 self-stretch">
             <h1 className="self-stretch text-[color:var(--mono-90,#18181B)] text-[28px] not-italic font-bold leading-8 tracking-[-0.28px]">
               Enter the verification code to continue
