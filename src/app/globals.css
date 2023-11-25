@@ -9,3 +9,8 @@
 ::-webkit-outer-spin-button{
   display: none;
 }
+
+::-webkit-scrollbar{
+  height: 0;
+  
+}
