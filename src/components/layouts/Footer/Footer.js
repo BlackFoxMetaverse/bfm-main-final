@@ -1,12 +1,17 @@
+"use client"
+
 import Link from "next/link";
 import React from "react";
 import { FaInstagram, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
 import FooterColumn from "../../Modules/FooterColumn/FooterColumn";
 import { BsReddit,BsDiscord } from "react-icons/bs";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
+  const pathname = usePathname();
+
   return (
-    <section className="bg-[#121212] pt-10 ">
+    <section className={`bg-[#121212] pt-10 ${pathname.startsWith("/auth") ? "hidden" : "block" }`}>
       <div className="mx-auto 2xl:w-[1440px] w-full lg:w-full">
         <div className="h-1/2  grid grid-cols-7 p-4 lg:px-20">
           <div className="p-5 col-span-7 lg:col-span-3">

@@ -115,7 +115,7 @@ const Categories = () => {
   
   return (
     <div className="overflow-x-hidden">
-    <div className="flex justify-center items-center gap-[977px]">
+    <div className="flex justify-between items-center">
         <div className="text-black text-[26px] not-italic font-medium leading-[22.012px]">
         Categories
         </div>
