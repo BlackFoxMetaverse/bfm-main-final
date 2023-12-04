@@ -78,8 +78,8 @@ const SearchLayout = ({ title }) => {
         Related
       </div>
       <div className="flex gap-x-5 my-6">
-        {relatedInformation.map((info) => (
-          <button
+        {relatedInformation.map((info,i) => (
+          <button key={i}
             className={`flex justify-center items-center gap-2.5 bg-[${info.color}] border px-[21px] py-1.5 rounded-[5px] border-solid border-[rgba(255,255,255,0.60)]`}
           >
             {info.name}
@@ -87,8 +87,11 @@ const SearchLayout = ({ title }) => {
         ))}
       </div>
       <div className=" grid grid-cols-4 gap-10">
-      {searchInformation.map((info) => (
+      {searchInformation.map((info,i) => (
+        <div key={i}> 
+
           <SearchCard img={info.img} name={info.name} />
+        </div>
           ))}
           </div>
     </div>
