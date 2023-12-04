@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-
 const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
+  const myRef = () => useRef(null)
   const inputRefs = Array(numberOfInputs)
     .fill(null)
-    .map(() => useRef(null));
+    .map(()=>myRef());
 
   const [otp, setOtp] = useState(value || Array(numberOfInputs).fill(""));
   const currentIndex = otp.findIndex((val) => val === "");
