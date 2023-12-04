@@ -2,10 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
-  const myRef = () => useRef(null)
+  const MyRef = () => useRef(null)
   const inputRefs = Array(numberOfInputs)
     .fill(null)
-    .map(()=>myRef());
+    .map(()=>MyRef());
 
   const [otp, setOtp] = useState(value || Array(numberOfInputs).fill(""));
   const currentIndex = otp.findIndex((val) => val === "");
@@ -32,7 +32,7 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
     if (currentIndex >= 0) {
       inputRefs[currentIndex].current.focus();
     }
-  }, [currentIndex]);
+  }, [currentIndex, inputRefs]);
 
   return (
     <form onSubmit={handleSubmit} className="flex justify-between items-start self-stretch">
@@ -46,7 +46,7 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
           onChange={(e) => handleInputChange(e, index)}
           required
           // placeholder="0"
-          className="flex w-12 flex-col p-4 items-start justify-center gap-2 border-2 text-[#0858F7] border-[#0858F7] transition-all duration-300 focus:shadow-[#0858F7]/50 focus:shadow-2xl rounded-xl focus:outline-none"
+          className="flex w-12 flex-col p-4 items-start justify-center gap-2 border-2 text-[#0858F7] border-[#0858F7] transition-all duration-300 focus:outline-[#0858F7]/50 focus:outline rounded-xl focus:outline-4"
         />
       ))}
       <button type="submit" className="hidden"></button>
