@@ -26,7 +26,7 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
 
   useEffect(() => {
     onChange(otp.join(""));
-  }, [otp, onChange]);
+  }, [otp, onChange, inputRefs]);
 
   useEffect(() => {
     if (currentIndex >= 0) {
