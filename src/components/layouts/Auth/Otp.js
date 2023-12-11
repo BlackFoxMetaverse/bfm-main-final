@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import loginplaceholder from "../../../../public/login.svg";
 import { useRouter } from "next/navigation";
 
-const Otp = () => {
+const Otp = ({confirmationResult}) => {
   const [otp, setOtp] = useState("");
   const [seconds, setSeconds] = useState(60);
   const [timerEnded, setTimerEnded] = useState(false);
@@ -37,6 +37,18 @@ const Otp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let confirmationResult = window.confirmationResult
+    confirmationResult.confirm(otp).then((result) => {
+      // User signed in successfully.
+      let user = result.user;
+      console.log(user);
+      alert('User signed in successfully');
+      // ...
+    }).catch((error) => {
+      // User couldn't sign in (bad verification code?)
+      // ...
+      alert('User couldn\'t sign in (bad verification code?)');
+    });
     router.push("/auth/register");
   };
 
