@@ -78,7 +78,9 @@ const Login = () => {
       let user = result.user;
       console.log(user);
       alert('User signed in successfully');
+      
       router.push('/auth/register')
+      localStorage.setItem("bfm-user-token", user?.accessToken)
     }).catch((error) => {
       // User couldn't sign in (bad verification code?)
       // ...
