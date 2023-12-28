@@ -7,6 +7,13 @@ const s3 = new AWS.S3({
   secretAccessKey: "4DCZp7lJFFKSkpQRzc2ypPuu8OGYW64+K0u8edo7",
 });
 
+/**
+ * Uploads an image to AWS S3 and returns the unique file name.
+ *
+ * @param {File} image - The image file to be uploaded.
+ * @returns {string} The unique file name of the uploaded image.
+ */
+
 export default function s3ImageUplaod(image) {
   let regex = new RegExp("[^.]+$");
   let extension = image.name.match(regex);
