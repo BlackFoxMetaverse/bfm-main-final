@@ -5,26 +5,63 @@ import loginplaceholder from "../../../../public/login.svg";
 import Image from "next/image";
 import { FaUserAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import axios from "@/utils/axios";
+import s3ImageUplaod from "@/utils/imageUploader";
 
 const Register = () => {
   const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [profession, setProfession] = useState("");
+  const router = useRouter();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setImageFile(file);
       const imageUrl = URL.createObjectURL(file);
       setImage(imageUrl);
     }
-    };
-    
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        router.push('/profile/editProfile')
+  };
+
+  async function handleRegister() {
+    try {
+      const userDetails = sessionStorage.getItem("userDetails");
+      const token = localStorage.getItem("bfm-user-token");
+      const res = await axios.post(
+        "/auth/register",
+        {
+          uid: userDetails.uid,
+          image: s3ImageUplaod(imageFile),
+          name: name,
+          userName: username,
+          email: email,
+          phone_number: userDetails.phone_number,
+          profession: profession,
+        },
+        {
+          headers: {
+            idtoken: token,
+          },
+        }
+      );
+      return res;
+    } catch (error) {
+      console.log("register-axios-error: ", error);
     }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleRegister()
+      .then((res) => {
+        console.log("register-res: ", res);
+        router.push("/profile/editProfile");
+      })
+      .catch((e) => console.log("error: ", e));
+  };
 
   return (
     <main className="flex max-w-[1512px] max-h-[982px] h-screen justify-center items-center lg:px-[268px] lg:py-[107px] overflow-hidden">
@@ -36,7 +73,10 @@ const Register = () => {
             className="w-full h-full object-cover shrink-0"
           />
         </div>
-        <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col items-start gap-[23px] px-5 self-stretch">
+        <form
+          onSubmit={(e) => handleSubmit(e)}
+          className="flex flex-col items-start gap-[23px] px-5 self-stretch"
+        >
           <div className="flex items-center gap-5">
             <div className="flex justify-center items-center gap-[13.451px] rounded-[13.451px]">
               {image ? (
@@ -102,6 +142,7 @@ const Register = () => {
               id=""
               required
               className="flex w-[344px] items-center gap-1 px-5 py-4 focus:outline-none rounded-xl bg-black/20 text-[color:var(--mono-90,#18181B)] text-base not-italic font-medium leading-6"
+              onChange={(e) => setProfession(e.target.value)}
             >
               <option className="bg-black/20 px-5 py-4" value="Profession">
                 Profession
