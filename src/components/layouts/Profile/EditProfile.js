@@ -4,18 +4,58 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { RiDeleteBin5Fill, RiSearch2Line } from "react-icons/ri";
+import s3ImageUplaod from "@/utils/imageUploader";
+import axios from "@/utils/axios";
 
 const Tags = ["Fixed Rate", "Time Auction", "Open For Bids"];
 
 const EditProfile = () => {
   const [images, setImages] = useState([null, null, null, null]);
+  const [imagesFile, setImagesFile] = useState([null, null, null, null]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
   const [socialLinks, setSocialLinks] = useState([""]);
   const router = useRouter();
 
+  const handleCreateProfile = async () => {
+    /**
+     * @returns {Json} response from the server
+     */
+    const token = localStorage.getItem("bfm-user-token");
+    const imageKeyArr = Array(4);
+    imagesFile.map((file, index) => {
+      if (file !== null) {
+        imageKeyArr[index] = s3ImageUplaod(file);
+      }
+    });
+    try {
+      const response = await axios.post(
+        "/userProfile/createProfile",
+        {
+          images: imageKeyArr,
+          description: description,
+          tags: [tags],
+          socialMediaLinks: socialLinks,
+        },
+        {
+          headers: {
+            idtoken: token,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.log("axioserro: ", error);
+    }
+  };
+
   const handleImageChange = (index, file) => {
     if (file) {
+      setImagesFile((prev) => {
+        let tempArr = prev;
+        tempArr[index] = file;
+        return tempArr;
+      });
       const imageUrl = URL.createObjectURL(file);
       setImages((prevImages) => {
         const newImages = [...prevImages];
@@ -23,14 +63,21 @@ const EditProfile = () => {
         return newImages;
       });
     }
+    console.log("file:", imagesFile);
   };
 
   const handleDelete = (index) => {
+    setImagesFile((prev) => {
+      let tempArr = prev;
+      tempArr[index] = null;
+      return tempArr;
+    });
     setImages((prevImages) => {
       const newImages = [...prevImages];
       newImages[index] = null;
       return newImages;
     });
+    console.log("file:", imagesFile);
   };
 
   const handleAddMore = () => {
@@ -53,13 +100,18 @@ const EditProfile = () => {
         return newLinks;
       });
     } else {
-        setSocialLinks([""])
+      setSocialLinks([""]);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.push("/");
+    handleCreateProfile()
+      .then((respones) => {
+        console.log("response: ", respones);
+        router.push("/");
+      })
+      .catch((e) => console.log("createProfileError: ", e));
   };
 
   return (
