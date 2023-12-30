@@ -24,11 +24,10 @@ const EditProfile = () => {
     const token = localStorage.getItem("bfm-user-token");
     const imageKeyArr = Array(4);
 
-    // Use Promise.all to asynchronously upload all images
     await Promise.all(
       imagesFile.map(async (file, index) => {
         if (file !== null) {
-          imageKeyArr[index] = await s3ImageUpload(file); // Await the image upload
+          imageKeyArr[index] = await s3ImageUpload(file);
         } else {
           imageKeyArr[index] = null;
         }
