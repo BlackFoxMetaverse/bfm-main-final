@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { RiDeleteBin5Fill, RiSearch2Line } from "react-icons/ri";
-import s3ImageUplaod from "@/utils/imageUploader";
+import s3ImageUpload from "@/utils/imageUploader";
 import axios from "@/utils/axios";
 
 const Tags = ["Fixed Rate", "Time Auction", "Open For Bids"];
@@ -19,15 +19,22 @@ const EditProfile = () => {
 
   const handleCreateProfile = async () => {
     /**
-     * @returns {Json} response from the server
+     * @returns {Json} as promise response from the server
      */
     const token = localStorage.getItem("bfm-user-token");
     const imageKeyArr = Array(4);
-    imagesFile.map((file, index) => {
-      if (file !== null) {
-        imageKeyArr[index] = s3ImageUplaod(file);
-      }
-    });
+
+    // Use Promise.all to asynchronously upload all images
+    await Promise.all(
+      imagesFile.map(async (file, index) => {
+        if (file !== null) {
+          imageKeyArr[index] = await s3ImageUpload(file); // Await the image upload
+        } else {
+          imageKeyArr[index] = null;
+        }
+      })
+    );
+
     try {
       const response = await axios.post(
         "/userProfile/createProfile",
@@ -46,6 +53,7 @@ const EditProfile = () => {
       return response;
     } catch (error) {
       console.log("axioserro: ", error);
+      return null;
     }
   };
 

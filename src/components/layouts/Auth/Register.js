@@ -28,13 +28,17 @@ const Register = () => {
 
   async function handleRegister() {
     try {
-      const userDetails = sessionStorage.getItem("userDetails");
+      const userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
       const token = localStorage.getItem("bfm-user-token");
+
+      // Await the completion of the image upload
+      const uploadedImageFileName = await s3ImageUplaod(imageFile);
+
       const res = await axios.post(
         "/auth/register",
         {
           uid: userDetails.uid,
-          image: s3ImageUplaod(imageFile),
+          image: uploadedImageFileName, // Use the uploaded image file name
           name: name,
           userName: username,
           email: email,
@@ -47,6 +51,7 @@ const Register = () => {
           },
         }
       );
+
       return res;
     } catch (error) {
       console.log("register-axios-error: ", error);
