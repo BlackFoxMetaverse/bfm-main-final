@@ -35,7 +35,9 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
   }, [currentIndex, inputRefs]);
 
   return (
-    <form onSubmit={handleSubmit} className="flex justify-between items-start self-stretch">
+    <div
+      className="flex h-11 items-center gap-[5.396px]"
+    >
       {otp.map((digit, index) => (
         <input
           key={index}
@@ -45,12 +47,10 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
           value={digit}
           onChange={(e) => handleInputChange(e, index)}
           required
-          // placeholder="0"
-          className="flex w-12 flex-col p-4 items-start justify-center gap-2 border-2 text-[#0858F7] border-[#0858F7] transition-all duration-300 focus:outline-[#0858F7]/50 focus:outline rounded-xl focus:outline-4"
+          className="flex w-12 px-[18px] aspect-square justify-center items-center gap-[10.792px] border rounded-[12.951px] border-[solid_rgba(102,102,102,0.35)] focus:outline-none"
         />
       ))}
-      <button type="submit" className="hidden"></button>
-    </form>
+    </div>
   );
 };
 
