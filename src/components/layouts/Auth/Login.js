@@ -71,7 +71,8 @@ const Login = () => {
     );
   };
 
-  const handleSendOtp = () => {
+  const handleSendOtp = (e) => {
+    e.preventDefault();
     console.log("dsf");
     generateRecaptcha();
     let appVerifier = window.recaptchaVerifier;
@@ -318,10 +319,10 @@ const Login = () => {
                   </div>
                   <button
                     type="submit"
-                    className={`flex min-w-[200px] h-[50px] justify-center items-center opacity-25 pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
+                    className={`flex min-w-[200px] h-[50px] justify-center items-center pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
                       mobilenumber.length === 10
                         ? "bg-[#925FF0]"
-                        : "bg-[#925FF0]/50 cursor-not-allowed"
+                        : "bg-[#925FF0] opacity-25 cursor-not-allowed"
                     } text-center text-[22.635px] not-italic font-normal leading-[normal]`}
                     disabled={mobilenumber.length !== 10}
                   >
@@ -360,9 +361,9 @@ const Login = () => {
                   <button
                     type="submit"
                     onClick={handleNext}
-                    className={`flex min-w-[200px] h-[50px] justify-center items-center opacity-25 pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
+                    className={`flex min-w-[200px] h-[50px] justify-center items-center pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
                       otp.length !== 6
-                        ? "bg-[#925FF0]/50 cursor-not-allowed"
+                        ? "bg-[#925FF0] opacity-25 cursor-not-allowed"
                         : "bg-[#925FF0]"
                     } text-center text-[22.635px] not-italic font-normal leading-[normal]`}
                     disabled={otp.length !== 6}
@@ -784,7 +785,7 @@ const Login = () => {
           </div>
         )}
       </div>
-      <div id="recaptcha"></div> */}
+      */}
       {verified && (
         <div className="w-full h-screen fixed inset-0 flex justify-center items-center bg-black/50 z-50">
           <div className="max-w-[596px] max-h-[346px] aspect-[2.3/1] w-full shrink-0 rounded-[34px] flex bg-white flex-col items-center">
@@ -801,6 +802,7 @@ const Login = () => {
           </div>
         </div>
       )}
+      <div id="recaptcha"></div>
     </main>
   );
 };
