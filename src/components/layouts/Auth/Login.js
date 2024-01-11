@@ -22,7 +22,7 @@ const Professions = [
   "Software Developer",
 ];
 
-const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"]
+const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("+91");
@@ -32,11 +32,28 @@ const Login = () => {
   const [verified, setVerified] = useState(false);
   const [seconds, setSeconds] = useState(60);
   const [timerEnded, setTimerEnded] = useState(false);
-  const [formCount, setCount] = useState(5);
+  const [formCount, setCount] = useState(1);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-   const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryImages, setGalleryImages] = useState([]);
   const router = useRouter();
+
+  function handleNext() {
+    if (formCount === 5) {
+      setCount(5);
+    } else {
+      setCount(formCount + 1);
+    }
+  }
+
+  function handlePrevious() {
+    if (formCount === 1) {
+      setCount(1);
+      router.back();
+    } else {
+      setCount(formCount - 1);
+    }
+  }
 
   const generateRecaptcha = () => {
     const recaptchaElement = document.getElementById("recaptcha");
@@ -52,6 +69,68 @@ const Login = () => {
       },
       auth
     );
+  };
+
+  const handleSendOtp = () => {
+    console.log("dsf");
+    generateRecaptcha();
+    let appVerifier = window.recaptchaVerifier;
+    const phoneNumber = `${countryCode}${mobilenumber}`;
+    console.log(phoneNumber);
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        console.log(confirmationResult);
+      })
+      .catch((error) => {
+        // Error; SMS not sent
+        console.log("send otp error:", error);
+      });
+    // handleNext();
+  };
+
+  async function loginUser(token) {
+    try {
+      const response = await axios.post("/auth/login", null, {
+        headers: {
+          idtoken: `${token}`,
+        },
+      });
+      const data = response?.data;
+      return Promise.resolve(data);
+    } catch (e) {
+      console.log("axios error: ", e.message);
+      return Promise.reject(e.message);
+    }
+  }
+
+  const handleOTPSubmit = () => {
+    let confirmationResult = window.confirmationResult;
+    confirmationResult
+      .confirm(otp)
+      .then((result) => {
+        let token = result.user.accessToken;
+
+        console.log("token: ", token);
+
+        loginUser(token).then((data) => {
+          if (data) {
+            // Save details in session storage
+            sessionStorage.setItem("userDetails", JSON.stringify(data.details));
+
+            if (data.isUser === true) {
+              localStorage.setItem("bfm-user-token", token);
+            } else if (data.isUser === false) {
+              localStorage.setItem("bfm-user-token", token);
+            }
+          } else {
+            alert("An error occurred. Please try again.");
+          }
+        });
+      })
+      .catch((error) => {
+        console.log("user login error:", error);
+      });
   };
 
   const handleImageChange = (e) => {
@@ -81,26 +160,6 @@ const Login = () => {
     setGalleryImages((prevImages) => prevImages.filter((img) => img.id !== id));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // console.log(auth);
-    setHasFilled(true);
-    generateRecaptcha();
-    let appVerifier = window.recaptchaVerifier;
-    const phoneNumber = `${countryCode}${mobilenumber}`;
-    console.log(phoneNumber);
-    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-      .then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        console.log(confirmationResult);
-        // Redirect or perform any other action if needed
-      })
-      .catch((error) => {
-        // Error; SMS not sent
-        console.log(error);
-      });
-  };
-
   useEffect(() => {
     if (seconds > 0) {
       const timer = setInterval(() => {
@@ -124,55 +183,6 @@ const Login = () => {
   };
 
   //function for user login check -> object {isUser, message, details}
-  async function loginUser(token) {
-    try {
-      const response = await axios.post("/auth/login", null, {
-        headers: {
-          idtoken: `${token}`,
-        },
-      });
-      const data = response?.data;
-      return data;
-    } catch (e) {
-      console.log("axios error: ", e.message);
-      return null;
-    }
-  }
-
-  const handleOTPSubmit = (e) => {
-    e.preventDefault();
-    let confirmationResult = window.confirmationResult;
-    confirmationResult
-      .confirm(otp)
-      .then((result) => {
-        let token = result.user.accessToken;
-
-        console.log("token: ", token);
-
-        loginUser(token).then((data) => {
-          if (data) {
-            // Save details in session storage
-            sessionStorage.setItem("userDetails", JSON.stringify(data.details));
-
-            if (data.isUser === true) {
-              // Redirect to /profile/editProfile
-              router.push("/profile/editProfile");
-              localStorage.setItem("bfm-user-token", token);
-            } else if (data.isUser === false) {
-              // Redirect to /auth/register
-              router.push("/auth/register");
-              localStorage.setItem("bfm-user-token", token);
-            }
-          } else {
-            // Handle null or error response
-            alert("An error occurred. Please try again.");
-          }
-        });
-      })
-      .catch((error) => {
-        alert("User couldn't sign in (bad verification code?)");
-      });
-  };
 
   useEffect(() => {
     if (formCount === 3) {
@@ -185,24 +195,6 @@ const Login = () => {
       return () => clearTimeout(timer);
     }
   }, [formCount]);
-
-  const handleNext = (e) => {
-    e.preventDefault();
-    if (formCount === 5) {
-      setCount(5);
-    } else {
-      setCount(formCount + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (formCount === 1) {
-      setCount(1);
-      router.back();
-    } else {
-      setCount(formCount - 1);
-    }
-  };
 
   return (
     <main
@@ -276,13 +268,9 @@ const Login = () => {
               </div>
             )}
           </div>
-          <form
-            action=""
-            onSubmit={(e) => handleNext(e)}
-            method="post"
-            className="w-5/6 mx-auto"
-          >
-            {formCount === 1 && (
+
+          {formCount === 1 && (
+            <form action="" className="w-5/6 mx-auto" onSubmit={handleSendOtp}>
               <div className="flex flex-col items-start gap-5">
                 <div className="flex flex-col items-start gap-[7px]">
                   <h2 className="text-black text-[32px] not-italic font-bold leading-[normal]">
@@ -294,6 +282,7 @@ const Login = () => {
                     apply.
                   </p>
                 </div>
+
                 <div className="flex flex-col w-full items-start gap-[25.868px]">
                   <div className="flex items-center self-stretch w-full border rounded-[12.934px] p-[7.986px] border-[solid_rgba(102,102,102,0.35)]">
                     <select
@@ -329,7 +318,6 @@ const Login = () => {
                   </div>
                   <button
                     type="submit"
-                    onClick={handleNext}
                     className={`flex min-w-[200px] h-[50px] justify-center items-center opacity-25 pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
                       mobilenumber.length === 10
                         ? "bg-[#925FF0]"
@@ -341,7 +329,9 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-            )}
+            </form>
+          )}
+          <form className="w-5/6 mx-auto">
             {formCount === 2 && (
               <div className="flex flex-col items-start gap-5">
                 <div className="flex flex-col items-start gap-[7px]">
