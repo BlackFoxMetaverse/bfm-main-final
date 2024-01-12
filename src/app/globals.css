@@ -2,15 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-::-webkit-inner-spin-button{
+::-webkit-inner-spin-button {
   display: none;
 }
 
-::-webkit-outer-spin-button{
+::-webkit-outer-spin-button {
   display: none;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   height: 0;
-  
 }
+
+/* input[type="checkbox"] {
+  width: 16.701px;
+  height: 16.701px;
+  flex-shrink: 0;
+  border: 1 solid #925ff0;
+}
+
+input[type="checkbox"]:checked{
+  background-color: #925ff0;
+} */

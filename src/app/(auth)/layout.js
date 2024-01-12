@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
           <Image
             src={background}
             alt=""
-            className="absolute inset-0 object-cover"
+            className="object-cover w-full h-full"
           />
         </div>
       </body>
