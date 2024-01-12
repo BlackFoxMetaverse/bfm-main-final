@@ -41,7 +41,7 @@ const Login = () => {
   const [verified, setVerified] = useState(false);
   const [seconds, setSeconds] = useState(60);
   const [timerEnded, setTimerEnded] = useState(false);
-  const [formCount, setCount] = useState(5);
+  const [formCount, setCount] = useState(1);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
