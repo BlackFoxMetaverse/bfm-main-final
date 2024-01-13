@@ -8,21 +8,21 @@ const s3 = new AWS.S3({
 });
 
 /**
- * Uploads an image to AWS S3 and returns a promise that resolves with the unique file name of the uploaded image.
+ * Uploads a file (image or PDF) to AWS S3 and returns a promise that resolves with the unique file name of the uploaded file.
  *
- * @param {File} image - The image file to be uploaded.
- * @returns {Promise<string>} A promise that resolves with the unique file name of the uploaded image.
+ * @param {File} file - The file (image or PDF) to be uploaded.
+ * @returns {Promise<string>} A promise that resolves with the unique file name of the uploaded file.
  */
 
-export default function s3ImageUpload(image) {
+export default function s3FileUpload(file) {
   return new Promise((resolve, reject) => {
-    const extension = image.name.split(".").pop();
+    const extension = file.name.split(".").pop();
     const uniqueFileName = `${uniqid()}.${extension}`;
 
     const params = {
       Bucket: BUCKET_NAME,
       Key: uniqueFileName,
-      Body: image,
+      Body: file,
     };
 
     s3.upload(params, (err) => {

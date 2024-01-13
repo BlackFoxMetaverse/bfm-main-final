@@ -21,6 +21,7 @@ import { MdOutlineUploadFile } from "react-icons/md";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { RxCrossCircled } from "react-icons/rx";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
+import s3ImageUplaod from "@/utils/imageUploader";
 
 const Professions = [
   "Photographer",
@@ -34,6 +35,7 @@ const Experience = ["0-1", "1-3", "3-5", "5+"];
 
 const Login = () => {
   const [document, setDocument] = useState(null);
+  const [documentFile, setDocumentFile] = useState(null);
   const [countryCode, setCountryCode] = useState("+91");
   const [mobilenumber, setMobileNumber] = useState("");
   const [hasFilled, setHasFilled] = useState(false);
@@ -45,17 +47,18 @@ const Login = () => {
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
+  const [galleryImagesFile, setGalleryImagesFile] = useState([]);
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [form4Obj, setForm4Obj] = useState({});
   const router = useRouter();
 
   useEffect(() => {
     setDocument(window.document);
   }, []);
 
-  function handleNext(e) {
-    e.preventDefault();
+  function handleNext() {
     if (formCount === 5) {
       setCount(formCount + 1);
       setTimeout(() => {
@@ -93,7 +96,6 @@ const Login = () => {
 
   const handleSendOtp = (e) => {
     e.preventDefault();
-    console.log("dsf");
     generateRecaptcha();
     let appVerifier = window.recaptchaVerifier;
     const phoneNumber = `${countryCode}${mobilenumber}`;
@@ -102,12 +104,12 @@ const Login = () => {
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
         console.log(confirmationResult);
+        handleNext();
       })
       .catch((error) => {
         // Error; SMS not sent
         console.log("send otp error:", error);
       });
-    // handleNext();
   };
 
   async function loginUser(token) {
@@ -125,7 +127,8 @@ const Login = () => {
     }
   }
 
-  const handleOTPSubmit = () => {
+  const handleOTPSubmit = (e) => {
+    e.preventDefault();
     let confirmationResult = window.confirmationResult;
     confirmationResult
       .confirm(otp)
@@ -141,8 +144,10 @@ const Login = () => {
 
             if (data.isUser === true) {
               localStorage.setItem("bfm-user-token", token);
+              setCount(formCount + 2);
             } else if (data.isUser === false) {
               localStorage.setItem("bfm-user-token", token);
+              handleNext();
             }
           } else {
             alert("An error occurred. Please try again.");
@@ -165,7 +170,7 @@ const Login = () => {
 
   const handleGalleryImageUpload = (index, file) => {
     if (file) {
-      setGalleryImages((prev) => {
+      setGalleryImagesFile((prev) => {
         let tempArr = prev;
         tempArr[index] = file;
         return tempArr;
@@ -180,7 +185,7 @@ const Login = () => {
   };
 
   const handleGalleryImageDelete = (index) => {
-    setGalleryImages((prev) => {
+    setGalleryImagesFile((prev) => {
       let tempArr = prev;
       tempArr[index] = null;
       return tempArr;
@@ -219,7 +224,7 @@ const Login = () => {
   };
 
   const handleTagInputKeyPress = (e) => {
-    if (e.key === " " && e.shiftKey && currentTag.trim() !== "") {
+    if (e.key === " " && currentTag.trim() !== "") {
       e.preventDefault();
       setTags((prevTags) => [...prevTags, currentTag.trim()]);
       setCurrentTag("");
@@ -253,6 +258,147 @@ const Login = () => {
     }
   }, [formCount]);
 
+  async function handleRegister3(data) {
+    try {
+      // const userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
+      const token = localStorage.getItem("bfm-user-token");
+
+      // Await the completion of the image upload
+      const uploadedImageFileName = await s3ImageUplaod(imageFile);
+
+      const res = await axios.post(
+        "/auth/register",
+        {
+          image: uploadedImageFileName, // Use the uploaded image file name
+          name: data.name,
+          userName: data.username,
+          email: data.email,
+          profession: data.profession,
+        },
+        {
+          headers: {
+            idtoken: token,
+          },
+        }
+      );
+
+      return Promise.resolve(res);
+    } catch (error) {
+      console.log("register-axios-error: ", error);
+      return Promise.reject(error);
+    }
+  }
+
+  function handleSubmit3(e) {
+    e.preventDefault();
+    const f3KeyArr = ["name", "username", "email", "profession"];
+    let f3Obj = {};
+    for (let key of f3KeyArr) {
+      f3Obj[key] = e.target[key].value;
+    }
+    console.log("f3Obj", f3Obj);
+    handleRegister3(f3Obj)
+      .then((res) => {
+        console.log("register res:", res.status);
+        if (res.status === 201) {
+          console.log("next");
+          handleNext();
+        }
+      })
+      .catch((e) => {
+        console.log("register error", e);
+      });
+  }
+
+  function handleSubmit4(e) {
+    e.preventDefault();
+    const f4Obj = {
+      experience: e.target["experience"].value,
+      college_name: e.target["college_name"].value,
+      tags: tags,
+      document: documentFile,
+    };
+    setForm4Obj(f4Obj);
+    handleNext();
+  }
+
+  const handleCreateProfile = async (data) => {
+    /**
+     * @returns {Json} as promise response from the server
+     */
+
+    const {
+      experience,
+      college_name,
+      tags,
+      document,
+      description,
+      social,
+      imageGalleryFile,
+    } = data;
+
+    const token = localStorage.getItem("bfm-user-token");
+    const imageKeyArr = Array(6);
+    const documentKey = await s3ImageUplaod(document);
+
+    await Promise.all(
+      imageGalleryFile.map(async (file, index) => {
+        if (file !== null) {
+          imageKeyArr[index] = await s3ImageUplaod(file);
+        } else {
+          imageKeyArr[index] = null;
+        }
+      })
+    );
+
+    try {
+      const response = await axios.post(
+        "/userProfile/createProfile",
+        {
+          experience: experience,
+          collegeName: college_name,
+          tags: tags,
+          certificate: documentKey,
+          description: description,
+          socialMediaLinks: social,
+          images: imageKeyArr,
+        },
+        {
+          headers: {
+            idtoken: token,
+          },
+        }
+      );
+      return Promise.resolve(response);
+    } catch (error) {
+      console.log("axioserro: ", error);
+      return Promise.reject(error);
+    }
+  };
+
+  function handleSubmit5(e) {
+    e.preventDefault();
+    const f5Obj = {
+      experience: form4Obj.experience,
+      college_name: form4Obj.college_name,
+      tags: form4Obj.tags,
+      document: form4Obj.document,
+      description: e.target["description"].value,
+      social: e.target["social"].value,
+      imageGalleryFile: galleryImagesFile,
+    };
+    handleCreateProfile(f5Obj)
+      .then((res) => {
+        console.log("profile:", res);
+        alert("Profile is created succesfully ");
+        router.push("/");
+      })
+      .catch((e) => {
+        console.log("profile err", e);
+      });
+    console.log("f4 & f5:", f5Obj);
+  }
+
   return (
     <main
       className="flex max-w-[1512px] lg:w-11/12 mx-auto h-screen md:overflow-hidden justify-center items-start lg:items-center"
@@ -263,7 +409,7 @@ const Login = () => {
           onClick={handlePrevious}
           className="absolute lg:inset-x-12 lg:inset-y-7 inset-5 w-8 h-8 flex justify-center items-center rounded-xl shrink-0 bg-white text-black"
         >
-          <IoReturnUpBackOutline />
+          <IoReturnUpBackOutline /> {formCount}
         </button>
         <div className="lg:w-1/2 w-5/6 h-4 relative shrink-0 rounded-[53.067px] border-[1.327px] border-solid border-[rgba(255,255,255,0.48)]">
           <div
@@ -327,11 +473,7 @@ const Login = () => {
           </div>
           <div className="lg:w-5/6 w-full mx-auto">
             {formCount === 1 && (
-              <form
-                action=""
-                className=""
-                onSubmit={handleSendOtp && handleNext}
-              >
+              <form action="" className="" onSubmit={handleSendOtp}>
                 <div className="flex flex-col items-start md:gap-5">
                   <div className="flex flex-col items-start gap-[7px]">
                     <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
@@ -395,7 +537,7 @@ const Login = () => {
             {formCount === 2 && (
               <form
                 action=""
-                onSubmit={handleNext}
+                onSubmit={handleOTPSubmit}
                 className="flex flex-col items-start gap-5"
               >
                 <div className="flex flex-col items-start gap-[7px]">
@@ -423,7 +565,6 @@ const Login = () => {
                   </div>
                   <button
                     type="submit"
-                    onClick={handleNext}
                     className={`flex min-w-[200px] h-[50px] justify-center items-center pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
                       otp.length !== 6
                         ? "bg-[#925FF0] opacity-25 cursor-not-allowed"
@@ -439,7 +580,7 @@ const Login = () => {
             {formCount === 3 && (
               <form
                 action=""
-                onSubmit={handleNext}
+                onSubmit={handleSubmit3}
                 className="flex flex-col w-full justify-center items-center gap-[45px]"
               >
                 <div className="flex flex-col items-start gap-5 w-full">
@@ -523,7 +664,7 @@ const Login = () => {
                   </div>
                 </div>
                 <button
-                  onClick={handleNext}
+                  type="submit"
                   className="flex justify-end items-center gap-2 rounded pl-8 pr-6 py-4 bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-xl not-italic font-normal leading-[100%] tracking-[-1px]"
                 >
                   Next <FaChevronRight />
@@ -532,7 +673,7 @@ const Login = () => {
             )}
             {formCount === 4 && (
               <form
-                onSubmit={handleNext}
+                onSubmit={handleSubmit4}
                 className="inline-flex flex-col items-center gap-[45px] w-full pt-10 rounded-[40px]"
               >
                 <div className="flex flex-col items-start gap-5 w-full">
@@ -642,6 +783,7 @@ const Login = () => {
                       type="file"
                       name="certification"
                       id="certification"
+                      onChange={(e) => setDocumentFile(e.target.files[0])}
                       className="hidden"
                     />
                     <button
@@ -658,7 +800,6 @@ const Login = () => {
                 </div>
                 <button
                   type="submit"
-                  onClick={handleNext}
                   className="flex justify-end items-center gap-2 rounded pl-8 pr-6 py-4 bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-xl not-italic font-normal leading-[100%] tracking-[-1px]"
                 >
                   Next <FaChevronRight />
@@ -668,7 +809,7 @@ const Login = () => {
             {formCount === 5 && (
               <form
                 action=""
-                onSubmit={handleNext}
+                onSubmit={handleSubmit5}
                 className="flex flex-col items-start gap-[30px] self-stretch w-full"
               >
                 <div className="flex flex-col items-start gap-[7px]">
