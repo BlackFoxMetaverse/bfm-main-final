@@ -13,14 +13,3 @@
 ::-webkit-scrollbar {
   height: 0;
 }
-
-/* input[type="checkbox"] {
-  width: 16.701px;
-  height: 16.701px;
-  flex-shrink: 0;
-  border: 1 solid #925ff0;
-}
-
-input[type="checkbox"]:checked{
-  background-color: #925ff0;
-} */

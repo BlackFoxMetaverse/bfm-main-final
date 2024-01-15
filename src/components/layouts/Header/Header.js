@@ -14,12 +14,7 @@ const Header = () => {
 
   return (
     <main
-      className={`${
-        pathname.startsWith("/auth") ||
-        pathname.startsWith("/profile/editProfile")
-          ? "hidden"
-          : "flex"
-      } flex-col justify-end items-center lg:pt-[57px] pt-[38.5px] pb-[1.113px] px-0 w-full`}
+      className={`flex flex-col justify-end items-center lg:pt-[57px] pt-[38.5px] pb-[1.113px] px-0 w-full`}
     >
       <div className="mx-auto w-11/12 flex items-center justify-between">
         <div className="flex items-center lg:gap-[25px] gap-0.5">

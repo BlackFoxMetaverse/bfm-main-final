@@ -97,6 +97,7 @@ const Login = () => {
   const handleSendOtp = (e) => {
     e.preventDefault();
     generateRecaptcha();
+    setCount(formCount + 1);
     let appVerifier = window.recaptchaVerifier;
     const phoneNumber = `${countryCode}${mobilenumber}`;
     console.log(phoneNumber);
@@ -153,6 +154,14 @@ const Login = () => {
             alert("An error occurred. Please try again.");
           }
         });
+        setCount(3);
+        setVerified(true);
+
+        const timer = setTimeout(() => {
+          setVerified(false);
+        }, 2500);
+
+        return () => clearTimeout(timer);
       })
       .catch((error) => {
         console.log("user login error:", error);
@@ -238,15 +247,15 @@ const Login = () => {
   //function for user login check -> object {isUser, message, details}
 
   useEffect(() => {
-    if (formCount === 3) {
-      setVerified(true);
+    // if (formCount === 3) {
+    //   setVerified(true);
 
-      const timer = setTimeout(() => {
-        setVerified(false);
-      }, 2500);
+    //   const timer = setTimeout(() => {
+    //     setVerified(false);
+    //   }, 2500);
 
-      return () => clearTimeout(timer);
-    }
+    //   return () => clearTimeout(timer);
+    // }
     if (formCount > 5) {
       setSubmitted(true);
 
@@ -296,6 +305,7 @@ const Login = () => {
     for (let key of f3KeyArr) {
       f3Obj[key] = e.target[key].value;
     }
+    setCount(4);
     console.log("f3Obj", f3Obj);
     handleRegister3(f3Obj)
       .then((res) => {
