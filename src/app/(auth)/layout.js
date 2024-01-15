@@ -6,7 +6,7 @@ import Image from "next/image";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Black Fox Metaverse",
+  title: "BFM | Login",
   description: "BFM Location service",
 };
 

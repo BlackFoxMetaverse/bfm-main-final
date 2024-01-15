@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import OtpInput from "@/components/Modules/Otp/OtpInput";
 import { auth } from "../../../firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
@@ -15,19 +15,45 @@ import axios from "@/utils/axios";
 import Link from "next/link";
 import verfiedGif from "../../../../public/otpSubmit.gif";
 import submittedGif from "../../../../public/formSubmit.gif";
-import { FaCamera, FaChevronRight } from "react-icons/fa6";
+import {
+  FaCamera,
+  FaChevronRight,
+  FaDribbble,
+  FaLinkedinIn,
+} from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { RxCrossCircled } from "react-icons/rx";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import s3ImageUplaod from "@/utils/imageUploader";
+import { RiInstagramFill } from "react-icons/ri";
+import { SiBehance } from "react-icons/si";
 
 const Professions = [
   "Photographer",
   "Designer",
   "Developer",
   "Software Developer",
+];
+
+const SocialTypes = [
+  {
+    name: "Linked In",
+    icon: <FaLinkedinIn />,
+  },
+  {
+    name: "Instagram",
+    icon: <RiInstagramFill />,
+  },
+  {
+    name: "Behance",
+    icon: <SiBehance />,
+  },
+  {
+    name: "Dribble",
+    icon: <FaDribbble />,
+  },
 ];
 
 const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
@@ -43,7 +69,7 @@ const Login = () => {
   const [verified, setVerified] = useState(false);
   const [seconds, setSeconds] = useState(60);
   const [timerEnded, setTimerEnded] = useState(false);
-  const [formCount, setCount] = useState(1);
+  const [formCount, setCount] = useState(3);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
@@ -53,10 +79,34 @@ const Login = () => {
   const [submitted, setSubmitted] = useState(false);
   const [form4Obj, setForm4Obj] = useState({});
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     setDocument(window.document);
   }, []);
+
+  useEffect(() => {
+    const handlePopstate = () => {
+      // Handle the popstate event here
+      if (pathname === "/auth/login") {
+        // Check if the user is on the login page
+        // and update the formCount accordingly
+        if (formCount === 1) {
+          router.back();
+        } else {
+          setCount(formCount - 1);
+        }
+      }
+    };
+
+    // Attach the event listener when the component mounts
+    window.addEventListener("popstate", handlePopstate);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, [pathname]);
 
   function handleNext() {
     if (formCount === 5) {
@@ -411,17 +461,17 @@ const Login = () => {
 
   return (
     <main
-      className="flex max-w-[1512px] lg:w-11/12 mx-auto h-screen md:overflow-hidden justify-center items-start lg:items-center"
+      className="flex max-w-[1512px] lg:w-11/12 mx-auto h-screen md:overflow-hidden justify-center md:items-center items-start"
       suppressHydrationWarning
     >
-      <div className="w-full md:aspect-[2/1] shrink-0 py-14 lg:backdrop-blur-[16.213233947753906px] rounded-[14px] md:rounded-[34.921px] lg:bg-white/25 overflow-y-auto flex flex-col gap-[27px] items-center relative">
+      <div className="w-full md:aspect-[2/1] shrink-0 pt-14 lg:backdrop-blur-[16.213233947753906px] rounded-[14px] md:rounded-[34.921px] lg:bg-white/25 overflow-hidden flex flex-col gap-[27px] items-center relative">
         <button
           onClick={handlePrevious}
           className="absolute lg:inset-x-12 lg:inset-y-7 inset-5 w-8 h-8 flex justify-center items-center rounded-xl shrink-0 bg-white text-black"
         >
-          <IoReturnUpBackOutline /> {formCount}
+          <IoReturnUpBackOutline />
         </button>
-        <div className="lg:w-1/2 w-5/6 h-4 relative shrink-0 rounded-[53.067px] border-[1.327px] border-solid border-[rgba(255,255,255,0.48)]">
+        <div className="lg:w-1/2 w-5/6 h-4 relative shrink-0 rounded-[53.067px] border-[1.327px] border-solid border-[rgba(255,255,255,0.48)] mt-2">
           <div
             style={{
               width: `${(formCount * 100) / 5}%`,
@@ -429,62 +479,131 @@ const Login = () => {
             className="h-4 shrink-0 rounded-[53.067px] absolute bg-white"
           ></div>
         </div>
-        <div className="inline-flex flex-col md:w-[48%] items-center md:gap-[45px] gap-[34.161px] px-5 pt-[33.26px] bg-white shadow-[0px_4px_8px_0px_rgba(41,41,41,0.08)] md:pt-10 rounded-[14px] md:rounded-[40px]">
-          <div className="flex lg:w-5/6 w-full mx-auto justify-between items-center gap-9">
-            <div className="flex max-w-[669px] flex-col items-start md:gap-[29px] gap-[17.21px]">
-              <h1 className="text-black md:text-[32px] text-[18.99px]  not-italic font-bold leading-[normal]">
-                Profile Form
-              </h1>
-              <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
-                Please fill out the following information to create your
-                profile.
-              </p>
-            </div>
-            {formCount !== 1 && formCount !== 2 && (
-              <div
-                className={`md:w-[121.962px] md:h-[121.962px] w-[93.196px] h-[93.196px] relative shrink-0 rounded-[121.962px]`}
-              >
-                {image ? (
-                  <div className="w-full h-full">
-                    <img
-                      src={image}
-                      alt=""
-                      className="flex w-full h-full aspect-square items-start rounded-[102px]"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-full">
-                    <FaUserAlt className="w-full h-full bg-black/20 pt-5 flex aspect-square items-start rounded-[102px]" />
+        <div className="md:w-1/2 w-full overflow-auto rounded-[14px] md:rounded-t-[40px] md:rounded-b-[0px] md:my-0 my-5">
+          <div className="inline-flex flex-col w-full items-center md:gap-[45px] gap-[21px] px-5 pt-[33.26px] md:pt-10 bg-white shadow-[0px_4px_8px_0px_rgba(41,41,41,0.08)] rounded-[14px] md:rounded-[40px]">
+            <div className="flex lg:w-5/6 w-full mx-auto justify-between items-center gap-9">
+              <div className="flex max-w-[669px] flex-col items-start md:gap-[29px] gap-[17.21px]">
+                <h1 className="text-black md:text-[32px] text-[18.99px]  not-italic font-bold leading-[normal]">
+                  Profile Form
+                </h1>
+                <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
+                  Please fill out the following information to create your
+                  profile.
+                </p>
+              </div>
+              {formCount !== 1 && formCount !== 2 && (
+                <div
+                  className={`md:w-[121.962px] md:h-[121.962px] w-[93.196px] h-[93.196px] relative shrink-0 rounded-[121.962px]`}
+                >
+                  {image ? (
+                    <div className="w-full h-full">
+                      <img
+                        src={image}
+                        alt=""
+                        className="flex w-full h-full aspect-square items-start rounded-[102px]"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-full">
+                      <FaUserAlt className="w-full h-full bg-black/20 pt-5 flex aspect-square items-start rounded-[102px]" />
+                      <input
+                        type="file"
+                        id="imageInput"
+                        name="imageInput"
+                        className="hidden"
+                        required={false}
+                        onChange={handleImageChange}
+                      />
+                    </div>
+                  )}
+                  <label
+                    htmlFor="imageInput"
+                    className="flex md:w-[38.418px] md:h-[37.031px] w-[29.357px] h-[28.297px] flex-col justify-center items-center gap-[12.274px] shrink-0 bg-[#DADADA] z-10 md:p-[12.274px] p-[9.379px] rounded-[71.19px] absolute bottom-0 right-0"
+                  >
+                    <FaCamera />
                     <input
                       type="file"
                       id="imageInput"
                       name="imageInput"
                       className="hidden"
-                      required={false}
                       onChange={handleImageChange}
                     />
+                  </label>
+                </div>
+              )}
+            </div>
+            <div className="lg:w-5/6 w-full mx-auto">
+              {formCount === 1 && (
+                <form action="" className="" onSubmit={handleSendOtp}>
+                  <div className="flex flex-col items-start md:gap-5">
+                    <div className="flex flex-col items-start gap-[7px]">
+                      <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
+                        Verify yourself
+                      </h2>
+                      <p className="max-w-[557px] text-[#666] md:text-base text-[10.24px] not-italic font-normal leading-6">
+                        Please enter your phone number. You will receive a text
+                        message to verify your account. Message & data rates may
+                        apply.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col w-full md:items-start items-center gap-[25.868px]">
+                      <div className="flex items-center self-stretch w-full border rounded-[12.934px] p-[7.986px] border-[solid_rgba(102,102,102,0.35)]">
+                        <select
+                          name="select country"
+                          required
+                          className="flex justify-center items-center gap-2 focus:outline-none bg-transparent"
+                          id=""
+                        >
+                          <option value="India">India</option>
+                          <option value="USA">USA</option>
+                          <option value="UK">UK</option>
+                          <option value="UAE">UAE</option>
+                        </select>
+                        <input
+                          className="text-[#111] text-[19.401px] not-italic w-10 font-normal leading-[normal] focus:outline-none"
+                          type="text"
+                          maxLength={3}
+                          required
+                          value={countryCode}
+                          onChange={(e) => setCountryCode(e.target.value)}
+                        />
+                        <input
+                          type="number"
+                          required
+                          pattern="\d{10}"
+                          value={mobilenumber}
+                          onChange={(e) => {
+                            const inputValue = e.target.value.replace(
+                              /\D/g,
+                              ""
+                            );
+                            setMobileNumber(inputValue.slice(0, 10));
+                          }}
+                          className="text-[#111] text-[19.401px] w-full not-italic font-normal leading-[normal] focus:outline-none"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className={`flex min-w-[200px] h-[50px] justify-center items-center pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
+                          mobilenumber.length === 10
+                            ? "bg-[#925FF0]"
+                            : "bg-[#925FF0] opacity-25 cursor-not-allowed"
+                        } text-center md:text-[22.635px] text-[12.852px] not-italic font-normal leading-[normal]`}
+                        disabled={mobilenumber.length !== 10}
+                      >
+                        Send OTP
+                      </button>
+                    </div>
                   </div>
-                )}
-                <label
-                  htmlFor="imageInput"
-                  className="flex md:w-[38.418px] md:h-[37.031px] w-[29.357px] h-[28.297px] flex-col justify-center items-center gap-[12.274px] shrink-0 bg-[#DADADA] z-10 md:p-[12.274px] p-[9.379px] rounded-[71.19px] absolute bottom-0 right-0"
+                </form>
+              )}
+              {formCount === 2 && (
+                <form
+                  action=""
+                  onSubmit={handleOTPSubmit}
+                  className="flex flex-col items-start gap-5"
                 >
-                  <FaCamera />
-                  <input
-                    type="file"
-                    id="imageInput"
-                    name="imageInput"
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
-                </label>
-              </div>
-            )}
-          </div>
-          <div className="lg:w-5/6 w-full mx-auto">
-            {formCount === 1 && (
-              <form action="" className="" onSubmit={handleSendOtp}>
-                <div className="flex flex-col items-start md:gap-5">
                   <div className="flex flex-col items-start gap-[7px]">
                     <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
                       Verify yourself
@@ -495,509 +614,472 @@ const Login = () => {
                       apply.
                     </p>
                   </div>
-
-                  <div className="flex flex-col w-full md:items-start items-center gap-[25.868px]">
-                    <div className="flex items-center self-stretch w-full border rounded-[12.934px] p-[7.986px] border-[solid_rgba(102,102,102,0.35)]">
-                      <select
-                        name="select country"
-                        required
-                        className="flex justify-center items-center gap-2 focus:outline-none bg-transparent"
-                        id=""
-                      >
-                        <option value="India">India</option>
-                        <option value="USA">USA</option>
-                        <option value="UK">UK</option>
-                        <option value="UAE">UAE</option>
-                      </select>
-                      <input
-                        className="text-[#111] text-[19.401px] not-italic w-10 font-normal leading-[normal] focus:outline-none"
-                        type="text"
-                        maxLength={3}
-                        required
-                        value={countryCode}
-                        onChange={(e) => setCountryCode(e.target.value)}
-                      />
-                      <input
-                        type="number"
-                        required
-                        pattern="\d{10}"
-                        value={mobilenumber}
-                        onChange={(e) => {
-                          const inputValue = e.target.value.replace(/\D/g, "");
-                          setMobileNumber(inputValue.slice(0, 10));
-                        }}
-                        className="text-[#111] text-[19.401px] w-full not-italic font-normal leading-[normal] focus:outline-none"
+                  <div className="flex flex-col w-full lg:items-start items-center gap-[25.868px]">
+                    <div className="flex w-full flex-col items-start gap-[4.317px]">
+                      <p className="text-[#292929] md:text-base text-[10.24px] not-italic font-normal leading-[normal]">
+                        Enter OTP
+                      </p>
+                      <OtpInput
+                        numberOfInputs={6}
+                        onChange={handleOtpChange}
+                        value={otp}
+                        on
+                        handleSubmit={handleNext}
                       />
                     </div>
                     <button
                       type="submit"
                       className={`flex min-w-[200px] h-[50px] justify-center items-center pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
-                        mobilenumber.length === 10
-                          ? "bg-[#925FF0]"
-                          : "bg-[#925FF0] opacity-25 cursor-not-allowed"
+                        otp.length !== 6
+                          ? "bg-[#925FF0] opacity-25 cursor-not-allowed"
+                          : "bg-[#925FF0]"
                       } text-center md:text-[22.635px] text-[12.852px] not-italic font-normal leading-[normal]`}
-                      disabled={mobilenumber.length !== 10}
+                      disabled={otp.length !== 6}
                     >
-                      Send OTP
+                      Verify
                     </button>
                   </div>
-                </div>
-              </form>
-            )}
-            {formCount === 2 && (
-              <form
-                action=""
-                onSubmit={handleOTPSubmit}
-                className="flex flex-col items-start gap-5"
-              >
-                <div className="flex flex-col items-start gap-[7px]">
-                  <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
-                    Verify yourself
-                  </h2>
-                  <p className="max-w-[557px] text-[#666] md:text-base text-[10.24px] not-italic font-normal leading-6">
-                    Please enter your phone number. You will receive a text
-                    message to verify your account. Message & data rates may
-                    apply.
-                  </p>
-                </div>
-                <div className="flex flex-col w-full lg:items-start items-center gap-[25.868px]">
-                  <div className="flex w-full flex-col items-start gap-[4.317px]">
-                    <p className="text-[#292929] md:text-base text-[10.24px] not-italic font-normal leading-[normal]">
-                      Enter OTP
-                    </p>
-                    <OtpInput
-                      numberOfInputs={6}
-                      onChange={handleOtpChange}
-                      value={otp}
-                      on
-                      handleSubmit={handleNext}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className={`flex min-w-[200px] h-[50px] justify-center items-center pt-[12.461px] pb-[13.539px] px-12 rounded-[34.54px] text-[color:var(--Primary-blue,#FFF)] ${
-                      otp.length !== 6
-                        ? "bg-[#925FF0] opacity-25 cursor-not-allowed"
-                        : "bg-[#925FF0]"
-                    } text-center md:text-[22.635px] text-[12.852px] not-italic font-normal leading-[normal]`}
-                    disabled={otp.length !== 6}
-                  >
-                    Verify
-                  </button>
-                </div>
-              </form>
-            )}
-            {formCount === 3 && (
-              <form
-                action=""
-                onSubmit={handleSubmit3}
-                className="flex flex-col w-full justify-center items-center gap-[45px]"
-              >
-                <div className="flex flex-col items-start gap-5 w-full">
-                  <div className="flex flex-col items-start text-left gap-[7px]">
-                    <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
-                      Personal Information
-                    </h2>
-                    <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
-                      Please provide your personal information below.{" "}
-                    </p>
-                  </div>
-                  <div className="grid md:grid-cols-2 grid-cols-1 w-full items-start content-start md:gap-[31px_20px] gap-[15px]">
-                    <div className="flex flex-col items-start gap-[5px]">
-                      <label
-                        htmlFor="name"
-                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                      >
-                        name
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        required
-                        placeholder="Harsh Singh"
-                        className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
-                      />
-                    </div>
-                    <div className="flex flex-col items-start gap-[5px]">
-                      <label
-                        htmlFor="username"
-                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                      >
-                        username
-                      </label>
-                      <input
-                        type="text"
-                        name="username"
-                        id="username"
-                        required
-                        placeholder="Harsh_12"
-                        className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
-                      />
-                    </div>
-                    <div className="flex flex-col items-start gap-[5px]">
-                      <label
-                        htmlFor="email"
-                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                      >
-                        email
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        required
-                        placeholder="12345@gmail.com"
-                        className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
-                      />
-                    </div>
-                    <div className="flex flex-col items-start justify-center gap-[5px]">
-                      <label
-                        htmlFor="profession"
-                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                      >
-                        profession
-                      </label>
-                      <select
-                        name="profession"
-                        id="profession"
-                        required
-                        className="flex items-center border w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                      >
-                        {Professions?.map((profession, index) => (
-                          <option key={index} value={profession}>
-                            {profession}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="flex justify-end items-center gap-2 rounded pl-8 pr-6 py-4 bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-xl not-italic font-normal leading-[100%] tracking-[-1px]"
+                </form>
+              )}
+              {formCount === 3 && (
+                <form
+                  action=""
+                  onSubmit={handleSubmit3}
+                  className="flex flex-col w-full justify-center items-center gap-[45px]"
                 >
-                  Next <FaChevronRight />
-                </button>
-              </form>
-            )}
-            {formCount === 4 && (
-              <form
-                onSubmit={handleSubmit4}
-                className="inline-flex flex-col items-center gap-[45px] w-full pt-10 rounded-[40px]"
-              >
-                <div className="flex flex-col items-start gap-5 w-full">
-                  <div className="flex flex-col items-start text-left gap-[7px]">
-                    <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
-                      Professional Information
-                    </h2>
-                    <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
-                      Please provide your professional information below.
-                    </p>
-                  </div>
-                  <div className="grid md:grid-cols-1 grid-cols-1 w-full items-start content-start md:gap-[31px_20px] gap-5">
-                    <div className="flex flex-col items-start gap-[5px]">
-                      <label
-                        htmlFor="experience"
-                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                      >
-                        experience
-                      </label>
-                      <select
-                        name="experience"
-                        id="experience"
-                        required
-                        className="flex items-center border w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                      >
-                        <option value="">0-1 years</option>
-                        {Experience?.map((experience, index) => (
-                          <option value={experience} key={index}>
-                            {experience} years
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex flex-col items-start gap-[5px]">
-                      <label
-                        htmlFor="college_name"
-                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                      >
-                        College name
-                      </label>
-                      <select
-                        name="college_name"
-                        id="college_name"
-                        className="flex items-center border w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                      >
-                        <option value="">Select your college</option>
-                        {CollegeName?.map((college, index) => (
-                          <option value={college} key={index}>
-                            {college}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex flex-col items-start justify-center gap-[5px]">
-                      <label
-                        htmlFor="skills"
-                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                      >
-                        tags
-                      </label>
-                      <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
-                        {tags.map((tag) => (
-                          <div
-                            key={tag}
-                            className="flex h-6 justify-center items-center gap-0.5 border bg-[#E9DFFC] border-[#BE9FF6] pl-1.5 pr-2 py-1 rounded-xl text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                          >
-                            <button
-                              type="button"
-                              onClick={() => handleTagRemove(tag)}
-                            >
-                              <RxCrossCircled />
-                            </button>
-                            <span className="">{tag}</span>
-                          </div>
-                        ))}
-                        <input
-                          type="text"
-                          name="skills"
-                          id="skills"
-                          required
-                          placeholder="Frontend Developer"
-                          value={currentTag}
-                          onChange={handleTagInputChange}
-                          onKeyPress={handleTagInputKeyPress}
-                          className={`text-sm not-italic font-normal leading-[100%] w-1/2 h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
-                            tags.length >= 4 ? "hidden" : "block"
-                          }`}
-                        />
-                      </div>
-                      <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
-                        Maximum 4 skills
+                  <div className="flex flex-col items-start gap-5 w-full">
+                    <div className="flex flex-col items-start text-left gap-[7px]">
+                      <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
+                        Personal Information
+                      </h2>
+                      <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
+                        Please provide your personal information below.{" "}
                       </p>
                     </div>
-                  </div>
-                  <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
-                    <label
-                      htmlFor="certification"
-                      className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] whitespace-break-spaces break-words shrink text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                    >
-                      {document?.getElementById("certification")?.value
-                        ? document
-                            ?.getElementById("certification")
-                            ?.value?.slice(12, 40) + "..."
-                        : "Upload your certification here"}
-                    </label>
-                    <input
-                      type="file"
-                      name="certification"
-                      id="certification"
-                      onChange={(e) => setDocumentFile(e.target.files[0])}
-                      className="hidden"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        document?.getElementById("certification")?.click()
-                      }
-                      className="flex h-[31.259px] justify-center items-center gap-[2.605px] pl-[7.815px] pr-[10.42px] py-[5.21px] rounded-[15.63px] bg-[#E9DFFC] text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-[18.235px] not-italic font-normal leading-[100%] tracking-[-0.912px]"
-                    >
-                      <MdOutlineUploadFile />
-                      Upload
-                    </button>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="flex justify-end items-center gap-2 rounded pl-8 pr-6 py-4 bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-xl not-italic font-normal leading-[100%] tracking-[-1px]"
-                >
-                  Next <FaChevronRight />
-                </button>
-              </form>
-            )}
-            {formCount === 5 && (
-              <form
-                action=""
-                onSubmit={handleSubmit5}
-                className="flex flex-col items-start gap-[30px] self-stretch w-full"
-              >
-                <div className="flex flex-col items-start gap-[7px]">
-                  <h5 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
-                    Show Your Gigs
-                  </h5>
-                  <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
-                    Describe your gigs that you have worked on.{" "}
-                  </p>
-                </div>
-                <div className="flex flex-col lg:items-start items-center gap-[30px] self-stretch">
-                  <div className="flex flex-col items-start gap-2.5 self-stretch">
-                    <label
-                      htmlFor="description"
-                      className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                    >
-                      tell us about yourself
-                    </label>
-                    <textarea
-                      name="description"
-                      id="description"
-                      required
-                      className="w-full resize-none focus:outline-none h-full text-[#9F9F9F] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] flex flex-col items-start gap-[var(--numberLength,0px)] self-stretch border-[color:var(--Main-Colors-Purple-3,#BE9FF6)] pl-5 pr-2.5 pt-3.5 pb-2.5 rounded-lg border-[1.2px] border-solid"
-                      placeholder="Describe your Gig"
-                      cols="30"
-                      rows="10"
-                      minLength={100}
-                      maxLength={1000}
-                    ></textarea>
-                  </div>
-                  <div className="flex flex-col items-start gap-[5px] self-stretch">
-                    <label
-                      htmlFor="social"
-                      className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                    >
-                      attach your social media link
-                    </label>
-                    <input
-                      type="url"
-                      name="social"
-                      id="social"
-                      className="flex items-center gap-[5px] self-stretch border focus:outline-none w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
-                      placeholder="Behance or linkedin"
-                    />
-                  </div>
-                  <div className="flex flex-col items-start gap-[5px] self-stretch">
-                    <label
-                      htmlFor=""
-                      className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-                    >
-                      Upload Your Gigs
-                    </label>
-                    <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px]">
-                      Upload upto 6 Gigs in png, jpeg, jpg
-                    </p>
-                    <div className="grid grid-cols-3 gap-2 w-full relativee">
-                      {galleryImages?.map((image, index) => (
-                        <div
-                          key={index}
-                          className={`${
-                            index === 0
-                              ? "col-span-2 row-span-2"
-                              : "col-span-1 row-span-1"
-                          } shrink-0 md:rounded-[10.477px] rounded overflow-hidden`}
+                    <div className="grid md:grid-cols-2 grid-cols-1 w-full items-start content-start md:gap-[31px_20px] gap-[15px]">
+                      <div className="flex flex-col items-start gap-[5px]">
+                        <label
+                          htmlFor="name"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
                         >
-                          {image ? (
-                            <div
-                              className={`w-full aspect-square flex justify-center relative items-center overflow-hidden`}
-                            >
-                              <img
-                                src={image}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
-                              <div className="absolute group inset-2 flex">
-                                <div
-                                  onClick={() =>
-                                    handleGalleryImageDelete(index)
-                                  }
-                                  className="w-[28px] h-[28px] lg:group-hover:scale-y-[100%] transition-all duration-300 ease-in-out lg:scale-y-0 lg:transform flex justify-center items-center text-2xl rounded-xl shrink-0 bg-black/50 text-white"
-                                >
-                                  <IoCloseCircleSharp />
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <label
-                              htmlFor={`imageInput${index}`}
-                              className={`max-w-[100%]  self-stretch aspect-square object-cover bg-[#E1CAFF] text-[#9747FF] shrink-0 flex justify-center items-center rounded`}
-                            >
-                              <IoAdd className="text-6xl" />
-                              <input
-                                type="file"
-                                id={`imageInput${index}`}
-                                name={`imageInput${index}`}
-                                className="hidden"
-                                required={false}
-                                onChange={(e) =>
-                                  handleGalleryImageUpload(
-                                    index,
-                                    e.target.files[0]
-                                  )
-                                }
-                              />
-                            </label>
-                          )}
-                        </div>
-                      ))}
+                          name
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          id="name"
+                          required
+                          placeholder="Harsh Singh"
+                          className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                        />
+                      </div>
+                      <div className="flex flex-col items-start gap-[5px]">
+                        <label
+                          htmlFor="username"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          username
+                        </label>
+                        <input
+                          type="text"
+                          name="username"
+                          id="username"
+                          required
+                          placeholder="Harsh_12"
+                          className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                        />
+                      </div>
+                      <div className="flex flex-col items-start gap-[5px]">
+                        <label
+                          htmlFor="email"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          email
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          id="email"
+                          required
+                          placeholder="12345@gmail.com"
+                          className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                        />
+                      </div>
+                      <div className="flex flex-col items-start justify-center gap-[5px]">
+                        <label
+                          htmlFor="profession"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          profession
+                        </label>
+                        <select
+                          name="profession"
+                          id="profession"
+                          required
+                          className="flex items-center border w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                        >
+                          {Professions?.map((profession, index) => (
+                            <option key={index} value={profession}>
+                              {profession}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="flex w-[16.701px] h-[16.701px] justify-center items-center shrink-0">
-                      <input
-                        type="checkbox"
-                        name="legalization"
-                        id="legalization"
-                        required
-                        className="border border-[#925ff0] rounded appearance-none w-full h-full object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
-                      />
-                    </div>
-                    <label
-                      htmlFor="legalization"
-                      className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-sm text-[10.628px] not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                    >
-                      All the porjects showed here are made by the potential
-                      user and not copied from any other sources.
-                    </label>
                   </div>
                   <button
                     type="submit"
-                    className="flex justify-center items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
+                    className="flex justify-end items-center gap-2 rounded pl-8 pr-6 py-4 bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-xl not-italic font-normal leading-[100%] tracking-[-1px]"
                   >
-                    Submit
-                    <BsCheckCircleFill />
+                    Next <FaChevronRight />
                   </button>
-                </div>
-              </form>
-            )}
-          </div>
-          <div className="max-w-[669px] mx-auto w-5/6 h-px bg-[#BABABA]"></div>
-          <div className="flex flex-col items-start gap-[19px] mx-auto w-5/6">
-            <h5 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
-              Need Help?
-            </h5>
-            <p className="max-w-[670px] text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
-              Check out our help section for additional information and
-              resources on how to create a successful sellers profile.{" "}
-            </p>
-            <Link
-              href={"https://www.blackfoxmetaverse.in/"}
-              target="_blank"
-              className="flex justify-center items-center gap-[5px] rounded px-4 py-2 bg-[#73A876] text-[color:var(--White,var(--Primary-blue,#FFF))] md:text-base text-[10.24px] not-italic font-normal leading-6"
-            >
-              Contact Us
-            </Link>
-          </div>
-          <div className="inline-flex items-start gap-10 justify-between">
-            <Link
-              href={"#"}
-              className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6"
-            >
-              Terms and Conditions
-            </Link>
-            <Link
-              href={"#"}
-              className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href={
-                "https://www.linkedin.com/company/black-fox-millennium/about/"
-              }
-              target="_blank"
-              className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6"
-            >
-              Social Media
-            </Link>
+                </form>
+              )}
+              {formCount === 4 && (
+                <form
+                  onSubmit={handleSubmit4}
+                  className="inline-flex flex-col items-center gap-[45px] w-full md:pt-10 rounded-[40px]"
+                >
+                  <div className="flex flex-col items-start gap-5 w-full">
+                    <div className="flex flex-col items-start text-left gap-[7px]">
+                      <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
+                        Professional Information
+                      </h2>
+                      <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
+                        Please provide your professional information below.
+                      </p>
+                    </div>
+                    <div className="grid md:grid-cols-1 grid-cols-1 w-full items-start content-start md:gap-[31px_20px] gap-5">
+                      <div className="flex flex-col items-start gap-[5px]">
+                        <label
+                          htmlFor="experience"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          experience
+                        </label>
+                        <select
+                          name="experience"
+                          id="experience"
+                          required
+                          className="flex appearance-none items-center border selection:bg-gray-800 w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                        >
+                          {/* <option value="">0-1 years</option> */}
+                          {Experience?.map((experience, index) => (
+                            <option
+                              className="appearance-none py-5 bg-slate-200"
+                              value={experience}
+                              key={index}
+                            >
+                              {experience} years
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex flex-col items-start gap-[5px]">
+                        <label
+                          htmlFor="college_name"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          College name
+                        </label>
+                        <select
+                          name="college_name"
+                          id="college_name"
+                          className="flex items-center border w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                        >
+                          <option value="">Select your college</option>
+                          {CollegeName?.map((college, index) => (
+                            <option value={college} key={index}>
+                              {college}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex flex-col items-start justify-center gap-[5px]">
+                        <label
+                          htmlFor="skills"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          tags
+                        </label>
+                        <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
+                          {tags.map((tag) => (
+                            <div
+                              key={tag}
+                              className="flex h-6 justify-center items-center gap-0.5 border bg-[#E9DFFC] border-[#BE9FF6] pl-1.5 pr-2 py-1 rounded-xl text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                            >
+                              <button
+                                type="button"
+                                onClick={() => handleTagRemove(tag)}
+                              >
+                                <RxCrossCircled />
+                              </button>
+                              <span className="">{tag}</span>
+                            </div>
+                          ))}
+                          <input
+                            type="text"
+                            name="skills"
+                            id="skills"
+                            required
+                            placeholder="Frontend Developer"
+                            value={currentTag}
+                            onChange={handleTagInputChange}
+                            onKeyPress={handleTagInputKeyPress}
+                            className={`text-sm not-italic font-normal leading-[100%] w-1/2 h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
+                              tags.length >= 4 ? "hidden" : "block"
+                            }`}
+                          />
+                        </div>
+                        <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
+                          Maximum 4 skills
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
+                      <label
+                        htmlFor="certification"
+                        className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] whitespace-break-spaces break-words shrink text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                      >
+                        {document?.getElementById("certification")?.value
+                          ? document
+                              ?.getElementById("certification")
+                              ?.value?.slice(12, 40) + "..."
+                          : "Upload your certification here"}
+                      </label>
+                      <input
+                        type="file"
+                        name="certification"
+                        id="certification"
+                        onChange={(e) => setDocumentFile(e.target.files[0])}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          document?.getElementById("certification")?.click()
+                        }
+                        className="flex h-[31.259px] justify-center items-center gap-[2.605px] pl-[7.815px] pr-[10.42px] py-[5.21px] rounded-[15.63px] bg-[#E9DFFC] text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-[18.235px] not-italic font-normal leading-[100%] tracking-[-0.912px]"
+                      >
+                        <MdOutlineUploadFile />
+                        Upload
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="flex justify-end items-center gap-2 rounded pl-8 pr-6 py-4 bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-xl not-italic font-normal leading-[100%] tracking-[-1px]"
+                  >
+                    Next <FaChevronRight />
+                  </button>
+                </form>
+              )}
+              {formCount === 5 && (
+                <form
+                  action=""
+                  onSubmit={handleSubmit5}
+                  className="flex flex-col items-start gap-[22.77px] self-stretch w-full"
+                >
+                  <div className="flex flex-col items-start gap-[7px]">
+                    <h5 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
+                      Show Your Gigs
+                    </h5>
+                    <p className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
+                      Describe your gigs that you have worked on.{" "}
+                    </p>
+                  </div>
+                  <div className="flex flex-col lg:items-start items-center gap-[30px] self-stretch">
+                    <div className="flex flex-col items-start gap-2.5 self-stretch">
+                      <label
+                        htmlFor="description"
+                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                      >
+                        tell us about yourself
+                      </label>
+                      <textarea
+                        name="description"
+                        id="description"
+                        required
+                        className="w-full resize-none focus:outline-none h-full text-[#9F9F9F] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] flex flex-col items-start gap-[var(--numberLength,0px)] self-stretch border-[color:var(--Main-Colors-Purple-3,#BE9FF6)] pl-5 pr-2.5 pt-3.5 pb-2.5 rounded-lg border-[1.2px] border-solid"
+                        placeholder="Describe your Gig"
+                        cols="30"
+                        rows="10"
+                        minLength={100}
+                        maxLength={1000}
+                      ></textarea>
+                    </div>
+                    <div className="flex flex-col gap-2 self-stretch">
+                      <label
+                        htmlFor="social"
+                        className="col-span-2 text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                      >
+                        Social Media
+                      </label>
+                      <div className="flex gap-2 items-center">
+                        <select
+                          name="socialType"
+                          id="socialType"
+                          className="focus:outline-none group relative flex w-[155px] justify-between items-center border border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                        >
+                          <option
+                            value=""
+                            className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                          >
+                            Select
+                          </option>
+                          {SocialTypes?.map((type, index) => (
+                            <option
+                              key={index}
+                              value={type.name}
+                              className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] hover:bg-gray-200 px-3 py-2"
+                            >
+                              {type.icon} {type.name}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          type="url"
+                          name="social"
+                          id="social"
+                          className="flex items-center gap-[5px] self-stretch border focus:outline-none w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                          placeholder="Behance or linkedin"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-start gap-[5px] self-stretch">
+                      <label
+                        htmlFor=""
+                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                      >
+                        Upload Your Gigs
+                      </label>
+                      <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px]">
+                        Upload upto 6 Gigs in png, jpeg, jpg
+                      </p>
+                      <div className="grid grid-cols-3 gap-2 w-full relativee">
+                        {galleryImages?.map((image, index) => (
+                          <div
+                            key={index}
+                            className={`${
+                              index === 0
+                                ? "col-span-2 row-span-2"
+                                : "col-span-1 row-span-1"
+                            } shrink-0 md:rounded-[10.477px] rounded overflow-hidden`}
+                          >
+                            {image ? (
+                              <div
+                                className={`w-full aspect-square flex justify-center relative items-center overflow-hidden`}
+                              >
+                                <img
+                                  src={image}
+                                  alt=""
+                                  className="w-full h-full object-cover"
+                                />
+                                <div className="absolute group inset-2 flex">
+                                  <div
+                                    onClick={() =>
+                                      handleGalleryImageDelete(index)
+                                    }
+                                    className="w-[28px] h-[28px] lg:group-hover:scale-y-[100%] transition-all duration-300 ease-in-out lg:scale-y-0 lg:transform flex justify-center items-center text-2xl rounded-xl shrink-0 bg-black/50 text-white"
+                                  >
+                                    <IoCloseCircleSharp />
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <label
+                                htmlFor={`imageInput${index}`}
+                                className={`max-w-[100%]  self-stretch aspect-square object-cover bg-[#E1CAFF] text-[#9747FF] shrink-0 flex justify-center items-center rounded`}
+                              >
+                                <IoAdd className="text-6xl" />
+                                <input
+                                  type="file"
+                                  id={`imageInput${index}`}
+                                  name={`imageInput${index}`}
+                                  className="hidden"
+                                  required={false}
+                                  onChange={(e) =>
+                                    handleGalleryImageUpload(
+                                      index,
+                                      e.target.files[0]
+                                    )
+                                  }
+                                />
+                              </label>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="flex w-[16.701px] h-[16.701px] justify-center items-center shrink-0">
+                        <input
+                          type="checkbox"
+                          name="legalization"
+                          id="legalization"
+                          required
+                          className="border border-[#925ff0] rounded appearance-none w-full h-full object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                        />
+                      </div>
+                      <label
+                        htmlFor="legalization"
+                        className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-sm text-[10.628px] not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                      >
+                        All the porjects showed here are made by the potential
+                        user and not copied from any other sources.
+                      </label>
+                    </div>
+                    <button
+                      type="submit"
+                      className="flex justify-center items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
+                    >
+                      Submit
+                      <BsCheckCircleFill />
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+            <div className="max-w-[669px] mx-auto md:w-5/6 w-full h-px bg-[#BABABA]"></div>
+            <div className="flex flex-col items-start gap-[19px] mx-auto md:w-5/6 w-full">
+              <h5 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
+                Need Help?
+              </h5>
+              <p className="max-w-[670px] text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
+                Check out our help section for additional information and
+                resources on how to create a successful sellers profile.{" "}
+              </p>
+              <Link
+                href={"https://www.blackfoxmetaverse.in/"}
+                target="_blank"
+                className="flex justify-center items-center gap-[5px] rounded px-4 py-2 bg-[#73A876] text-[color:var(--White,var(--Primary-blue,#FFF))] md:text-base text-[10.24px] not-italic font-normal leading-6"
+              >
+                Contact Us
+              </Link>
+            </div>
+            <div className="inline-flex items-start gap-10 justify-between h-9">
+              <Link
+                href={"#"}
+                className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6"
+              >
+                Terms and Conditions
+              </Link>
+              <Link
+                href={"#"}
+                className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href={
+                  "https://www.linkedin.com/company/black-fox-millennium/about/"
+                }
+                target="_blank"
+                className="text-black md:text-base text-[10.24px] not-italic font-normal leading-6"
+              >
+                Social Media
+              </Link>
+            </div>
           </div>
         </div>
       </div>
