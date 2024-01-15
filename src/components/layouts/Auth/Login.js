@@ -956,7 +956,7 @@ const Login = () => {
             </h5>
             <p className="max-w-[670px] text-black md:text-base text-[10.24px] not-italic font-normal leading-6">
               Check out our help section for additional information and
-              resources on how to create a successful seller's profile.{" "}
+              resources on how to create a successful sellers profile.{" "}
             </p>
             <Link
               href={"https://www.blackfoxmetaverse.in/"}

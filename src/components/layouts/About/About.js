@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 import logo from "../../../assets/light_logo.svg";
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
 import { FaArrowDownLong } from "react-icons/fa6";
 
 const About = () => {
@@ -35,13 +35,16 @@ const About = () => {
               explore internship possibilities, BFM is here for you.
             </p>
             <p className="max-w-[1503px] text-[color:var(--Primary-blue,#FFF)] text-lg not-italic font-normal leading-[27px]">
-              This isn't just a form – it's your canvas to create a
+              This is not just a form – its your canvas to create a
               comprehensive user profile that aligns with your ambitions. Tell
-              us about your skills, aspirations, and preferences, and let's
+              us about your skills, aspirations, and preferences, and lets
               embark on this journey together.
             </p>
           </div>
-          <Link href={"/auth/login"} className="flex justify-center items-center gap-[5px] px-8 py-4 rounded-[52px] text-black text-xl not-italic font-normal leading-[100%] tracking-[-1px] bg-white">
+          <Link
+            href={"/auth/login"}
+            className="flex justify-center items-center gap-[5px] px-8 py-4 rounded-[52px] text-black text-xl not-italic font-normal leading-[100%] tracking-[-1px] bg-white"
+          >
             Join The Community of future Leader and Innovators
           </Link>
         </div>
@@ -58,13 +61,16 @@ const About = () => {
               Start Your Journey with us now !
             </h2>
           </div>
-          <Link href={"/auth/login"} className="flex h-[373px] flex-col justify-center items-center bg-white/25 gap-9 shrink-0 self-stretch backdrop-blur-[16.25px] px-16 py-[50px] rounded-[35px]">
+          <Link
+            href={"/auth/login"}
+            className="flex h-[373px] flex-col justify-center items-center bg-white/25 gap-9 shrink-0 self-stretch backdrop-blur-[16.25px] px-16 py-[50px] rounded-[35px]"
+          >
             <FaArrowDownLong className="text-white w-[115px] h-[115px] shrink-0" />
           </Link>
         </div>
       </div>
     </main>
   );
-}
+};
 
-export default About
+export default About;
