@@ -74,9 +74,9 @@ const Hero = () => {
   };
 
   return (
-    <div className="flex flex-col px-[79px] pb-[81px]">
+    <div className="flex flex-col bg-gray-500 px-[79px] pb-[81px]">
       <div className="flex items-center justify-center flex-col mt-[100px]">
-        <div className="flex my-4 md:my-5 relative items-center justify-center">
+        <div className="flex  my-4 md:my-5 relative items-center justify-center">
           <form className="text-[10px] justify-between border cursor-text bg-[#282828] text-white px-[21px] rounded-2xl border-solid border-[#C7C7C7] items-center  flex sm:text-xs lg:text-sm  relative">
             <div>
               {searchInput && <FiSearch className="w-7 h-7 cursor-pointer" />}

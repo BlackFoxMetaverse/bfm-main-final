@@ -8,15 +8,17 @@ import { HiLocationMarker } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
 import { LuBellDot } from "react-icons/lu";
 import Link from "next/link";
+import Avatar from "../../../assets/avatar.svg";
+import { FaAngleDown } from "react-icons/fa6";
 
 const Header = () => {
   const pathname = usePathname();
 
   return (
     <main
-      className={`flex flex-col justify-end items-center lg:pt-[57px] pt-[38.5px] pb-[1.113px] px-0 w-full`}
+      className={`flex flex-col justify-end items-center top-5 w-full absolute`}
     >
-      <div className="mx-auto w-11/12 flex items-center justify-between">
+      <div className="mx-auto w-11/12 flex items-center justify-between rounded-full bg-white px-12 py-1">
         <div className="flex items-center lg:gap-[65px] gap-0.5">
           <Image
             src={logo}
@@ -30,12 +32,18 @@ const Header = () => {
         </div>
 
         <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
-          <buttom className=" text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-semibold leading-[100%] tracking-[-1px]">
+          <buttom className=" text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]">
             Become a Seller
           </buttom>
           <button>
-            <LuBellDot className="lg:text-3xl text-2xl" />
+            <LuBellDot className="lg:text-2xl text-2xl" />
           </button>
+          <div className="flex items-center justify-center">
+            <div className=" w-12 h-12 rounded-full flex">
+              <Image src={Avatar} />
+            </div>
+            <FaAngleDown />
+          </div>
           {/* <Link
             href={"/auth/register"}
             className="flex bg-[#282828] h-full items-center gap-2.5 lg:px-[23px] lg:py-[7px] px-[11.754px] py-[3.577px] rounded-[34px] text-white lg:text-xl text-[10.22px] not-italic font-normal leading-[normal]"
