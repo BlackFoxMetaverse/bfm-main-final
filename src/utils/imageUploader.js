@@ -1,10 +1,11 @@
 import AWS from "aws-sdk";
 import uniqid from "uniqid";
 
-const BUCKET_NAME = "bucket-100-s3";
+const BUCKET_NAME = "bucketbfm";
 const s3 = new AWS.S3({
-  accessKeyId: "AKIARFLYBMRFWX7DJBDX",
-  secretAccessKey: "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",
+  accessKeyId: "AKIARFLYBMRFSXIRUGOE",
+  secretAccessKey: "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",
+  region: "ap-south-1",
 });
 
 /**

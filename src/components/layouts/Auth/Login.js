@@ -144,7 +144,6 @@ const Login = () => {
   const handleSendOtp = (e) => {
     e.preventDefault();
     generateRecaptcha();
-    setCount(formCount + 1);
     let appVerifier = window.recaptchaVerifier;
     const phoneNumber = `${countryCode}${mobilenumber}`;
     console.log(phoneNumber);
@@ -201,12 +200,11 @@ const Login = () => {
             alert("An error occurred. Please try again.");
           }
         });
-        setCount(3);
         setVerified(true);
 
         const timer = setTimeout(() => {
           setVerified(false);
-        }, 2500);
+        }, 2000);
 
         return () => clearTimeout(timer);
       })
@@ -331,13 +329,13 @@ const Login = () => {
     for (let key of f3KeyArr) {
       f3Obj[key] = e.target[key].value;
     }
-    setCount(4);
     console.log("f3Obj", f3Obj);
     handleRegister3(f3Obj)
       .then((res) => {
         console.log("register res:", res.status);
         if (res.status === 201) {
           console.log("next");
+          setCount(4);
         }
       })
       .catch((e) => {
@@ -510,7 +508,7 @@ const Login = () => {
             </div>
             <div className="lg:w-5/6 w-full mx-auto">
               {formCount === 1 && (
-                <form action="" className="" onSubmit={handleSendOtp}>
+                <form onSubmit={handleSendOtp}>
                   <div className="flex flex-col items-start md:gap-5 space-y-3">
                     <div className="flex flex-col items-start gap-[7px]">
                       <h2 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
@@ -600,7 +598,7 @@ const Login = () => {
                         onChange={handleOtpChange}
                         value={otp}
                         on
-                        handleSubmit={handleNext}
+                        //handleSubmit={handleNext}
                       />
                     </div>
                     <button
