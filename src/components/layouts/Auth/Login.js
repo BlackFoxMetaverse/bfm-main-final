@@ -66,7 +66,7 @@ const Login = () => {
   const [mobilenumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
-  const [formCount, setCount] = useState(2);
+  const [formCount, setCount] = useState(1);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
@@ -174,7 +174,6 @@ const Login = () => {
       return Promise.reject(e.message);
     }
   }
-
 
   const handleOTPSubmit = (e) => {
     e.preventDefault();
