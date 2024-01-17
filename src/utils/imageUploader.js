@@ -1,10 +1,10 @@
 import AWS from "aws-sdk";
 import uniqid from "uniqid";
 
-const BUCKET_NAME = "bfmimageholder";
+const BUCKET_NAME = "bucket-100-s3";
 const s3 = new AWS.S3({
-  accessKeyId: "AKIAQ4F2NXYFPQBPRNIX",
-  secretAccessKey: "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",
+  accessKeyId: "AKIARFLYBMRFWX7DJBDX",
+  secretAccessKey: "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",
 });
 
 /**
