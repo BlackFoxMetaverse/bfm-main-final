@@ -183,21 +183,18 @@ const Login = () => {
         let token = result.user.accessToken;
 
         console.log("token: ", token);
+        localStorage.setItem("bfm-user-token", token);
 
         loginUser(token).then((data) => {
-          if (data) {
-            // Save details in session storage
-            sessionStorage.setItem("userDetails", JSON.stringify(data.details));
-
-            if (data.isUser === true) {
-              localStorage.setItem("bfm-user-token", token);
-              setCount(formCount + 2);
-            } else if (data.isUser === false) {
-              localStorage.setItem("bfm-user-token", token);
-              handleNext();
-            }
-          } else {
-            alert("An error occurred. Please try again.");
+          const { check, message, details } = data;
+          if (check.isProfile) {
+            sessionStorage.setItem("userDetails", details.user);
+            sessionStorage.setItem("userProfile", details.profile);
+            router.push("/");
+          }
+          if (check.isUser) {
+            sessionStorage.setItem("userDetails", details.user);
+            setCount(4);
           }
         });
         setVerified(true);
