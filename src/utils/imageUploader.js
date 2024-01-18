@@ -1,11 +1,15 @@
 import AWS from "aws-sdk";
 import uniqid from "uniqid";
 
-const BUCKET_NAME = "bucketbfm";
+const bucket_name = process.env.BUCKET_NAME;
+const access_key_id = process.env.ACCESS_KEY_ID;
+const secret_access_key = process.env.SECRET_ACCESS_KEY;
+const region = process.env.REGION;
+
 const s3 = new AWS.S3({
-  accessKeyId: "AKIARFLYBMRFSXIRUGOE",
-  secretAccessKey: "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",
-  region: "ap-south-1",
+  accessKeyId: access_key_id,
+  secretAccessKey: secret_access_key,
+  region: region,
 });
 
 /**
@@ -21,7 +25,7 @@ export default function s3FileUpload(file) {
     const uniqueFileName = `${uniqid()}.${extension}`;
 
     const params = {
-      Bucket: BUCKET_NAME,
+      Bucket: bucket_name,
       Key: uniqueFileName,
       Body: file,
     };
