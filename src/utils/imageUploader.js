@@ -1,10 +1,10 @@
 import AWS from "aws-sdk";
 import uniqid from "uniqid";
 
-const bucket_name = process.env.BUCKET_NAME;
-const access_key_id = process.env.ACCESS_KEY_ID;
-const secret_access_key = process.env.SECRET_ACCESS_KEY;
-const region = process.env.REGION;
+const bucket_name = process.env.NEXT_PUBLIC_BUCKET_NAME;
+const access_key_id = process.env.NEXT_PUBLIC_ACCESS_KEY_ID;
+const secret_access_key = process.env.NEXT_PUBLIC_SECRET_ACCESS_KEY;
+const region = process.env.NEXT_PUBLIC_REGION;
 
 const s3 = new AWS.S3({
   accessKeyId: access_key_id,
