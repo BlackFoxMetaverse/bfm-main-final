@@ -29,6 +29,7 @@ import { HiOutlineDocumentAdd } from "react-icons/hi";
 import s3ImageUplaod from "@/utils/imageUploader";
 import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
+import Toast from "@/components/Modules/Toast/Toast";
 
 const Professions = [
   "Photographer",
@@ -66,7 +67,7 @@ const Login = () => {
   const [mobilenumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
-  const [formCount, setCount] = useState(1);
+  const [formCount, setCount] = useState(3);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
@@ -75,6 +76,7 @@ const Login = () => {
   const [currentTag, setCurrentTag] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [form4Obj, setForm4Obj] = useState({});
+  const [toast, setToast] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -796,7 +798,6 @@ const Login = () => {
                             type="text"
                             name="skills"
                             id="skills"
-                            required
                             placeholder="Frontend_Developer"
                             value={currentTag}
                             onChange={handleTagInputChange}
@@ -1106,6 +1107,11 @@ const Login = () => {
         </div>
       )}
       <div id="recaptcha"></div>
+      {
+        toast && (
+          <Toast error message={"Warning please fill out the form"} />
+        )
+      }
     </main>
   );
 };
