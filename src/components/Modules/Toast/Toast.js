@@ -1,8 +1,11 @@
-import React from 'react'
-import { BsCheckCircleFill, BsExclamationCircleFill } from 'react-icons/bs'
-import { IoCloseCircle } from 'react-icons/io5';
+import React from "react";
+import { BsCheckCircleFill, BsExclamationCircleFill } from "react-icons/bs";
+import { IoCloseCircle } from "react-icons/io5";
 
-const Toast = ({warning, success, error, message}) => {
+const Toast = ({ type, message }) => {
+  const success = type === "success" ? true : false;
+  const error = type === "error" ? true : false;
+  const warning = type === "warning" ? true : false;
   return (
     <main
       className={`w-fit h-fit absolute top-10 right-20 rounded-t-md rounded-b-none bg-black border-b-2 ${
@@ -19,6 +22,6 @@ const Toast = ({warning, success, error, message}) => {
       </div>
     </main>
   );
-}
+};
 
-export default Toast
+export default Toast;

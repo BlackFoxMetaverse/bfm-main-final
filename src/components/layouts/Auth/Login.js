@@ -38,6 +38,49 @@ const Professions = [
   "Software Developer",
 ];
 
+const toastType = {
+  one: {
+    is: true,
+    type: "error",
+    msg: "OTP can not be send right now !!!",
+  },
+  two: {
+    is: true,
+    type: "error",
+    msg: "OTP is not valid !!!",
+  },
+  threePic: {
+    is: true,
+    type: "warning",
+    msg: "Looks like you missed the profile picture !!!",
+  },
+  threeIsUser: {
+    is: true,
+    type: "warning",
+    msg: "You are already regirted ,Please complete your profile",
+  },
+  threeUserDone: {
+    is: true,
+    type: "success",
+    msg: "Registration completed, Please complete your profile",
+  },
+  threeUserError: {
+    is: true,
+    type: "error",
+    msg: "Registration can not be done !!!",
+  },
+  fiveDone: {
+    is: true,
+    type: "success",
+    msg: "Profile making completed",
+  },
+  fiveError: {
+    is: true,
+    type: "error",
+    msg: "Not able to complete profile !!!",
+  },
+};
+
 const SocialTypes = [
   {
     name: "Linked In",
@@ -61,13 +104,20 @@ const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
 const Experience = ["0-1", "1-3", "3-5", "5+"];
 
 const Login = () => {
+  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
+  const userData = JSON.parse(sessionStorage.getItem("userDetails"));
+  console.log(`s3 image url ${s3Url + userData?.image}`);
+  const router = useRouter();
+  const pathname = usePathname();
+  let toastTimeout;
+
   const [document, setDocument] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
   const [countryCode, setCountryCode] = useState("+91");
   const [mobilenumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
-  const [formCount, setCount] = useState(3);
+  const [formCount, setCount] = useState(1);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
@@ -76,36 +126,27 @@ const Login = () => {
   const [currentTag, setCurrentTag] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [form4Obj, setForm4Obj] = useState({});
-  const [toast, setToast] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
+  const [toast, setToast] = useState({
+    is: false,
+    type: "",
+    msg: "",
+  });
 
-  useEffect(() => {
-    setDocument(window.document);
-  }, []);
+  function handleToast(type, duration = 1500) {
+    if (toastTimeout) {
+      clearTimeout(toastTimeout);
+    }
 
-  useEffect(() => {
-    const handlePopstate = () => {
-      // Handle the popstate event here
-      if (pathname === "/auth/login") {
-        // Check if the user is on the login page
-        // and update the formCount accordingly
-        if (formCount === 1) {
-          router.back();
-        } else {
-          setCount(formCount - 1);
-        }
-      }
-    };
+    setToast(type);
 
-    // Attach the event listener when the component mounts
-    window.addEventListener("popstate", handlePopstate);
-
-    // Remove the event listener when the component unmounts
-    return () => {
-      window.removeEventListener("popstate", handlePopstate);
-    };
-  }, [pathname]);
+    toastTimeout = setTimeout(() => {
+      setToast({
+        is: false,
+        type: "",
+        msg: "",
+      });
+    }, duration);
+  }
 
   function handleNext() {
     if (formCount === 5) {
@@ -126,91 +167,6 @@ const Login = () => {
       setCount(formCount - 1);
     }
   }
-
-  const generateRecaptcha = () => {
-    const recaptchaElement = document.getElementById("recaptcha");
-    recaptchaElement.innerHTML = "";
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      "recaptcha",
-      {
-        size: "invisible",
-        callback: (response) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-          // ...
-        },
-      },
-      auth
-    );
-  };
-
-  const handleSendOtp = (e) => {
-    e.preventDefault();
-    generateRecaptcha();
-    let appVerifier = window.recaptchaVerifier;
-    const phoneNumber = `${countryCode}${mobilenumber}`;
-    console.log(phoneNumber);
-    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-      .then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        console.log(confirmationResult);
-        handleNext();
-      })
-      .catch((error) => {
-        // Error; SMS not sent
-        console.log("send otp error:", error);
-      });
-  };
-
-  async function loginUser(token) {
-    try {
-      const response = await axios.post("/auth/login", null, {
-        headers: {
-          idtoken: `${token}`,
-        },
-      });
-      const data = response?.data;
-      return Promise.resolve(data);
-    } catch (e) {
-      console.log("axios error: ", e.message);
-      return Promise.reject(e.message);
-    }
-  }
-
-  const handleOTPSubmit = (e) => {
-    e.preventDefault();
-    let confirmationResult = window.confirmationResult;
-    confirmationResult
-      .confirm(otp)
-      .then((result) => {
-        let token = result.user.accessToken;
-
-        console.log("token: ", token);
-        localStorage.setItem("bfm-user-token", token);
-
-        loginUser(token).then((data) => {
-          const { check, message, details } = data;
-          if (check.isProfile) {
-            sessionStorage.setItem("userDetails", details.user);
-            sessionStorage.setItem("userProfile", details.profile);
-            router.push("/");
-          }
-          if (check.isUser) {
-            sessionStorage.setItem("userDetails", details.user);
-            setCount(4);
-          }
-        });
-        setVerified(true);
-
-        const timer = setTimeout(() => {
-          setVerified(false);
-        }, 2000);
-
-        return () => clearTimeout(timer);
-      })
-      .catch((error) => {
-        console.log("user login error:", error);
-      });
-  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -276,27 +232,31 @@ const Login = () => {
     setTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
   };
 
-  //function for user login check -> object {isUser, message, details}
-
-  useEffect(() => {
-    if (formCount > 5) {
-      setSubmitted(true);
-
-      const timer = setTimeout(() => {
-        setSubmitted(false);
-      }, 1000);
-
-      return () => clearTimeout(timer);
+  //--------------user to backend interaction-------------
+  async function loginUser(token) {
+    try {
+      const response = await axios.post("/auth/login", null, {
+        headers: {
+          idtoken: `${token}`,
+        },
+      });
+      const data = response?.data;
+      return Promise.resolve(data);
+    } catch (e) {
+      console.log("axios error: ", e.message);
+      return Promise.reject(e.message);
     }
-  }, [formCount]);
+  }
 
   async function handleRegister3(data) {
     try {
       // const userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
       const token = localStorage.getItem("bfm-user-token");
 
-      // Await the completion of the image upload
-      const uploadedImageFileName = await s3ImageUplaod(imageFile);
+      let uploadedImageFileName = userData ? userData.image : "";
+      if (imageFile !== null) {
+        uploadedImageFileName = await s3ImageUplaod(imageFile);
+      }
 
       const res = await axios.post(
         "/auth/register",
@@ -321,41 +281,7 @@ const Login = () => {
     }
   }
 
-  function handleSubmit3(e) {
-    e.preventDefault();
-    const f3KeyArr = ["name", "username", "email", "profession"];
-    let f3Obj = {};
-    for (let key of f3KeyArr) {
-      f3Obj[key] = e.target[key].value;
-    }
-    console.log("f3Obj", f3Obj);
-    handleRegister3(f3Obj)
-      .then((res) => {
-        console.log("register res:", res.status);
-        if (res.status === 201) {
-          console.log("next");
-          setCount(4);
-        }
-      })
-      .catch((e) => {
-        console.log("register error", e);
-      });
-  }
-
-  function handleSubmit4(e) {
-    e.preventDefault();
-    const f4Obj = {
-      experience: e.target["experience"].value,
-      college_name: e.target["college_name"].value,
-      tags: tags,
-      document: documentFile,
-    };
-    setForm4Obj(f4Obj);
-    // setCount(5);
-    handleNext();
-  }
-
-  const handleCreateProfile = async (data) => {
+  async function handleCreateProfile(data) {
     /**
      * @returns {Json} as promise response from the server
      */
@@ -407,7 +333,123 @@ const Login = () => {
       console.log("axioserro: ", error);
       return Promise.reject(error);
     }
+  }
+  //--------------user to backend interaction-------------
+
+  const generateRecaptcha = () => {
+    const recaptchaElement = document.getElementById("recaptcha");
+    recaptchaElement.innerHTML = "";
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha",
+      {
+        size: "invisible",
+        callback: (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          // ...
+        },
+      },
+      auth
+    );
   };
+
+  const handleSendOtp = (e) => {
+    e.preventDefault();
+    generateRecaptcha();
+    let appVerifier = window.recaptchaVerifier;
+    const phoneNumber = `${countryCode}${mobilenumber}`;
+    console.log(phoneNumber);
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        console.log(confirmationResult);
+        handleNext();
+      })
+      .catch((error) => {
+        handleToast(toastType.one, 3000);
+        console.log("send otp error:", error);
+      });
+  };
+
+  const handleOTPSubmit = (e) => {
+    e.preventDefault();
+    let confirmationResult = window.confirmationResult;
+    confirmationResult
+      .confirm(otp)
+      .then((result) => {
+        let token = result.user.accessToken;
+
+        console.log("token: ", token);
+        localStorage.setItem("bfm-user-token", token);
+
+        loginUser(token).then((data) => {
+          const { check, message, details } = data;
+          if (check.isProfile && check.isUser) {
+            sessionStorage.setItem("userDetails", JSON.stringify(details.user));
+            sessionStorage.setItem(
+              "userProfile",
+              JSON.stringify(details.profile)
+            );
+            router.push("/");
+          }
+          if (check.isUser && !check.isProfile) {
+            sessionStorage.setItem("userDetails", details.user);
+            setImage(s3Url + details.user.image);
+            handleToast(toastType.threeIsUser, 2500);
+            setCount(4);
+          } else {
+            setCount(3);
+          }
+        });
+        setVerified(true);
+
+        const timer = setTimeout(() => {
+          setVerified(false);
+        }, 2000);
+
+        return () => clearTimeout(timer);
+      })
+      .catch((error) => {
+        handleToast(toastType.two, 2500);
+        window.location.reload();
+        console.log("user login error:", error);
+      });
+  };
+
+  function handleSubmit3(e) {
+    e.preventDefault();
+    const f3KeyArr = ["name", "username", "email", "profession"];
+    let f3Obj = {};
+    for (let key of f3KeyArr) {
+      f3Obj[key] = e.target[key].value;
+    }
+    console.log("f3Obj", f3Obj);
+    handleRegister3(f3Obj)
+      .then((res) => {
+        console.log("register res:", res.status);
+        if (res.status === 201) {
+          console.log("next");
+          handleToast(toastType.threeUserDone, 2500);
+          setCount(4);
+        }
+      })
+      .catch((e) => {
+        handleToast(toastType.threeUserError, 2500);
+        console.log("register error", e);
+      });
+  }
+
+  function handleSubmit4(e) {
+    e.preventDefault();
+    const f4Obj = {
+      experience: e.target["experience"].value,
+      college_name: e.target["college_name"].value,
+      tags: tags,
+      document: documentFile,
+    };
+    setForm4Obj(f4Obj);
+    // setCount(5);
+    handleNext();
+  }
 
   function handleSubmit5(e) {
     e.preventDefault();
@@ -423,14 +465,54 @@ const Login = () => {
     handleCreateProfile(f5Obj)
       .then((res) => {
         console.log("profile:", res);
-        alert("Profile is created succesfully ");
+        handleToast(toastType.fiveDone, 2500);
         router.push("/");
       })
       .catch((e) => {
         console.log("profile err", e);
+        handleToast(toastType.fiveError, 2500);
       });
     console.log("f4 & f5:", f5Obj);
   }
+
+  useEffect(() => {
+    if (formCount > 5) {
+      setSubmitted(true);
+
+      const timer = setTimeout(() => {
+        setSubmitted(false);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [formCount]);
+
+  useEffect(() => {
+    setDocument(window.document);
+  }, []);
+
+  useEffect(() => {
+    const handlePopstate = () => {
+      // Handle the popstate event here
+      if (pathname === "/auth/login") {
+        // Check if the user is on the login page
+        // and update the formCount accordingly
+        if (formCount === 1) {
+          router.back();
+        } else {
+          setCount(formCount - 1);
+        }
+      }
+    };
+
+    // Attach the event listener when the component mounts
+    window.addEventListener("popstate", handlePopstate);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, [pathname]);
 
   return (
     <main
@@ -1107,11 +1189,7 @@ const Login = () => {
         </div>
       )}
       <div id="recaptcha"></div>
-      {
-        toast && (
-          <Toast error message={"Warning please fill out the form"} />
-        )
-      }
+      {toast?.is && <Toast type={toast?.type} message={toast?.msg} />}
     </main>
   );
 };
