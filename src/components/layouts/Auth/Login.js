@@ -104,12 +104,10 @@ const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
 const Experience = ["0-1", "1-3", "3-5", "5+"];
 
 const Login = () => {
-  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
-  const userData = JSON.parse(sessionStorage.getItem("userDetails"));
-  console.log(`s3 image url ${s3Url + userData?.image}`);
   const router = useRouter();
   const pathname = usePathname();
-  let toastTimeout;
+  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
+  let toastTimeout; // tracking the toast setTimeout
 
   const [document, setDocument] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
@@ -250,7 +248,6 @@ const Login = () => {
 
   async function handleRegister3(data) {
     try {
-      // const userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
       const token = localStorage.getItem("bfm-user-token");
 
       let uploadedImageFileName = userData ? userData.image : "";
@@ -384,17 +381,11 @@ const Login = () => {
         loginUser(token).then((data) => {
           const { check, message, details } = data;
           if (check.isProfile && check.isUser) {
-            sessionStorage.setItem("userDetails", JSON.stringify(details.user));
-            sessionStorage.setItem(
-              "userProfile",
-              JSON.stringify(details.profile)
-            );
             router.push("/");
           }
           if (check.isUser && !check.isProfile) {
-            sessionStorage.setItem("userDetails", details.user);
-            setImage(s3Url + details.user.image);
             handleToast(toastType.threeIsUser, 2500);
+            setImage(s3Url + details.user.image);
             setCount(4);
           } else {
             setCount(3);
