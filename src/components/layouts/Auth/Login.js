@@ -118,6 +118,7 @@ const Login = () => {
   const [formCount, setCount] = useState(1);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [imageKey, setImageKey] = useState(null);
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
   const [galleryImagesFile, setGalleryImagesFile] = useState([]);
   const [tags, setTags] = useState([]);
@@ -250,7 +251,7 @@ const Login = () => {
     try {
       const token = localStorage.getItem("bfm-user-token");
 
-      let uploadedImageFileName = userData ? userData.image : "";
+      let uploadedImageFileName = imageKey ? imageKey : "";
       if (imageFile !== null) {
         uploadedImageFileName = await s3ImageUplaod(imageFile);
       }
@@ -386,6 +387,7 @@ const Login = () => {
           if (check.isUser && !check.isProfile) {
             handleToast(toastType.threeIsUser, 2500);
             setImage(s3Url + details.user.image);
+            setImageKey(details.user.image);
             setCount(4);
           } else {
             setCount(3);
