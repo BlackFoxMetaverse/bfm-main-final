@@ -108,6 +108,8 @@ const Login = () => {
   const pathname = usePathname();
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   let toastTimeout; // tracking the toast setTimeout
+  let checkUserNameTimeout;
+  let checkEmailTimeout;
 
   const [document, setDocument] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
@@ -130,6 +132,9 @@ const Login = () => {
     type: "",
     msg: "",
   });
+
+  const [isUniqueUsername, setIsUniqueUserName] = useState(false);
+  const [isUniqueEmail, setIsUniqueEmail] = useState(false);
 
   function handleToast(type, duration = 1500) {
     if (toastTimeout) {
@@ -332,6 +337,40 @@ const Login = () => {
       return Promise.reject(error);
     }
   }
+
+  function checkUserName(UserName) {
+    if (UserName === "") return false;
+    if (checkUserNameTimeout) {
+      clearTimeout(checkUserNameTimeout);
+    }
+    checkUserNameTimeout = setTimeout(() => {
+      axios
+        .get(`/check/userName?userName=${UserName}`)
+        .then((res) => {
+          setIsUniqueUserName(res.data);
+        })
+        .catch((err) => {
+          console.log("checkUserName err", err);
+        });
+    }, 300);
+  }
+  function checkEmail(email) {
+    if (email === "") return false;
+    if (checkEmailTimeout) {
+      clearTimeout(checkEmailTimeout);
+    }
+    checkEmailTimeout = setTimeout(() => {
+      axios
+        .get(`/check/email?email=${email}`)
+        .then((res) => {
+          setIsUniqueEmail(res.data);
+        })
+        .catch((err) => {
+          console.log("checkemail err", err);
+        });
+    }, 300);
+  }
+
   //--------------user to backend interaction-------------
 
   const generateRecaptcha = () => {
