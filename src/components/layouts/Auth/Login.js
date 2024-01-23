@@ -117,7 +117,7 @@ const Login = () => {
   const [mobilenumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
-  const [formCount, setCount] = useState(2);
+  const [formCount, setCount] = useState(1);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imageKey, setImageKey] = useState(null);
@@ -338,7 +338,9 @@ const Login = () => {
     }
   }
 
+  const [username, setUsername] = useState("");
   function checkUserName(UserName) {
+    setUsername(UserName.target.value);
     if (UserName === "") return false;
     if (checkUserNameTimeout) {
       clearTimeout(checkUserNameTimeout);
@@ -354,7 +356,10 @@ const Login = () => {
         });
     }, 300);
   }
+
+  const [email, setEmail] = useState("");
   function checkEmail(email) {
+    setEmail(email.target.value);
     if (email === "") return false;
     if (checkEmailTimeout) {
       clearTimeout(checkEmailTimeout);
@@ -545,6 +550,9 @@ const Login = () => {
       window.removeEventListener("popstate", handlePopstate);
     };
   }, [pathname]);
+
+  console.log(email !== "");
+  console.log(email);
 
   return (
     <main
@@ -772,9 +780,20 @@ const Login = () => {
                           name="username"
                           id="username"
                           required
+                          onChange={checkUserName}
                           placeholder="Harsh_12"
                           className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
                         />
+                        {username !== "" &&
+                          (isUniqueUsername ? (
+                            <div className="flex gap-3 items-center text-green-500 text-sm">
+                              <BsCheckCircleFill /> Username validated
+                            </div>
+                          ) : (
+                            <div className="flex gap-3 items-center text-red-500 text-sm">
+                              <RxCrossCircled /> Username already taken
+                            </div>
+                          ))}
                       </div>
                       <div className="flex flex-col items-start gap-[5px]">
                         <label
@@ -788,9 +807,20 @@ const Login = () => {
                           name="email"
                           id="email"
                           required
+                          onChange={checkEmail}
                           placeholder="12345@gmail.com"
                           className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
-                        />
+                          />
+                          {email !== "" &&
+                            (isUniqueEmail ? (
+                              <div className="flex gap-3 items-center text-green-500 text-sm">
+                                <BsCheckCircleFill /> Email validated
+                              </div>
+                            ) : (
+                              <div className="flex gap-3 items-center text-red-500 text-sm">
+                                <RxCrossCircled /> Email already taken
+                              </div>
+                            ))}
                       </div>
                       <div className="flex flex-col items-start justify-center gap-[5px]">
                         <label
