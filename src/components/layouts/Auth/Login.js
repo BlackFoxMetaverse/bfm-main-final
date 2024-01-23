@@ -117,7 +117,7 @@ const Login = () => {
   const [mobilenumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
-  const [formCount, setCount] = useState(1);
+  const [formCount, setCount] = useState(2);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imageKey, setImageKey] = useState(null);

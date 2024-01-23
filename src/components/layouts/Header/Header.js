@@ -18,7 +18,7 @@ const Header = () => {
     <main
       className={`flex flex-col justify-end items-center top-5 w-full absolute`}
     >
-      <div className="mx-auto w-11/12 flex items-center justify-between rounded-full bg-white px-12 py-1">
+      <div className="mx-auto w-11/12 max-w-[1920px] flex items-center justify-between rounded-full bg-white px-12 py-1">
         <div className="flex items-center lg:gap-[65px] gap-0.5">
           <Image
             src={logo}

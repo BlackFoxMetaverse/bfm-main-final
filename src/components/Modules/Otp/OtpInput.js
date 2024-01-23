@@ -1,14 +1,10 @@
-"use client";
-
 import React, { useState, useRef, useEffect } from "react";
-const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
-  const MyRef = () => useRef(null)
-  const inputRefs = Array(numberOfInputs)
-    .fill(null)
-    .map(()=>MyRef());
 
+const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
+  const inputRefs = Array(numberOfInputs)
+    .fill(0)
+    .map(() => useRef(null));
   const [otp, setOtp] = useState(value || Array(numberOfInputs).fill(""));
-  const currentIndex = otp.findIndex((val) => val === "");
 
   const handleInputChange = (e, index) => {
     e.preventDefault();
@@ -18,8 +14,33 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
     if (inputValue.length === 1 && /^[0-9]$/.test(inputValue)) {
       newOtp[index] = inputValue;
       setOtp(newOtp);
+
       if (index < numberOfInputs - 1) {
         inputRefs[index + 1].current.focus();
+      }
+    } else if (inputValue.length === 0) {
+      // Handle backspace
+      newOtp[index] = "";
+      setOtp(newOtp);
+
+      if (index > 0) {
+        inputRefs[index - 1].current.focus();
+      }
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text/plain");
+
+    if (/^[0-9]{6}$/.test(pastedData)) {
+      const newOtp = pastedData.split("");
+      setOtp(newOtp);
+
+      for (let i = 0; i < numberOfInputs; i++) {
+        if (i < numberOfInputs - 1) {
+          inputRefs[i + 1].current.focus();
+        }
       }
     }
   };
@@ -28,16 +49,8 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
     onChange(otp.join(""));
   }, [otp, onChange, inputRefs]);
 
-  useEffect(() => {
-    if (currentIndex >= 0) {
-      inputRefs[currentIndex].current.focus();
-    }
-  }, [currentIndex, inputRefs]);
-
   return (
-    <div
-      className="flex h-11 items-center gap-[5.396px]"
-    >
+    <div className="flex h-11 items-center gap-[5.396px]" onPaste={handlePaste}>
       {otp.map((digit, index) => (
         <input
           key={index}
