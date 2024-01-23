@@ -234,7 +234,7 @@ const Login = () => {
   //--------------user to backend interaction-------------
   async function loginUser(token) {
     try {
-      const response = await axios.post("/auth/login", null, {
+      const response = await axios.post("/user/auth/login", null, {
         headers: {
           idtoken: `${token}`,
         },
@@ -257,7 +257,7 @@ const Login = () => {
       }
 
       const res = await axios.post(
-        "/auth/register",
+        "/user/auth/register",
         {
           image: uploadedImageFileName, // Use the uploaded image file name
           name: data.name,
@@ -310,7 +310,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "/userProfile/createProfile",
+        "/user/userProfile/createProfile",
         {
           experience: experience,
           collegeName: college_name,
