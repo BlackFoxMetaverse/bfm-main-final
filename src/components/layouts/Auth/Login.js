@@ -239,7 +239,7 @@ const Login = () => {
   //--------------user to backend interaction-------------
   async function loginUser(token) {
     try {
-      const response = await axios.post("/user/auth/login", null, {
+      const response = await axios.post("/user/login", null, {
         headers: {
           idtoken: `${token}`,
         },
@@ -262,7 +262,7 @@ const Login = () => {
       }
 
       const res = await axios.post(
-        "/user/auth/register",
+        "/user/createUser",
         {
           image: uploadedImageFileName, // Use the uploaded image file name
           name: data.name,
@@ -315,7 +315,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "/user/userProfile/createProfile",
+        "/user/createProfile",
         {
           experience: experience,
           collegeName: college_name,
@@ -807,17 +807,17 @@ const Login = () => {
                           onChange={checkEmail}
                           placeholder="12345@gmail.com"
                           className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
-                          />
-                          {email !== "" &&
-                            (isUniqueEmail ? (
-                              <div className="flex gap-3 items-center text-green-500 text-sm">
-                                <BsCheckCircleFill /> Email validated
-                              </div>
-                            ) : (
-                              <div className="flex gap-3 items-center text-red-500 text-sm">
-                                <RxCrossCircled /> Email already taken
-                              </div>
-                            ))}
+                        />
+                        {email !== "" &&
+                          (isUniqueEmail ? (
+                            <div className="flex gap-3 items-center text-green-500 text-sm">
+                              <BsCheckCircleFill /> Email validated
+                            </div>
+                          ) : (
+                            <div className="flex gap-3 items-center text-red-500 text-sm">
+                              <RxCrossCircled /> Email already taken
+                            </div>
+                          ))}
                       </div>
                       <div className="flex flex-col items-start justify-center gap-[5px]">
                         <label
