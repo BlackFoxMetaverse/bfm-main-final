@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
+  const MyRef = () =>  useRef(null);
   const inputRefs = Array(numberOfInputs)
     .fill(0)
-    .map(() => useRef(null));
+    .map(() => MyRef());
   const [otp, setOtp] = useState(value || Array(numberOfInputs).fill(""));
 
   const handleInputChange = (e, index) => {
