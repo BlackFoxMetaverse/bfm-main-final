@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
-  const MyRef = () =>  useRef(null);
+  const MyRef = () => useRef(null);
   const inputRefs = Array(numberOfInputs)
     .fill(0)
     .map(() => MyRef());
@@ -49,6 +49,18 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
   useEffect(() => {
     onChange(otp.join(""));
   }, [otp, onChange, inputRefs]);
+
+  useEffect(() => {
+    const handleAutoPaste = (e) => {
+      handlePaste(e);
+      document.removeEventListener("paste", handleAutoPaste);
+    };
+
+    document.addEventListener("paste", handleAutoPaste);
+    return () => {
+      document.removeEventListener("paste", handleAutoPaste);
+    };
+  }, []);
 
   return (
     <div className="flex h-11 items-center gap-[5.396px]" onPaste={handlePaste}>
