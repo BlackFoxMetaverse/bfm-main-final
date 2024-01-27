@@ -1,9 +1,9 @@
 import React from "react";
 import UserCount from "../../Modules/UserCount/UserCount";
-
+import UserList from "../../layouts/UserList/UserList";
 const User = () => {
   return (
-    <div className=" h-screen">
+    <div className=" ">
       <div className="w-full p-5 bg-gray-200 ">
         <p className="flex text-[#7F63F4] text-xl not-italic font-semibold ">
           BFM Management Dashboard
@@ -38,6 +38,9 @@ const User = () => {
           percent="4.6%"
           color="#BC01CD"
         />
+      </div>
+      <div className=" p-8">
+        <UserList />
       </div>
     </div>
   );
