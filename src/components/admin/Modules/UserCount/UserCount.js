@@ -11,14 +11,16 @@ const UserCount = ({ title, number, percent, day, color }) => {
         </div>
         <div>
           <p
-            className={`text-[${color}] text-2xl not-italic font-bold leading-[normal]`}
+            style={{ color: color }}
+            className={`text-2xl not-italic font-bold leading-[normal]`}
           >
             {number}
           </p>
         </div>
         <div>
           <div
-            className={`w-full p-0.5 bg-[${color}] shrink-0 rounded-[var(--numberLength,0px)]`}
+            style={{ backgroundColor: color }}
+            className={`w-full p-0.5  shrink-0 rounded-[var(--numberLength,0px)]`}
           ></div>
           <p className="text-[#333] text-sm not-italic font-bold leading-[normal] uppercase">
             {" "}
