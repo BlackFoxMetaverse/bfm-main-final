@@ -426,7 +426,7 @@ const Login = () => {
         loginUser(token).then((data) => {
           const { check, message, details } = data;
           if (check.isProfile && check.isUser) {
-            router.push("/");
+            router.replace("/thanksPage/already");
           }
           if (check.isUser && !check.isProfile) {
             handleToast(toastType.threeIsUser, 2500);
@@ -503,7 +503,7 @@ const Login = () => {
       .then((res) => {
         console.log("profile:", res);
         handleToast(toastType.fiveDone, 2500);
-        router.push("/");
+        router.replace("/thanksPage/completed");
       })
       .catch((e) => {
         console.log("profile err", e);
