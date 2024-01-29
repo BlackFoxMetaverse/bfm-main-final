@@ -7,23 +7,29 @@ import { FaRegCircleUser } from "react-icons/fa6";
 const SideNavBar = () => {
   return (
     <div className="fixed w-1/6 h-[90%] max-w-80 flex flex-col p-6 bg-white ">
-      <div className="flex-grow space-y-8">
-        <div className=" flex justify-center text-white items-center gap-2 px-6 py-2 shrink-0 rounded-lg bg-[#5932EA]">
+      <div className="flex-grow  space-y-8">
+        <div className=" flex justify-start text-white items-start gap-2 px-6 py-2 shrink-0 rounded-lg bg-[#5932EA]">
           <LuUserSquare2 className=" w-5 h-5" />
           <p className="  text-sm not-italic font-medium leading-[normal] tracking-[-0.14px]">
             User Management
           </p>
         </div>
-        <div className="text-[#9197B3] flex justify-center cursor-pointer items-center gap-2 px-6 py-2 shrink-0 rounded-lg ">
+        <div className="text-[#9197B3] flex justify-start cursor-pointer items-center gap-2 px-6 py-2 shrink-0 rounded-lg ">
           <MdOutlinePayment />
           <p className=" text-sm not-italic font-medium leading-[normal] tracking-[-0.14px]">
             Income/payments
           </p>
         </div>
-        <div className="text-[#9197B3] flex justify-center cursor-pointer items-center gap-2 px-6 py-2 shrink-0 rounded-lg ">
+        <div className="text-[#9197B3] flex justify-start cursor-pointer items-center gap-2 px-6 py-2 shrink-0 rounded-lg ">
           <TbSettings2 />
           <p className=" text-sm not-italic font-medium leading-[normal] tracking-[-0.14px]">
-            Income/payments
+            Admin Management
+          </p>
+        </div>
+        <div className="text-[#9197B3] flex justify-start cursor-pointer items-center gap-2 px-6 py-2 shrink-0 rounded-lg ">
+          <TbSettings2 />
+          <p className=" text-sm not-italic font-medium leading-[normal] tracking-[-0.14px]">
+            Setting
           </p>
         </div>
       </div>
