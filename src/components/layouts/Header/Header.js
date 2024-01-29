@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../../assets/dark_logo.svg";
 import Image from "next/image";
 import { HiLocationMarker } from "react-icons/hi";
@@ -10,14 +10,22 @@ import { LuBellDot } from "react-icons/lu";
 import Link from "next/link";
 import Avatar from "../../../assets/avatar.svg";
 import { FaAngleDown } from "react-icons/fa6";
+import Location from "@/components/DeviceLocation/location";
 
 const Header = () => {
-  const pathname = usePathname();
+  const [userLocation, setUserLocation] = useState(null);
+
+  const handleLocationChange = (location) => {
+    setUserLocation(location);
+  };
+
+  console.log(userLocation);
 
   return (
     <main
-      className={`flex flex-col justify-end items-center top-5 w-full absolute`}
+      className={`flex flex-col justify-end items-center top-5 w-full fixed z-50`}
     >
+      <Location onLocationChange={handleLocationChange} />
       <div className="mx-auto w-11/12 max-w-[1920px] flex items-center justify-between rounded-full bg-white px-12 py-1">
         <div className="flex items-center lg:gap-[65px] gap-0.5">
           <Image
@@ -25,10 +33,10 @@ const Header = () => {
             alt=""
             className="w-[52.443px] h-[16.492px] lg:w-[87.515px] lg:h-[34.376px]"
           />
-          <div className="flex justify-center items-center rounded-full text-xs focus:outline-none text-[#784DC7] bg-[#E9DFFC] lg:gap-[2.04px] gap-[5.44px] p-[5.439px] lg:px-[8px]">
+          {/* <div  className="flex justify-center items-center rounded-full text-xs focus:outline-none text-[#784DC7] bg-[#E9DFFC] lg:gap-[2.04px] gap-[5.44px] p-[5.439px] lg:px-[8px]">
             <HiLocationMarker className="lg:text-xl text-xs text-[#784DC7]" />
             New Delhi,India
-          </div>
+          </div> */}
         </div>
 
         <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">

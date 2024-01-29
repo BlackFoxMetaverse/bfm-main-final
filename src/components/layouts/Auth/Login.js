@@ -126,6 +126,7 @@ const Login = () => {
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [experiences, setExperiences] = useState([]);
   const [form4Obj, setForm4Obj] = useState({});
   const [toast, setToast] = useState({
     is: false,
@@ -1057,7 +1058,6 @@ const Login = () => {
                                 value={type.name}
                                 className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] sm:text-sm text-[10px] not-italic font-normal leading-[100%] tracking-[-0.7px] hover:bg-gray-200 px-3 py-2"
                               >
-                                {/* {type.icon} */}
                                 {type.name}
                               </option>
                             ))}
@@ -1072,6 +1072,55 @@ const Login = () => {
                         />
                       </div>
                     </div>
+                    {experiences?.map((_, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col items-start gap-2.5 self-stretch"
+                      >
+                        <label className="text-[color:var(--Main-Colors-Gray-4,#292929)] text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize">
+                          Experience
+                        </label>
+                        <label
+                          htmlFor=""
+                          className="flex h-4 items-start gap-2.5 self-stretch pb-[5px]"
+                        ></label>
+                        <input
+                          type="text"
+                          name="title_of_project"
+                          id="title_of_project"
+                          placeholder="Enter title of project"
+                          className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                        />
+                        <label
+                          htmlFor=""
+                          className="flex h-4 items-start gap-2.5 self-stretch pb-[5px]"
+                        ></label>
+                        <input
+                          type="url"
+                          name="url_of_project"
+                          id="url_of_project"
+                          placeholder="Paste link"
+                          className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                        />
+                        <textarea
+                          name="projectDescription"
+                          id="projectDescription"
+                          cols=""
+                          rows="5"
+                          minLength={69}
+                          maxLength={500}
+                          placeholder="Describe your project and services"
+                          className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg resize-none"
+                        ></textarea>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setExperiences((item) => [...experiences, item])}
+                      className="flex w-full text-[#9870FFFC] text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize bg-[#F8F8F8] h-[47px] justify-center items-center content-center gap-[9px] flex-wrap p-[4.97px] rounded-[9.111px]"
+                    >
+                      <IoAdd /> Add Experience
+                    </button>
                     <div className="flex flex-col items-start gap-[5px] self-stretch">
                       <label
                         htmlFor=""
