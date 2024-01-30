@@ -3,7 +3,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 
 const AdminClientData = dynamic(
-  () => import("@/components/layouts/AdminClientData/AdminClientData"),
+  () => import("@/components/admin/layouts/AdminClientData/AdminClientData"),
   { ssr: false }
 );
 

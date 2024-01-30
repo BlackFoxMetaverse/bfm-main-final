@@ -20,7 +20,7 @@ const Login = () => {
 
   const handleOtpSubmit = (e) => {
     e.preventDefault();
-    router.push("/admin/users");
+    router.push("/admin/user");
   };
 
   const handleOtpChange = (newOtp) => {
