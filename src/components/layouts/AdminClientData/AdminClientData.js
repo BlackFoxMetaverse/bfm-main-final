@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { BsExclamationCircleFill } from "react-icons/bs";
 import { FaAngleRight } from "react-icons/fa6";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { GrDocumentDownload } from "react-icons/gr";
-import { downloadData } from "@/components/api/download/downloadData";
+//import { downloadData } from "@/components/api/download/downloadData";
 
 const ActivityHistory = [];
 const PurchaseHistory = [
@@ -156,7 +156,12 @@ const AdminClientData = ({ name, id }) => {
         </div>
         <div className="max-w-[96rem] w-11/12 bg-white mx-auto min-h-[25.25rem] shrink-0 rounded-[20px]">
           <div className="w-full flex justify-end items-end p-6">
-            <button onClick={() => downloadData(PurchaseHistory, `purchase-history-of-${name}`)} className="flex 3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-lg sm:text-base text-sm justify-center items-center shrink-0 text-[#4461F2]">
+            <button
+              // onClick={() =>
+              //   downloadData(PurchaseHistory, `purchase-history-of-${name}`)
+              // }
+              className="flex 3xl:text-4xl 2xl:text-3xl xl:text-2xl lg:text-xl md:text-lg sm:text-base text-sm justify-center items-center shrink-0 text-[#4461F2]"
+            >
               <GrDocumentDownload />
             </button>
           </div>
