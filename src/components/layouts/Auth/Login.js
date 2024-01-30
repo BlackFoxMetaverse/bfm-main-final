@@ -126,7 +126,7 @@ const Login = () => {
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [experiences, setExperiences] = useState([]);
+  const [experiences, setExperiences] = useState([]); //TODO : state for exs,,
   const [form4Obj, setForm4Obj] = useState({});
   const [toast, setToast] = useState({
     is: false,
@@ -297,6 +297,7 @@ const Login = () => {
       document,
       description,
       social,
+      experienceDetail,
       imageGalleryFile,
     } = data;
 
@@ -324,6 +325,7 @@ const Login = () => {
           certificate: documentKey,
           description: description,
           socialMediaLinks: social,
+          experienceDetail: experienceDetail,
           images: imageKeyArr,
         },
         {
@@ -498,6 +500,7 @@ const Login = () => {
       document: form4Obj.document,
       description: e.target["description"].value,
       social: e.target["social"].value,
+      experienceDetail: experiences,
       imageGalleryFile: galleryImagesFile,
     };
     handleCreateProfile(f5Obj)
@@ -552,6 +555,14 @@ const Login = () => {
     };
   }, [pathname]);
 
+  function handleExperinces({ index, key, value }) {
+    setExperiences((prev) => {
+      prev[index][key] = value;
+      return [...prev];
+    });
+  }
+
+  console.log("exs:", experiences);
   return (
     <main
       className="flex max-w-[1920px] lg:w-11/12 mx-auto h-screen overflow-hidden justify-center 3xl:items-start 3xl:mt-5 md:items-center items-start"
@@ -1072,6 +1083,7 @@ const Login = () => {
                         />
                       </div>
                     </div>
+                    {/* TODO: htlm for exs,,, */}
                     {experiences?.map((_, index) => (
                       <div
                         key={index}
@@ -1090,6 +1102,14 @@ const Login = () => {
                           id="title_of_project"
                           placeholder="Enter title of project"
                           className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                          value={experiences[index]["title"]}
+                          onChange={(e) => {
+                            handleExperinces({
+                              index: index,
+                              key: "title",
+                              value: e.target.value,
+                            });
+                          }}
                         />
                         <label
                           htmlFor=""
@@ -1101,6 +1121,14 @@ const Login = () => {
                           id="url_of_project"
                           placeholder="Paste link"
                           className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+                          value={experiences[index]["link"]}
+                          onChange={(e) => {
+                            handleExperinces({
+                              index: index,
+                              key: "link",
+                              value: e.target.value,
+                            });
+                          }}
                         />
                         <textarea
                           name="projectDescription"
@@ -1111,12 +1139,25 @@ const Login = () => {
                           maxLength={500}
                           placeholder="Describe your project and services"
                           className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg resize-none"
+                          value={experiences[index]["description"]}
+                          onChange={(e) => {
+                            handleExperinces({
+                              index: index,
+                              key: "description",
+                              value: e.target.value,
+                            });
+                          }}
                         ></textarea>
                       </div>
                     ))}
                     <button
                       type="button"
-                      onClick={() => setExperiences((item) => [...experiences, item])}
+                      onClick={() =>
+                        setExperiences(() => [
+                          ...experiences,
+                          { title: "", link: "", description: "" },
+                        ])
+                      }
                       className="flex w-full text-[#9870FFFC] text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize bg-[#F8F8F8] h-[47px] justify-center items-center content-center gap-[9px] flex-wrap p-[4.97px] rounded-[9.111px]"
                     >
                       <IoAdd /> Add Experience
