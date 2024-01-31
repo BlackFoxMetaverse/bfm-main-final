@@ -573,7 +573,7 @@ const Login = () => {
           onClick={handlePrevious}
           className="absolute lg:inset-x-12 lg:inset-y-7 inset-5 w-8 h-8 flex justify-center items-center rounded-xl shrink-0 bg-white text-black"
         >
-          <IoReturnUpBackOutline />
+          <IoReturnUpBackOutline strokeLinejoin="inherit" />
         </button>
         <div className="xl:w-1/2 w-5/6 h-4 relative shrink-0 rounded-[53.067px] border-[1.327px] border-solid border-[rgba(255,255,255,0.48)] mt-2">
           <div
