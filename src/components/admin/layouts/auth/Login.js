@@ -14,6 +14,7 @@ const Login = () => {
   const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
   const [isAdmin, setAdmin] = useState(false);
+  const [isChecked, setChecked] = useState(false);
   const [otp, setOtp] = useState("");
 
   const checkAdminUri = `https://form.blackfoxmetaverse.io/api/check/admin?phone_number=`;
@@ -42,10 +43,17 @@ const Login = () => {
       console.log(phone_number);
       await axios
         .get(`${checkAdminUri}${phone_number}`)
-        .then((response) => setAdmin(response.data))
-        .catch((err) => console.log(err));
+        .then((response) => {
+          setAdmin(response.data);
+          setChecked(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          setChecked(true);
+        });
     } else {
       setAdmin(false);
+      setChecked(false);
     }
   };
 
@@ -114,14 +122,22 @@ const Login = () => {
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                disabled={numberLength !== 10 || !isAdmin ? true : false}
+                disabled={numberLength !== 10 || !isAdmin}
                 className={`${
                   numberLength !== 10 || !isAdmin
                     ? "opacity-20 cursor-not-allowed"
                     : "opacity-1"
                 } gap-2 self-stretch px-8 py-3 rounded-xl bg-[#925FF0] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6`}
               >
-                {numberLength !== 0 && !isAdmin ? <PreLoader size={16} color={"#fff"} /> : "Verify"}
+                {numberLength !== 0 && !isAdmin ? (
+                  isChecked ? (
+                    "Not Admin"
+                  ) : (
+                    <PreLoader size={16} color={"#fff"} />
+                  )
+                ) : (
+                  "Verify"
+                )}
               </button>
             </div>
           </form>
