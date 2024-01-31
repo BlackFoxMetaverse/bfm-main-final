@@ -7,6 +7,9 @@ import Logo from "../../../../assets/light_logo.svg";
 import OtpInput from "@/components/Modules/Otp/OtpInput";
 import axios from "axios";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
+import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
+import { auth } from "../../../../firebase";
+
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("+91");
@@ -15,21 +18,17 @@ const Login = () => {
   const [isFilled, setFilled] = useState(false);
   const [isAdmin, setAdmin] = useState(false);
   const [isChecked, setChecked] = useState(false);
+  const [isVerified, setVerified] = useState(false);
   const [otp, setOtp] = useState("");
 
   const checkAdminUri = `https://form.blackfoxmetaverse.io/api/check/admin?phone_number=`;
 
   const router = useRouter();
 
-  const handleNumberSubmit = (e) => {
-    e.preventDefault();
-    setFilled(true);
-  };
-
-  const handleOtpSubmit = (e) => {
-    e.preventDefault();
-    router.replace("/admin/user");
-  };
+  // const handleOtpSubmit = (e) => {
+  //   e.preventDefault();
+  //   router.replace("/admin/user");
+  // };
 
   const handleOtpChange = (newOtp) => {
     setOtp(newOtp);
@@ -40,7 +39,6 @@ const Login = () => {
     setLength(e.target.value.toString().length);
     const phone_number = encodeURIComponent(countryCode + e.target.value);
     if (e.target.value.toString().length === 10) {
-      console.log(phone_number);
       await axios
         .get(`${checkAdminUri}${phone_number}`)
         .then((response) => {
@@ -55,6 +53,66 @@ const Login = () => {
       setAdmin(false);
       setChecked(false);
     }
+  };
+
+  const generateRecaptcha = () => {
+    const recaptchaElement = document.getElementById("recaptcha");
+    recaptchaElement.innerHTML = "";
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha",
+      {
+        size: "invisible",
+        callback: (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          // ...
+        },
+      },
+      auth
+    );
+  };
+
+  const handleNumberSubmit = (e) => {
+    e.preventDefault();
+    generateRecaptcha();
+    let appVerifier = window.recaptchaVerifier;
+    const phoneNumber = `${countryCode}${number}`;
+    console.log(phoneNumber);
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        console.log(confirmationResult);
+        setFilled(true);
+      })
+      .catch((error) => {
+        // handleToast(toastType.one, 3000);
+        console.log("send otp error:", error);
+      });
+  };
+
+  const handleOTPSubmit = (e) => {
+    e.preventDefault();
+    let confirmationResult = window.confirmationResult;
+    confirmationResult
+    .confirm(otp)
+    .then((result) => {
+      let token = result.user.accessToken;
+      
+      console.log("token: ", token);
+      localStorage.setItem("bfm-admin-token", token);
+      
+      // setVerified(true);
+      router.replace("/admin/user");
+
+        // const timer = setTimeout(() => {
+        //   setVerified(false);
+        // }, 2000);
+
+        return () => clearTimeout(timer);
+      })
+      .catch((error) => {
+        window.location.reload();
+        console.log("user login error:", error);
+      });
   };
 
   return (
@@ -143,7 +201,7 @@ const Login = () => {
           </form>
         ) : (
           <form
-            onSubmit={handleOtpSubmit}
+            onSubmit={handleOTPSubmit}
             className="flex max-w-[597px] flex-col justify-center items-center gap-[19px] shrink-0 self-stretch lg:pl-[27px] px-5 lg:pr-[26px]"
           >
             <div className="flex flex-col space-y-4 justify-center items-center">
@@ -182,6 +240,7 @@ const Login = () => {
           Discover More, Connect Locally
         </p>
       </div>
+      <div className="absolute" id="recaptcha"></div>
     </div>
   );
 };
