@@ -26,3 +26,20 @@
   appearance: none;
   color: black;
 }
+
+.loader{
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  border: 1px solid transparent;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  animation: spin linear infinite 700ms;
+}
+
+@keyframes spin {
+  0% {
+    rotate: 0deg;
+  } 100% {
+    rotate: 360deg;
+  }
+}

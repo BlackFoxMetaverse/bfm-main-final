@@ -5,11 +5,19 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Logo from "../../../../assets/light_logo.svg";
 import OtpInput from "@/components/Modules/Otp/OtpInput";
+import axios from "axios";
+import PreLoader from "@/components/Modules/Preloader/preLoader";
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("+91");
+  const [number, setNumber] = useState("");
+  const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
+  const [isAdmin, setAdmin] = useState(false);
+  const [isChecked, setChecked] = useState(false);
   const [otp, setOtp] = useState("");
+
+  const checkAdminUri = `https://form.blackfoxmetaverse.io/api/check/admin?phone_number=`;
 
   const router = useRouter();
 
@@ -20,11 +28,33 @@ const Login = () => {
 
   const handleOtpSubmit = (e) => {
     e.preventDefault();
-    router.push("/admin/user");
+    router.replace("/admin/user");
   };
 
   const handleOtpChange = (newOtp) => {
     setOtp(newOtp);
+  };
+
+  const handleNumberInput = async (e) => {
+    setNumber(e.target.value);
+    setLength(e.target.value.toString().length);
+    const phone_number = encodeURIComponent(countryCode + e.target.value);
+    if (e.target.value.toString().length === 10) {
+      console.log(phone_number);
+      await axios
+        .get(`${checkAdminUri}${phone_number}`)
+        .then((response) => {
+          setAdmin(response.data);
+          setChecked(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          setChecked(true);
+        });
+    } else {
+      setAdmin(false);
+      setChecked(false);
+    }
   };
 
   return (
@@ -79,6 +109,8 @@ const Login = () => {
                     type="number"
                     required
                     maxLength={12}
+                    value={number}
+                    onChange={handleNumberInput}
                     className="text-[color:var(--mono-90,#18181B)] bg-transparent w-fit text-base focus:outline-none not-italic font-medium leading-6"
                   />
                 </div>
@@ -90,9 +122,22 @@ const Login = () => {
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                className="   gap-2 self-stretch px-8 py-3 rounded-xl bg-[#925FF0] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6"
+                disabled={numberLength !== 10 || !isAdmin}
+                className={`${
+                  numberLength !== 10 || !isAdmin
+                    ? "opacity-20 cursor-not-allowed"
+                    : "opacity-1"
+                } gap-2 self-stretch px-8 py-3 rounded-xl bg-[#925FF0] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6`}
               >
-                Verify
+                {numberLength !== 0 && !isAdmin ? (
+                  isChecked ? (
+                    "Not Admin"
+                  ) : (
+                    <PreLoader size={16} color={"#fff"} />
+                  )
+                ) : (
+                  "Verify"
+                )}
               </button>
             </div>
           </form>
