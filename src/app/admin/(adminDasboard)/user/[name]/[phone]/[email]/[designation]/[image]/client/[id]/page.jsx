@@ -8,7 +8,16 @@ const AdminClientData = dynamic(
 );
 
 const page = ({ params }) => {
-  return <AdminClientData name={params.name} id={params.id} />;
+  return (
+    <AdminClientData
+      name={params.name}
+      phone={params.phone}
+      email={params.email}
+      designation={params.designation}
+      image={params.image}
+      id={params.id}
+    />
+  );
 };
 
 export default page;

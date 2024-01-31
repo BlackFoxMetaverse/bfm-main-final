@@ -39,8 +39,10 @@ const UserList = ({ data }) => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  const handleRoute = (name, id) => {
-    route.push(`/admin/user/${name}/seller/${id}`);
+  const handleRoute = (name, id, phone_numbe, email, profession, image) => {
+    route.push(
+      `/admin/user/${name}/${phone_numbe}/${email}/${profession}/${image}/seller/${id}`
+    );
   };
 
   // JSX for rendering user profiles
@@ -48,7 +50,16 @@ const UserList = ({ data }) => {
     return currentUsers?.map((user, index) => (
       <tr
         className=" text-center hover:bg-gray-100 cursor-pointer"
-        onClick={() => handleRoute(user?.userName, user?.uid, user)}
+        onClick={() =>
+          handleRoute(
+            user?.userName,
+            user?.uid,
+            user?.phone_number,
+            user?.email,
+            user?.profession,
+            user?.image
+          )
+        }
         key={index}
       >
         <td className=" py-4">{index + 1}</td>

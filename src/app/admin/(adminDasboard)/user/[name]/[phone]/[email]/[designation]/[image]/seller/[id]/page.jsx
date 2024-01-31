@@ -7,7 +7,16 @@ const SellerData = dynamic(
 );
 const page = ({ params }) => {
   console.log(params);
-  return <SellerData name={params.name} id={params.id} />;
+  return (
+    <SellerData
+      name={params.name}
+      phone={params.phone}
+      email={params.email}
+      designation={params.designation}
+      image={params.image}
+      id={params.id}
+    />
+  );
 };
 
 export default page;

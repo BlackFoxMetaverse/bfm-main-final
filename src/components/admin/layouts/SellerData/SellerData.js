@@ -4,17 +4,17 @@ import React, { useEffect, useState } from "react";
 import { BsExclamationCircleFill } from "react-icons/bs";
 import { CiFacebook, CiHeart, CiLocationOn } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
-import { FaAngleRight, FaHeart, FaYoutube } from "react-icons/fa6";
+import { FaAngleRight, FaHeart, FaLinkedin, FaYoutube } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import dummySeller from "../../../../assets/dummySeller.png";
+import Link from "next/link";
 const ActivityHistory = [];
 const PurchaseHistory = ["", "", "", "", "", "", ""];
 
-const SellerData = ({ name, id }) => {
-  console.log("id", id);
+const SellerData = ({ name, id, phone, email, designation, image }) => {
+  console.log("id", decodeURIComponent(id));
   const [userData, setUserData] = useState(null);
   const route = useRouter();
-  console.log(userInfo);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,7 +25,7 @@ const SellerData = ({ name, id }) => {
             headers: {
               "Content-Type": "application/json",
               admintoken:
-                "eyJhbGciOiJSUzI1NiIsImtpZCI6IjY5NjI5NzU5NmJiNWQ4N2NjOTc2Y2E2YmY0Mzc3NGE3YWE5OTMxMjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmZtLWxvY2F0aW9uIiwiYXVkIjoiYmZtLWxvY2F0aW9uIiwiYXV0aF90aW1lIjoxNzA2NzAwODE4LCJ1c2VyX2lkIjoiSzN0NWhKTUNZR1Y3dEhuODFYQUo3bzJxaWVCMiIsInN1YiI6IkszdDVoSk1DWUdWN3RIbjgxWEFKN28ycWllQjIiLCJpYXQiOjE3MDY3MDA4MTgsImV4cCI6MTcwNjcwNDQxOCwicGhvbmVfbnVtYmVyIjoiKzkxODcwOTM2MDU0MyIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODcwOTM2MDU0MyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.CQtCBcFR_BU_JAzXeCSTI8ZcvWYmAo3OQt1eic-agEFLW0Z6gvGPdoMg61_1PTgXi4hwOItKWbV6JPKdwS0xdvVqRVZ_OR10gsfqnJoc-lcX7XZVhMsdM6p5lSG5JrSdf1i0W1Bzdn_-JsavS_ftYMcEK5DwLM9zlbZ9kQpJUASKHlut801hnEWw7RddJ7LhRRpFjKETSotqRYtnWF06c9uWsFHMpdvCZoKiVNaHFkJJtEz90YJh-Wr-qvbv5Veq-88S6HdGLD4Pgy3YsjxWmnLAGiKnDNR3P-w955ocVkFbIug99Psf31cJut4if_aPvpriIiYngKgRiEKGUue0ng",
+                "eyJhbGciOiJSUzI1NiIsImtpZCI6IjY5NjI5NzU5NmJiNWQ4N2NjOTc2Y2E2YmY0Mzc3NGE3YWE5OTMxMjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmZtLWxvY2F0aW9uIiwiYXVkIjoiYmZtLWxvY2F0aW9uIiwiYXV0aF90aW1lIjoxNzA2NzA1MDM4LCJ1c2VyX2lkIjoiSzN0NWhKTUNZR1Y3dEhuODFYQUo3bzJxaWVCMiIsInN1YiI6IkszdDVoSk1DWUdWN3RIbjgxWEFKN28ycWllQjIiLCJpYXQiOjE3MDY3MDUwMzgsImV4cCI6MTcwNjcwODYzOCwicGhvbmVfbnVtYmVyIjoiKzkxODcwOTM2MDU0MyIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODcwOTM2MDU0MyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.F0GZe3gzq4-hvZebpGd3ZOjX7mkgpg6lVfieeOkY0fyo1X5IItRqyulfxOtfgjmHMEl82dzIzuzbDhmpWxyQHrsvxc5dTCExRAHEaSFoqf32ehSSgZYQnM7oK4-vjlOePyHrOJhsQSYCgL-0ZFOh1MDo06L1AKqY8IkoUIJSIykn9k3mfMnofNARkFKRUUCPNg_0nDlEuUCC2DqCt28l5m6voMqW7aRfd6PLDvrwwJF4NmAExZLYJy4iY9CYyOAZ9qgqyHh4v5j08zHepfJeOkdEiR-vVUWiw8BqKzK5rVrOGVi3N79T9nLo8luOQykBFZ7CTbRMBV_EPzZBxUdEbQ",
             },
           }
         );
@@ -102,7 +102,7 @@ const SellerData = ({ name, id }) => {
             <div className="w-full overflow-hidden px-5 p-4 bg-white gap-8 rounded-[25.636px] items-center">
               <div className=" p-4 bg-white flex gap-8 rounded-[25.636px] items-center">
                 <img
-                  src="https://s3-alpha-sig.figma.com/img/e5f1/c231/96d9c17181e09c0c069fb92abf5dcd9b?Expires=1707091200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=EfLaN0LvQo~zhvyUN5gwnYKdbHkC2Im~arkgrrCfs278r-s8e7nNMIiFrmFoHxKOWnh1HNq7ueeB3FeITRVyfUuofKinP3lKK~ax4YVUdLUw883imYFo89CAMVs2B-lFstgeMe1ZdTaV8~BC7WO8AIZoocrL2U9vWONLB8sLqDODDJZ75kjFAOe6HgY62HmpENbQSfQvw7f7sPe0c01a-IvsDcI2UYvq07-UJHXCDrE4CkXoH4MOa0RePa0S4NIiprXi-Eazl~2roS5xZyDf2bdQ3D5-Zq1A~uZsiAD3B3wKF-AbyE92czTnL9TVfpzv~OrDnIuG7qVvqMflOa~uhQ__"
+                  src={image}
                   className="flex 3xl:w-[9.17rem] 2xl:w-[7rem] xl:w-[5rem] lg:w-[3rem] aspect-square justify-center items-center shrink-0 rounded-full"
                   alt=""
                 />
@@ -111,32 +111,31 @@ const SellerData = ({ name, id }) => {
                     {name}
                   </p>
 
+                  <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]">
+                    {designation}
+                  </p>
+
                   {/* <p className="flex text bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
                     Available
                   </p> */}
                 </div>
               </div>
-              <div className="">
-                {userData?.tags?.map((tag, index) => (
-                  <p
-                    key={index}
-                    className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]"
-                  >
-                    {tag}
-                  </p>
-                ))}
-              </div>
 
               <div className=" px-5 space-y-9">
-                <div className=" flex justify-center text-gray-600 items-center  bg-gray-200 gap-[4.866px] pl-[12.164px] pr-[9.732px] py-[6.082px] rounded-full">
+                {/* <div className=" flex justify-center text-gray-600 items-center  bg-gray-200 gap-[4.866px] pl-[12.164px] pr-[9.732px] py-[6.082px] rounded-full">
                   Faridabad, Haryana <CiLocationOn />
+                </div> */}
+                <div>
+                  <p className="flex text-green-500 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
+                    Available
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
                     Phone Number
                   </p>
                   <p className="self-stretch text-[#696969] text-lg not-italic font-normal leading-[27px]">
-                    +91 98238739471
+                    {decodeURIComponent(phone)}
                   </p>
                 </div>
                 <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
@@ -144,13 +143,13 @@ const SellerData = ({ name, id }) => {
                     Email Address
                   </p>
                   <p className="self-stretch text-[#696969] text-lg not-italic font-normal leading-[27px]">
-                    ritikbhushanmain@gmail.com
+                    {decodeURIComponent(email)}
                   </p>
                 </div>
                 <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
                   <p>Social Media</p>
                   <div className="flex gap-3">
-                    <div className="bg-gray-100 p-2 rounded-full">
+                    {/* <div className="bg-gray-100 p-2 rounded-full">
                       <FaInstagram />
                     </div>
                     <div className="bg-gray-100 p-2 rounded-full">
@@ -158,10 +157,18 @@ const SellerData = ({ name, id }) => {
                     </div>
                     <div className="bg-gray-100 p-2 rounded-full">
                       <FaYoutube />
-                    </div>
+                    </div> */}
+
+                    {/* <Link
+                      target=" "
+                      href={userData?.socialMediaLinks}
+                      className="bg-gray-100 p-2 rounded-full"
+                    >
+                      <FaLinkedin />
+                    </Link> */}
                   </div>
                 </div>
-                <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
+                {/* <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
                   <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
                     Rating
                   </p>
@@ -173,7 +180,7 @@ const SellerData = ({ name, id }) => {
                     <FaHeart className="text-red-100" />
                     <p className=" text-gray-500">3022</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className=" px-5 space-y-5 overflow-hidden p-4 bg-white gap-8 rounded-[25.636px] items-center">
@@ -187,7 +194,7 @@ const SellerData = ({ name, id }) => {
               </p>
             </div>
           </div>
-          <div className="flex w-2/3 space-x-10 bg-white p-5 rounded-[20px]">
+          <div className="flex w-2/3 h-[650px] overflow-y-scroll space-x-10 bg-white p-5 rounded-[20px]">
             <div className="w-[70%]  space-y-8">
               {/* <div>
                 <div className=" shrink-0 text-[color:var(--Black,#000)] text-[40.35px] not-italic font-semibold leading-[140%] tracking-[-0.807px]">
@@ -196,31 +203,19 @@ const SellerData = ({ name, id }) => {
               </div> */}
               <div>
                 <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
-                  Design a futuristic 3D skeleton model with a dynamic RGB
-                  lighting system set against a captivating space-themed
-                  background. Craft the skeleton to have a sleek, futuristic
-                  aesthetic, incorporating intricate details and streamlined
-                  features. Implement an RGB lighting scheme that pulsates or
-                  transitions smoothly across the skeleton, creating an engaging
-                  visual effect. Ensure compatibility with real-time rendering
-                  engines to maximize interactivity. The space-themed background
-                  should complement the futuristic theme, with stars, nebulae,
-                  or cosmic elements. Prioritize a balance between creativity
-                  and functionality, delivering a visually stunning 3D model
-                  ready for use in various digital or multimedia applications.
+                  {userData?.description}
                 </p>
               </div>
               <div className="border w-full"></div>
               <div className="flex gap-3">
-                <p className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                  Available
-                </p>
-                <p className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                  Available
-                </p>
-                <p className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                  Available
-                </p>
+                {userData?.tags?.map((tag, index) => (
+                  <p
+                    key={index}
+                    className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]"
+                  >
+                    {tag}
+                  </p>
+                ))}
               </div>
               <div className="flex gap-8">
                 <div className="flex gap-1 justify-center items-center ">
