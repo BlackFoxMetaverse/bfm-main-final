@@ -6,6 +6,7 @@ const SellerData = dynamic(
   { ssr: false }
 );
 const page = ({ params }) => {
+  console.log(params);
   return <SellerData name={params.name} id={params.id} />;
 };
 

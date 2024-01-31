@@ -1,14 +1,45 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsExclamationCircleFill } from "react-icons/bs";
 import { CiFacebook, CiHeart, CiLocationOn } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
 import { FaAngleRight, FaHeart, FaYoutube } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 import dummySeller from "../../../../assets/dummySeller.png";
 const ActivityHistory = [];
 const PurchaseHistory = ["", "", "", "", "", "", ""];
 
 const SellerData = ({ name, id }) => {
+  console.log("id", id);
+  const [userData, setUserData] = useState(null);
+  const route = useRouter();
+  console.log(userInfo);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `https://form.blackfoxmetaverse.io/api/admin/getUserProfile?uid=${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              admintoken:
+                "eyJhbGciOiJSUzI1NiIsImtpZCI6IjY5NjI5NzU5NmJiNWQ4N2NjOTc2Y2E2YmY0Mzc3NGE3YWE5OTMxMjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmZtLWxvY2F0aW9uIiwiYXVkIjoiYmZtLWxvY2F0aW9uIiwiYXV0aF90aW1lIjoxNzA2NzAwODE4LCJ1c2VyX2lkIjoiSzN0NWhKTUNZR1Y3dEhuODFYQUo3bzJxaWVCMiIsInN1YiI6IkszdDVoSk1DWUdWN3RIbjgxWEFKN28ycWllQjIiLCJpYXQiOjE3MDY3MDA4MTgsImV4cCI6MTcwNjcwNDQxOCwicGhvbmVfbnVtYmVyIjoiKzkxODcwOTM2MDU0MyIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODcwOTM2MDU0MyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.CQtCBcFR_BU_JAzXeCSTI8ZcvWYmAo3OQt1eic-agEFLW0Z6gvGPdoMg61_1PTgXi4hwOItKWbV6JPKdwS0xdvVqRVZ_OR10gsfqnJoc-lcX7XZVhMsdM6p5lSG5JrSdf1i0W1Bzdn_-JsavS_ftYMcEK5DwLM9zlbZ9kQpJUASKHlut801hnEWw7RddJ7LhRRpFjKETSotqRYtnWF06c9uWsFHMpdvCZoKiVNaHFkJJtEz90YJh-Wr-qvbv5Veq-88S6HdGLD4Pgy3YsjxWmnLAGiKnDNR3P-w955ocVkFbIug99Psf31cJut4if_aPvpriIiYngKgRiEKGUue0ng",
+            },
+          }
+        );
+        const data = await response.json();
+        console.log(data.userProfile);
+        setUserData(data.userProfile);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <main className={`${name}'s_detail h-full pb-10`}>
       <div className="space-y-10 h-full">
@@ -19,7 +50,7 @@ const SellerData = ({ name, id }) => {
         </div>
         <div className="w-11/12 space-y-6 mx-auto">
           <p className="text-black 3xl:text-[40px] 2xl:text-3xl xl:text-xl lg:text-lg not-italic font-medium leading-[100%]">
-            Client’s Profile
+            Seller Profile
           </p>
           <div className="flex items-center gap-8 h-[13rem]">
             <div className="max-w-[63.4rem] w-2/3 py-7 bg-white h-full shrink-0 rounded-[1.5rem]">
@@ -67,8 +98,8 @@ const SellerData = ({ name, id }) => {
           </div>
         </div>
         <div className="flex w-11/12 gap-5 mx-auto shrink-0 rounded-[20px]">
-          <div className="w-full space-y-5">
-            <div className="w-full overflow-hidden p-4 bg-white gap-8 rounded-[25.636px] items-center">
+          <div className="w-1/3 space-y-5 ">
+            <div className="w-full overflow-hidden px-5 p-4 bg-white gap-8 rounded-[25.636px] items-center">
               <div className=" p-4 bg-white flex gap-8 rounded-[25.636px] items-center">
                 <img
                   src="https://s3-alpha-sig.figma.com/img/e5f1/c231/96d9c17181e09c0c069fb92abf5dcd9b?Expires=1707091200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=EfLaN0LvQo~zhvyUN5gwnYKdbHkC2Im~arkgrrCfs278r-s8e7nNMIiFrmFoHxKOWnh1HNq7ueeB3FeITRVyfUuofKinP3lKK~ax4YVUdLUw883imYFo89CAMVs2B-lFstgeMe1ZdTaV8~BC7WO8AIZoocrL2U9vWONLB8sLqDODDJZ75kjFAOe6HgY62HmpENbQSfQvw7f7sPe0c01a-IvsDcI2UYvq07-UJHXCDrE4CkXoH4MOa0RePa0S4NIiprXi-Eazl~2roS5xZyDf2bdQ3D5-Zq1A~uZsiAD3B3wKF-AbyE92czTnL9TVfpzv~OrDnIuG7qVvqMflOa~uhQ__"
@@ -76,19 +107,24 @@ const SellerData = ({ name, id }) => {
                   alt=""
                 />
                 <div className="space-y-1">
-                  <p className="text-black 3xl:text-[30px] 2xl:text-2xl xl:text-lg lg:text-medium not-italic font-bold leading-[normal] capitalize">
+                  <p className="text-black  whitespace-pre-wrap break-words 3xl:text-[20px] 2xl:text-xl xl:text-base lg:text-medium not-italic font-bold leading-[normal] capitalize">
                     {name}
                   </p>
-                  <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]">
-                    3D Designer
-                  </p>
-                  <p className="text-[#696969] 3xl:text-xl  not-italic font-normal leading-[36.814px]">
-                    UI/UX Designer
-                  </p>
-                  <p className="flex text bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
+
+                  {/* <p className="flex text bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
                     Available
-                  </p>
+                  </p> */}
                 </div>
+              </div>
+              <div className="">
+                {userData?.tags?.map((tag, index) => (
+                  <p
+                    key={index}
+                    className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]"
+                  >
+                    {tag}
+                  </p>
+                ))}
               </div>
 
               <div className=" px-5 space-y-9">
@@ -151,13 +187,13 @@ const SellerData = ({ name, id }) => {
               </p>
             </div>
           </div>
-          <div className="flex space-x-10 bg-white p-5 rounded-[20px]">
+          <div className="flex w-2/3 space-x-10 bg-white p-5 rounded-[20px]">
             <div className="w-[70%]  space-y-8">
-              <div>
+              {/* <div>
                 <div className=" shrink-0 text-[color:var(--Black,#000)] text-[40.35px] not-italic font-semibold leading-[140%] tracking-[-0.807px]">
                   Galactic skull Luminescence
                 </div>
-              </div>
+              </div> */}
               <div>
                 <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
                   Design a futuristic 3D skeleton model with a dynamic RGB

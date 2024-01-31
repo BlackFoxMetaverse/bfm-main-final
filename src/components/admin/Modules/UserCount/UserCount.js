@@ -31,9 +31,9 @@ const UserCount = ({ title, number, percent, day, color }) => {
           {day}
         </p>
       </div>
-      <div className="">
+      {/* <div className="">
         <HiOutlineDotsVertical />
-      </div>
+      </div> */}
     </div>
   );
 };

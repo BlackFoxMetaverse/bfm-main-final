@@ -2,7 +2,9 @@
 import React, { useState } from "react";
 import { FaAngleRight } from "react-icons/fa6";
 import { FaAngleLeft } from "react-icons/fa";
-const UserList = () => {
+import { useRouter } from "next/navigation";
+const UserList = ({ data }) => {
+  const route = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [userType, setUserType] = useState("all");
   const [sortBy, setSortBy] = useState("all");
@@ -17,143 +19,12 @@ const UserList = () => {
     setUserType(event.target.value);
   };
 
-  // Function to handle sort by change
+  // Function to handle sort by changef
   const handleSortByChange = (event) => {
     setSortBy(event.target.value);
   };
-  const [userList, setUserList] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-    {
-      id: 1,
-      name: "John Doe",
-      username: "john.doe",
-      email: "john@example.com",
-      contactNumber: "123-456-7890",
-      action: "Open profile",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "jane.smith",
-      email: "jane@example.com",
-      contactNumber: "987-654-3210",
-      action: "Open profile",
-    },
-
-    // Add more users here
-  ]);
+  // const [userList, setUserList] = useState(data);
+  console.log(data);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -162,23 +33,30 @@ const UserList = () => {
   // Logic for pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = userList.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = data?.slice(indexOfFirstUser, indexOfLastUser);
 
   // Function to handle page change
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const handleRoute = (name, id) => {
+    route.push(`/admin/user/${name}/seller/${id}`);
+  };
 
   // JSX for rendering user profiles
   const renderUserProfiles = () => {
-    return currentUsers.map((user, index) => (
-      <tr className=" text-center hover:bg-gray-100 cursor-pointer" key={index}>
-        <td className=" py-4">{user.id}</td>
-        <td className=" py-4">{user.name}</td>
-        <td className=" py-4">{user.username}</td>
-        <td className=" py-4">{user.email}</td>
-        <td className=" py-4">{user.contactNumber}</td>
-        <td className=" text-green-500">{user.action}</td>
+    return currentUsers?.map((user, index) => (
+      <tr
+        className=" text-center hover:bg-gray-100 cursor-pointer"
+        onClick={() => handleRoute(user?.userName, user?.uid, user)}
+        key={index}
+      >
+        <td className=" py-4">{index + 1}</td>
+        <td className=" py-4">{user?.name}</td>
+        <td className=" py-4">{user?.userName}</td>
+        <td className=" py-4">{user?.email}</td>
+        <td className=" py-4">{user?.phone_number}</td>
+        <td className=" text-green-500">Open profile</td>
       </tr>
     ));
   };
@@ -186,7 +64,7 @@ const UserList = () => {
   // JSX for pagination buttons
   const renderPaginationButtons = () => {
     const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(userList.length / usersPerPage); i++) {
+    for (let i = 1; i <= Math.ceil(data?.length / usersPerPage); i++) {
       pageNumbers.push(i);
     }
 
@@ -246,7 +124,7 @@ const UserList = () => {
           </>
         )}
         <button
-          disabled={currentPage === Math.ceil(userList.length / usersPerPage)}
+          disabled={currentPage === Math.ceil(data?.length / usersPerPage)}
           onClick={() => handlePageChange(currentPage + 1)}
           className=" bg-white border border-gray-300 p-2 rounded"
         >
