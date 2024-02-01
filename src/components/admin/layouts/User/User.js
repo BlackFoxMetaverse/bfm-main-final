@@ -4,6 +4,7 @@ import UserCount from "../../Modules/UserCount/UserCount";
 import UserList from "../../layouts/UserList/UserList";
 const User = () => {
   const [userData, setUserData] = useState(null);
+  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,8 +15,7 @@ const User = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              admintoken:
-                "eyJhbGciOiJSUzI1NiIsImtpZCI6IjY5NjI5NzU5NmJiNWQ4N2NjOTc2Y2E2YmY0Mzc3NGE3YWE5OTMxMjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmZtLWxvY2F0aW9uIiwiYXVkIjoiYmZtLWxvY2F0aW9uIiwiYXV0aF90aW1lIjoxNzA2NzA1MDM4LCJ1c2VyX2lkIjoiSzN0NWhKTUNZR1Y3dEhuODFYQUo3bzJxaWVCMiIsInN1YiI6IkszdDVoSk1DWUdWN3RIbjgxWEFKN28ycWllQjIiLCJpYXQiOjE3MDY3MDUwMzgsImV4cCI6MTcwNjcwODYzOCwicGhvbmVfbnVtYmVyIjoiKzkxODcwOTM2MDU0MyIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODcwOTM2MDU0MyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.F0GZe3gzq4-hvZebpGd3ZOjX7mkgpg6lVfieeOkY0fyo1X5IItRqyulfxOtfgjmHMEl82dzIzuzbDhmpWxyQHrsvxc5dTCExRAHEaSFoqf32ehSSgZYQnM7oK4-vjlOePyHrOJhsQSYCgL-0ZFOh1MDo06L1AKqY8IkoUIJSIykn9k3mfMnofNARkFKRUUCPNg_0nDlEuUCC2DqCt28l5m6voMqW7aRfd6PLDvrwwJF4NmAExZLYJy4iY9CYyOAZ9qgqyHh4v5j08zHepfJeOkdEiR-vVUWiw8BqKzK5rVrOGVi3N79T9nLo8luOQykBFZ7CTbRMBV_EPzZBxUdEbQ",
+              admintoken: accessToken,
             },
           }
         );

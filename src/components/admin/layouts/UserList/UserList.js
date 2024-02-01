@@ -40,9 +40,15 @@ const UserList = ({ data }) => {
     setCurrentPage(pageNumber);
   };
   const handleRoute = (name, id, phone_numbe, email, profession, image) => {
-    route.push(
-      `/admin/user/${name}/${phone_numbe}/${email}/${profession}/${image}/seller/${id}`
-    );
+    if (image) {
+      route.push(
+        `/admin/user/${name}/${phone_numbe}/${email}/${profession}/${image}/seller/${id}`
+      );
+    } else {
+      route.push(
+        `/admin/user/${name}/${phone_numbe}/${email}/${profession}/img/seller/${id}`
+      );
+    }
   };
 
   // JSX for rendering user profiles

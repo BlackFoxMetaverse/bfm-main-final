@@ -6,13 +6,15 @@ import { CiFacebook, CiHeart, CiLocationOn } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
 import { FaAngleRight, FaHeart, FaLinkedin, FaYoutube } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import dummySeller from "../../../../assets/dummySeller.png";
+import ImageModal from "../../Modules/ImageModal/ImageModal";
 import Link from "next/link";
 const ActivityHistory = [];
 const PurchaseHistory = ["", "", "", "", "", "", ""];
-
+const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
+const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
 const SellerData = ({ name, id, phone, email, designation, image }) => {
   console.log("id", decodeURIComponent(id));
+  const [modalImageUrl, setModalImageUrl] = useState(null);
   const [userData, setUserData] = useState(null);
   const route = useRouter();
   useEffect(() => {
@@ -24,8 +26,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              admintoken:
-                "eyJhbGciOiJSUzI1NiIsImtpZCI6IjY5NjI5NzU5NmJiNWQ4N2NjOTc2Y2E2YmY0Mzc3NGE3YWE5OTMxMjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmZtLWxvY2F0aW9uIiwiYXVkIjoiYmZtLWxvY2F0aW9uIiwiYXV0aF90aW1lIjoxNzA2NzA1MDM4LCJ1c2VyX2lkIjoiSzN0NWhKTUNZR1Y3dEhuODFYQUo3bzJxaWVCMiIsInN1YiI6IkszdDVoSk1DWUdWN3RIbjgxWEFKN28ycWllQjIiLCJpYXQiOjE3MDY3MDUwMzgsImV4cCI6MTcwNjcwODYzOCwicGhvbmVfbnVtYmVyIjoiKzkxODcwOTM2MDU0MyIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODcwOTM2MDU0MyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.F0GZe3gzq4-hvZebpGd3ZOjX7mkgpg6lVfieeOkY0fyo1X5IItRqyulfxOtfgjmHMEl82dzIzuzbDhmpWxyQHrsvxc5dTCExRAHEaSFoqf32ehSSgZYQnM7oK4-vjlOePyHrOJhsQSYCgL-0ZFOh1MDo06L1AKqY8IkoUIJSIykn9k3mfMnofNARkFKRUUCPNg_0nDlEuUCC2DqCt28l5m6voMqW7aRfd6PLDvrwwJF4NmAExZLYJy4iY9CYyOAZ9qgqyHh4v5j08zHepfJeOkdEiR-vVUWiw8BqKzK5rVrOGVi3N79T9nLo8luOQykBFZ7CTbRMBV_EPzZBxUdEbQ",
+              admintoken: accessToken,
             },
           }
         );
@@ -39,6 +40,14 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
 
     fetchData();
   }, []);
+  console.log(s3Url + userData?.images[0]);
+  const openModal = (imageUrl) => {
+    setModalImageUrl(imageUrl);
+  };
+
+  const closeModal = () => {
+    setModalImageUrl(null);
+  };
 
   return (
     <main className={`${name}'s_detail h-full pb-10`}>
@@ -101,18 +110,25 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
           <div className="w-1/3 space-y-5 ">
             <div className="w-full overflow-hidden px-5 p-4 bg-white gap-8 rounded-[25.636px] items-center">
               <div className=" p-4 bg-white flex gap-8 rounded-[25.636px] items-center">
-                <img
-                  src={image}
-                  className="flex 3xl:w-[9.17rem] 2xl:w-[7rem] xl:w-[5rem] lg:w-[3rem] aspect-square justify-center items-center shrink-0 rounded-full"
-                  alt=""
-                />
+                {decodeURIComponent(image) === "img" ? (
+                  <div className="w-20 h-20 rounded-full bg-purple-500 flex justify-center items-center text-3xl font-bold text-white">
+                    {decodeURIComponent(name).charAt(0).toUpperCase()}
+                  </div>
+                ) : (
+                  <img
+                    src={s3Url + decodeURIComponent(image)}
+                    onClick={() => openModal(s3Url + image)}
+                    className="flex cursor-pointer object-cover 3xl:w-[9.17rem] 2xl:w-[7rem] xl:w-[5rem] lg:w-[3rem] aspect-square justify-center items-center shrink-0 rounded-full"
+                    alt=""
+                  />
+                )}
                 <div className="space-y-1">
                   <p className="text-black  whitespace-pre-wrap break-words 3xl:text-[20px] 2xl:text-xl xl:text-base lg:text-medium not-italic font-bold leading-[normal] capitalize">
-                    {name}
+                    {decodeURIComponent(name)}
                   </p>
 
                   <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]">
-                    {designation}
+                    {decodeURIComponent(designation)}
                   </p>
 
                   {/* <p className="flex text bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
@@ -194,8 +210,8 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
               </p>
             </div>
           </div>
-          <div className="flex w-2/3 h-[650px] overflow-y-scroll space-x-10 bg-white p-5 rounded-[20px]">
-            <div className="w-[70%]  space-y-8">
+          <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-y-scroll space-x-10 bg-white p-10 rounded-[20px]">
+            <div className="  space-y-8">
               {/* <div>
                 <div className=" shrink-0 text-[color:var(--Black,#000)] text-[40.35px] not-italic font-semibold leading-[140%] tracking-[-0.807px]">
                   Galactic skull Luminescence
@@ -217,7 +233,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
                   </p>
                 ))}
               </div>
-              <div className="flex gap-8">
+              {/* <div className="flex gap-8">
                 <div className="flex gap-1 justify-center items-center ">
                   <CiHeart />
                   <p>3,245</p>
@@ -227,46 +243,31 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
                     Sep 12, 2021
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
-            <div className=" grid grid-cols-2 w-full gap-2 ">
-              {/* <Image className="w-12 h-12" src={dummySeller} alt="" /> */}
-              <Image className="w-[100%] h-[100%]" src={dummySeller} alt="" />
-              <Image className="w-[100%] h-[100%]" src={dummySeller} alt="" />
-              <Image className="w-[100%] h-[100%]" src={dummySeller} alt="" />
-              <Image className="w-[100%] h-[100%]" src={dummySeller} alt="" />
-              <Image className="w-[100%] h-[100%]" src={dummySeller} alt="" />
-              <Image className="w-[100%] h-[100%]" src={dummySeller} alt="" />
+            <div className="grid grid-cols-2  w-full p-10 gap-2">
+              {userData?.images?.map((image, index) => (
+                <img
+                  key={index}
+                  className="w-[100%] h-[100%] cursor-pointer"
+                  src={s3Url + image}
+                  alt=""
+                  onClick={() => openModal(s3Url + image)}
+                />
+              ))}
+              {modalImageUrl && (
+                <ImageModal imageUrl={modalImageUrl} closeModal={closeModal} />
+              )}
             </div>
           </div>
         </div>
-        <div className="max-w-[96rem] w-11/12 bg-white mx-auto min-h-[25.25rem] shrink-0 rounded-[20px]">
+        {/* <div className="max-w-[96rem] w-11/12 bg-white mx-auto min-h-[25.25rem] shrink-0 rounded-[20px]">
           <div className="w-11/12 mx-auto py-14">
             <div className="flex-col text-center justify-center items-center">
               <h1 className="text-black 3xl:text-3xl 2xl:text-2xl xl:text-xl lg:text-lg not-italic font-bold leading-[normal]">
                 Priority Orders
               </h1>
-              {/* <table className="table-auto  w-full">
-                <thead>
-                  <tr className="flex items-center gap-4 justify-between pt-[0.75rem] px-[0.75rem]">
-                    <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                      Section
-                    </th>
-                    <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                      Seller name
-                    </th>
-                    <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                      Date of Purchese
-                    </th>
-                    <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pr-10 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                      Contacted
-                    </th>
-                    <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                      Export
-                    </th>
-                  </tr>
-                </thead>
-              </table> */}
+              
             </div>
             <table className="table-auto mt-9 w-full">
               <thead>
@@ -339,7 +340,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
               </tbody>
             </table>
           </div>
-        </div>
+        </div> */}
       </div>
     </main>
   );
