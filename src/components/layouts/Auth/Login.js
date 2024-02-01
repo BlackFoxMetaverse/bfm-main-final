@@ -30,7 +30,7 @@ import s3ImageUplaod from "@/utils/imageUploader";
 import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
 import Toast from "@/components/Modules/Toast/Toast";
-
+import { updateUserLocation } from "@/utils/location";
 const Professions = [
   "Photographer",
   "Designer",
@@ -246,6 +246,10 @@ const Login = () => {
         },
       });
       const data = response?.data;
+      if (data?.check?.isUser) {
+        const ok = await updateUserLocation(token);
+        console.log("user location updated:", ok);
+      }
       return Promise.resolve(data);
     } catch (e) {
       console.log("axios error: ", e.message);
@@ -277,6 +281,11 @@ const Login = () => {
           },
         }
       );
+
+      if (res.status === 201) {
+        const ok = await updateUserLocation(token);
+        console.log("user location updated:", ok);
+      }
 
       return Promise.resolve(res);
     } catch (error) {
@@ -350,7 +359,7 @@ const Login = () => {
     }
     checkUserNameTimeout = setTimeout(() => {
       axios
-        .get(`/check/userName?userName=${UserName}`)
+        .get(`/check/userName?userName=${UserName.target.value}`)
         .then((res) => {
           setIsUniqueUserName(res.data);
         })
@@ -369,7 +378,7 @@ const Login = () => {
     }
     checkEmailTimeout = setTimeout(() => {
       axios
-        .get(`/check/email?email=${email}`)
+        .get(`/check/email?email=${email.target.value}`)
         .then((res) => {
           setIsUniqueEmail(res.data);
         })
@@ -428,6 +437,7 @@ const Login = () => {
 
         loginUser(token).then((data) => {
           const { check, message, details } = data;
+
           if (check.isProfile && check.isUser) {
             router.replace("/thanksPage/already");
           }
