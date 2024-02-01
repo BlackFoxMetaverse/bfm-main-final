@@ -359,7 +359,7 @@ const Login = () => {
     }
     checkUserNameTimeout = setTimeout(() => {
       axios
-        .get(`/check/userName?userName=${UserName}`)
+        .get(`/check/userName?userName=${UserName.target.value}`)
         .then((res) => {
           setIsUniqueUserName(res.data);
         })
@@ -378,7 +378,7 @@ const Login = () => {
     }
     checkEmailTimeout = setTimeout(() => {
       axios
-        .get(`/check/email?email=${email}`)
+        .get(`/check/email?email=${email.target.value}`)
         .then((res) => {
           setIsUniqueEmail(res.data);
         })
