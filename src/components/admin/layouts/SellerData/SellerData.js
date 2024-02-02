@@ -11,13 +11,14 @@ import Link from "next/link";
 const ActivityHistory = [];
 const PurchaseHistory = ["", "", "", "", "", "", ""];
 const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
-const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
 const SellerData = ({ name, id, phone, email, designation, image }) => {
   console.log("id", decodeURIComponent(id));
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [getImage, setImage] = useState("");
   const route = useRouter();
   useEffect(() => {
+    const accessToken = localStorage.getItem("bfm-admin-token");
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -33,6 +34,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
         const data = await response.json();
         console.log(data.userProfile);
         setUserData(data.userProfile);
+        setImage(data.userProfile.images);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -40,7 +42,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
 
     fetchData();
   }, []);
-  console.log(s3Url + userData?.images[0]);
+  console.log(userData?.images);
   const openModal = (imageUrl) => {
     setModalImageUrl(imageUrl);
   };
@@ -254,6 +256,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
                   alt=""
                   onClick={() => openModal(s3Url + image)}
                 />
+                // <h1>{s3Url + image}</h1>
               ))}
               {modalImageUrl && (
                 <ImageModal imageUrl={modalImageUrl} closeModal={closeModal} />

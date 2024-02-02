@@ -4,9 +4,9 @@ import UserCount from "../../Modules/UserCount/UserCount";
 import UserList from "../../layouts/UserList/UserList";
 const User = () => {
   const [userData, setUserData] = useState(null);
-  const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("bfm-admin-token");
     const fetchData = async () => {
       try {
         const response = await fetch(
