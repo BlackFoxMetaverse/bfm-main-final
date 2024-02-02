@@ -54,26 +54,27 @@ const UserList = ({ data }) => {
   // JSX for rendering user profiles
   const renderUserProfiles = () => {
     return currentUsers?.map((user, index) => (
-      <tr
-        className=" text-center hover:bg-gray-100 cursor-pointer"
-        onClick={() =>
-          handleRoute(
-            user?.userName,
-            user?.uid,
-            user?.phone_number,
-            user?.email,
-            user?.profession,
-            user?.image
-          )
-        }
-        key={index}
-      >
+      <tr className=" text-center hover:bg-gray-100 cursor-pointer" key={index}>
         <td className=" py-4">{index + 1}</td>
         <td className=" py-4">{user?.name}</td>
         <td className=" py-4">{user?.userName}</td>
         <td className=" py-4">{user?.email}</td>
         <td className=" py-4">{user?.phone_number}</td>
-        <td className=" text-green-500">Open profile</td>
+        <td
+          onClick={() =>
+            handleRoute(
+              user?.userName,
+              user?.uid,
+              user?.phone_number,
+              user?.email,
+              user?.profession,
+              user?.image
+            )
+          }
+          className="text-green-500"
+        >
+          Open profile
+        </td>
       </tr>
     ));
   };

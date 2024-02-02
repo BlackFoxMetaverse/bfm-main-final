@@ -97,7 +97,6 @@ const Login = () => {
     .then((result) => {
       let token = result.user.accessToken;
       
-      console.log("token: ", token);
       localStorage.setItem("bfm-admin-token", token);
       
       // setVerified(true);

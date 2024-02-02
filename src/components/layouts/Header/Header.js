@@ -48,7 +48,7 @@ const Header = () => {
           </button>
           <div className="flex items-center justify-center">
             <div className=" w-12 h-12 rounded-full flex">
-              <Image src={Avatar} />
+              <Image src={Avatar} alt="" />
             </div>
             <FaAngleDown />
           </div>

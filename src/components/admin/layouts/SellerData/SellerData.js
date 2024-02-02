@@ -8,6 +8,7 @@ import { FaAngleRight, FaHeart, FaLinkedin, FaYoutube } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import ImageModal from "../../Modules/ImageModal/ImageModal";
 import Link from "next/link";
+import PreLoader from "@/components/Modules/Preloader/preLoader";
 const ActivityHistory = [];
 const PurchaseHistory = ["", "", "", "", "", "", ""];
 const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
@@ -15,8 +16,9 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
   console.log("id", decodeURIComponent(id));
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [getImage, setImage] = useState("");
-  const route = useRouter();
+  const [getImages, setImages] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const accessToken = localStorage.getItem("bfm-admin-token");
     const fetchData = async () => {
@@ -32,9 +34,19 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
           }
         );
         const data = await response.json();
-        console.log(data.userProfile);
-        setUserData(data.userProfile);
-        setImage(data.userProfile.images);
+        console.log(data);
+        if (data.message === "Admin token has expired") {
+          router.replace("/admin/auth/login");
+        }
+        else if (
+          data?.message === `user with ${id} not found !`
+          ) {
+            setNotFound(true);
+          } else {
+            setNotFound(false);
+          }
+          setUserData(data?.userProfile);
+          setImages(data?.userProfile.images);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -42,7 +54,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
 
     fetchData();
   }, []);
-  console.log(userData?.images);
+
   const openModal = (imageUrl) => {
     setModalImageUrl(imageUrl);
   };
@@ -212,57 +224,70 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-y-scroll space-x-10 bg-white p-10 rounded-[20px]">
-            <div className="  space-y-8">
-              {/* <div>
-                <div className=" shrink-0 text-[color:var(--Black,#000)] text-[40.35px] not-italic font-semibold leading-[140%] tracking-[-0.807px]">
-                  Galactic skull Luminescence
-                </div>
-              </div> */}
-              <div>
-                <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
-                  {userData?.description}
-                </p>
-              </div>
-              <div className="border w-full"></div>
-              <div className="flex gap-3">
-                {userData?.tags?.map((tag, index) => (
-                  <p
-                    key={index}
-                    className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]"
-                  >
-                    {tag}
-                  </p>
-                ))}
-              </div>
-              {/* <div className="flex gap-8">
-                <div className="flex gap-1 justify-center items-center ">
-                  <CiHeart />
-                  <p>3,245</p>
-                </div>
+          {notFound ? (
+            <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-hidden justify-center items-center space-x-10 bg-white p-10 rounded-[20px]">
+              404 Not Found
+            </div>
+          ) : (
+            <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-y-scroll space-x-10 bg-white p-10 rounded-[20px]">
+              <div className="  space-y-8">
+                {/* <div>
+                    <div className=" shrink-0 text-[color:var(--Black,#000)] text-[40.35px] not-italic font-semibold leading-[140%] tracking-[-0.807px]">
+                      Galactic skull Luminescence
+                    </div>
+                  </div> */}
                 <div>
-                  <p className="text-[color:var(--Davys-Grey,#4D4D4D)] text-[13.211px] not-italic font-bold leading-[160%]">
-                    Sep 12, 2021
+                  <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
+                    {userData?.description}
                   </p>
                 </div>
-              </div> */}
+                <div className="border w-full"></div>
+                <div className="flex gap-3">
+                  {userData?.tags?.map((tag, index) => (
+                    <p
+                      key={index}
+                      className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]"
+                    >
+                      {tag}
+                    </p>
+                  ))}
+                </div>
+                {/* <div className="flex gap-8">
+                    <div className="flex gap-1 justify-center items-center ">
+                      <CiHeart />
+                      <p>3,245</p>
+                    </div>
+                    <div>
+                      <p className="text-[color:var(--Davys-Grey,#4D4D4D)] text-[13.211px] not-italic font-bold leading-[160%]">
+                        Sep 12, 2021
+                      </p>
+                    </div>
+                  </div> */}
+              </div>
+              <div className="grid grid-cols-2  w-full p-10 gap-2">
+                {
+                  getImages?.map((image, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        loading="lazy"
+                        key={index}
+                        className="w-[100%] h-[100%] cursor-pointer"
+                        src={s3Url + image}
+                        alt=""
+                        onClick={() => openModal(s3Url + image)}
+                      />
+                    </div>
+                  ))
+                }
+                {modalImageUrl && (
+                  <ImageModal
+                    imageUrl={modalImageUrl}
+                    closeModal={closeModal}
+                  />
+                )}
+              </div>
             </div>
-            <div className="grid grid-cols-2  w-full p-10 gap-2">
-              {userData?.images?.map((image, index) => (
-                <img
-                  key={index}
-                  className="w-[100%] h-[100%] cursor-pointer"
-                  src={s3Url + image}
-                  alt=""
-                  onClick={() => openModal(s3Url + image)}
-                />
-                // <h1>{s3Url + image}</h1>
-              ))}
-              {modalImageUrl && (
-                <ImageModal imageUrl={modalImageUrl} closeModal={closeModal} />
-              )}
-            </div>
-          </div>
+          )}
         </div>
         {/* <div className="max-w-[96rem] w-11/12 bg-white mx-auto min-h-[25.25rem] shrink-0 rounded-[20px]">
           <div className="w-11/12 mx-auto py-14">

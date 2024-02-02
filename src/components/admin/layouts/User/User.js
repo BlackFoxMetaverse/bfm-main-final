@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from "react";
 import UserCount from "../../Modules/UserCount/UserCount";
 import UserList from "../../layouts/UserList/UserList";
+import { useRouter } from "next/navigation";
 const User = () => {
   const [userData, setUserData] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const accessToken = localStorage.getItem("bfm-admin-token");
+
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -20,7 +23,10 @@ const User = () => {
           }
         );
         const data = await response.json();
-        console.log(data.users);
+        console.log(data.message);
+        if (data.message === "Admin token has expired") {
+          router.replace('/admin/auth/login');
+        }
         setUserData(data.users);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -29,7 +35,7 @@ const User = () => {
 
     fetchData();
   }, []);
-  console.log(userData?.length);
+  console.log(userData);
   return (
     <div className=" ">
       <div className="w-full p-5 bg-gray-200 ">
@@ -41,7 +47,7 @@ const User = () => {
         <UserCount
           title="total user"
           number={userData?.length}
-          percent="100%"
+          percent={(userData?.length * 100) / userData?.length}
           day="Today"
           color="#FE5722"
         />
@@ -49,21 +55,21 @@ const User = () => {
         <UserCount
           title="total client"
           number="0"
-          percent="0%"
+          percent="0"
           day="Month"
           color="#00AFA5"
         />
         <UserCount
           title="total sellers"
-          number="2"
-          percent="100%"
+          number={userData?.length}
+          percent={(userData?.length * 100) / userData?.length}
           day="Today"
           color="#794DF6"
         />
         <UserCount
           title="daily sales of tokens"
           number="0"
-          percent="0%"
+          percent="0"
           color="#BC01CD"
         />
       </div>

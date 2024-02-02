@@ -1,3 +1,4 @@
+import PreLoader from "@/components/Modules/Preloader/preLoader";
 import React from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 const UserCount = ({ title, number, percent, day, color }) => {
@@ -10,22 +11,32 @@ const UserCount = ({ title, number, percent, day, color }) => {
           </p>
         </div>
         <div>
-          <p
-            style={{ color: color }}
-            className={`text-2xl not-italic font-bold leading-[normal]`}
-          >
-            {number}
-          </p>
+          {number ? (
+            <p
+              style={{ color: color }}
+              className={`text-2xl not-italic font-bold leading-[normal]`}
+            >
+              {number}
+            </p>
+          ) : (
+            <PreLoader color={color} size={24} />
+          )}
         </div>
         <div>
           <div
             style={{ backgroundColor: color }}
             className={`w-full p-0.5  shrink-0 rounded-[var(--numberLength,0px)]`}
           ></div>
-          <p className="text-[#333] text-sm not-italic font-bold leading-[normal] uppercase">
-            {" "}
-            {percent}
-          </p>
+            {percent?.toString() !== "nan" ? (
+              <p
+                style={{ color: color }}
+                className={`text-[#333] text-sm not-italic font-bold leading-[normal] uppercase`}
+              >
+                {percent}%
+              </p>
+            ) : (
+              <PreLoader color={color} size={24} />
+            )}
         </div>
         <p className="text-[#666] text-xs not-italic font-normal leading-5">
           {day}
