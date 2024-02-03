@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
     console.log("Initializing Google Analytics...");
 
     // Initialize Google Analytics
-    ReactGA.initialize("G-MF3P17VEN8");
+    ReactGA.initialize("G-L4LNX64KCQ");
 
     // Track the initial pageview
     ReactGA.send({
