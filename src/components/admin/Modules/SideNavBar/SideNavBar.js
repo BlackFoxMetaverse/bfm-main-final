@@ -14,6 +14,18 @@ const SideNavBar = () => {
             User Management
           </p>
         </div>
+        <div className=" flex justify-start text-[#9197B3] items-start gap-2 px-6 py-2 shrink-0 rounded-lg ">
+          <LuUserSquare2 className=" w-5 h-5" />
+          <p className="  text-sm not-italic font-medium leading-[normal] tracking-[-0.14px]">
+            Seller Data
+          </p>
+        </div>
+        <div className=" flex justify-start text-[#9197B3] items-start gap-2 px-6 py-2 shrink-0 rounded-lg ">
+          <LuUserSquare2 className=" w-5 h-5" />
+          <p className="  text-sm not-italic font-medium leading-[normal] tracking-[-0.14px]">
+            Client data
+          </p>
+        </div>
         <div className="text-[#9197B3] flex justify-start cursor-pointer items-center gap-2 px-6 py-2 shrink-0 rounded-lg ">
           <MdOutlinePayment />
           <p className=" text-sm not-italic font-medium leading-[normal] tracking-[-0.14px]">
