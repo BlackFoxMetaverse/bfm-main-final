@@ -152,6 +152,8 @@ const UserList = ({ data }) => {
     );
   };
 
+  console.log(data);
+
   return (
     <div className="w-full space-y-4">
       <div className="flex w-full gap-x-5">
