@@ -10,18 +10,13 @@ import PreLoader from "@/components/Modules/Preloader/preLoader";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../../firebase";
 
-
 const Login = () => {
   const [countryCode, setCountryCode] = useState("+91");
   const [number, setNumber] = useState("");
   const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
-  const [isAdmin, setAdmin] = useState(false);
-  const [isChecked, setChecked] = useState(false);
   const [isVerified, setVerified] = useState(false);
   const [otp, setOtp] = useState("");
-
-  const checkAdminUri = `https://form.blackfoxmetaverse.io/api/check/admin?phone_number=`;
 
   const router = useRouter();
 
@@ -37,22 +32,22 @@ const Login = () => {
   const handleNumberInput = async (e) => {
     setNumber(e.target.value);
     setLength(e.target.value.toString().length);
-    const phone_number = encodeURIComponent(countryCode + e.target.value);
-    if (e.target.value.toString().length === 10) {
-      await axios
-        .get(`${checkAdminUri}${phone_number}`)
-        .then((response) => {
-          setAdmin(response.data);
-          setChecked(true);
-        })
-        .catch((err) => {
-          console.log(err);
-          setChecked(true);
-        });
-    } else {
-      setAdmin(false);
-      setChecked(false);
-    }
+    // const phone_number = encodeURIComponent(countryCode + e.target.value);
+    // if (e.target.value.toString().length === 10) {
+    //   await axios
+    //     .get(`${checkAdminUri}${phone_number}`)
+    //     .then((response) => {
+    //       setAdmin(response.data);
+    //       setChecked(true);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       setChecked(true);
+    //     });
+    // } else {
+    //   setAdmin(false);
+    //   setChecked(false);
+    // }
   };
 
   const generateRecaptcha = () => {
@@ -93,14 +88,14 @@ const Login = () => {
     e.preventDefault();
     let confirmationResult = window.confirmationResult;
     confirmationResult
-    .confirm(otp)
-    .then((result) => {
-      let token = result.user.accessToken;
-      
-      localStorage.setItem("bfm-admin-token", token);
-      
-      // setVerified(true);
-      router.replace("/admin/user");
+      .confirm(otp)
+      .then((result) => {
+        let token = result.user.accessToken;
+
+        localStorage.setItem("bfm-admin-token", token);
+
+        // setVerified(true);
+        router.replace("/admin/user");
 
         // const timer = setTimeout(() => {
         //   setVerified(false);
@@ -179,22 +174,14 @@ const Login = () => {
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                disabled={numberLength !== 10 || !isAdmin}
+                disabled={numberLength !== 10}
                 className={`${
-                  numberLength !== 10 || !isAdmin
+                  numberLength !== 10
                     ? "opacity-20 cursor-not-allowed"
                     : "opacity-1"
                 } gap-2 self-stretch px-8 py-3 rounded-xl bg-[#925FF0] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6`}
               >
-                {numberLength !== 0 && !isAdmin ? (
-                  isChecked ? (
-                    "Not Admin"
-                  ) : (
-                    <PreLoader size={16} color={"#fff"} />
-                  )
-                ) : (
                   "Verify"
-                )}
               </button>
             </div>
           </form>

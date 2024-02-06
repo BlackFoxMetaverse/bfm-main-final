@@ -75,7 +75,7 @@ const Login = () => {
 
         // setVerified(true);
         if (isExistingUser) {
-          router.replace("/client");
+          router.replace("/");
         } else {
           router.replace("/client/auth/register");
         }
