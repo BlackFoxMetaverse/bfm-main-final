@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Logo from "../../../../assets/light_logo.svg";
 import Image from "next/image";
 import { MdOutlineMessage } from "react-icons/md";
@@ -16,14 +18,14 @@ const Header = () => {
             Dashboard
           </h1>
         </div>
-        <div className="flex gap-2 items-center ">
+        {/* <div className="flex gap-2 items-center ">
           <MdOutlineMessage className="w-8 h-6 text-gray-500" />
           <AiFillBell className="w-8 h-6 text-gray-500" />
           <div className="flex items-center gap-1">
             <FaUserCircle className=" w-10 h-8 text-gray-500" />
             <p className="font-semibold text-gray-500">Admin name</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

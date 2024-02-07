@@ -11,12 +11,12 @@ const UserCount = ({ title, number, percent, day, color }) => {
           </p>
         </div>
         <div>
-          {number ? (
+          {number !== undefined ? (
             <p
               style={{ color: color }}
               className={`text-2xl not-italic font-bold leading-[normal]`}
             >
-              {number}
+              {number === null || 0 ? 0 : number}
             </p>
           ) : (
             <PreLoader color={color} size={24} />
@@ -27,16 +27,12 @@ const UserCount = ({ title, number, percent, day, color }) => {
             style={{ backgroundColor: color }}
             className={`w-full p-0.5  shrink-0 rounded-[var(--numberLength,0px)]`}
           ></div>
-            {percent?.toString() !== "nan" ? (
-              <p
-                style={{ color: color }}
-                className={`text-[#333] text-sm not-italic font-bold leading-[normal] uppercase`}
-              >
-                {percent}%
-              </p>
-            ) : (
-              <PreLoader color={color} size={24} />
-            )}
+          <p
+            style={{ color: color }}
+            className={`text-[#333] text-sm not-italic font-bold leading-[normal] uppercase`}
+          >
+            {percent?.toString === "NaN" || "0" ? 0 : percent}%
+          </p>
         </div>
         <p className="text-[#666] text-xs not-italic font-normal leading-5">
           {day}

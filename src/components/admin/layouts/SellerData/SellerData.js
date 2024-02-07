@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { BsExclamationCircleFill } from "react-icons/bs";
@@ -9,13 +10,14 @@ import { useRouter } from "next/navigation";
 import ImageModal from "../../Modules/ImageModal/ImageModal";
 import Link from "next/link";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
+import instance from "@/utils/axios";
 const ActivityHistory = [];
 const PurchaseHistory = ["", "", "", "", "", "", ""];
 const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
 const SellerData = ({ name, id, phone, email, designation, image }) => {
-  console.log("id", decodeURIComponent(id));
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [adminPrevilages, setAdminPrevilages] = useState(null);
   const [getImages, setImages] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const router = useRouter();
@@ -23,35 +25,44 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
     const accessToken = localStorage.getItem("bfm-admin-token");
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://form.blackfoxmetaverse.io/api/admin/getUserProfile?uid=${id}`,
+        const response = await instance.get(
+          `/super_user/getUserProfile?uid=${id}`,
           {
-            method: "GET",
             headers: {
-              "Content-Type": "application/json",
-              admintoken: accessToken,
+              token: accessToken,
             },
           }
         );
-        const data = await response.json();
-        console.log(data);
+        // const data = await response.json();
         if (data.message === "Admin token has expired") {
           router.replace("/admin/auth/login");
+        } else if (data?.message === `user with ${id} not found !`) {
+          setNotFound(true);
+        } else {
+          setNotFound(false);
         }
-        else if (
-          data?.message === `user with ${id} not found !`
-          ) {
-            setNotFound(true);
-          } else {
-            setNotFound(false);
-          }
-          setUserData(data?.userProfile);
-          setImages(data?.userProfile.images);
+        setUserData(data?.userProfile);
+        setImages(data?.userProfile.images);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
+    const fetchAdminData = async () => {
+      const response = await instance.get("/super_user/login", {
+        headers: {
+          token: accessToken,
+        },
+      });
+
+      if (response.status === 200) {
+        setAdminPrevilages(response?.data);
+      } else {
+        setAdminPrevilages("Internal Server Error");
+      }
+    };
+
+    fetchAdminData();
     fetchData();
   }, []);
 
@@ -99,19 +110,52 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
                 <div className="flex items-end flex-grow justify-between w-full">
                   <button
                     type="button"
-                    className="text-white px-4 py-2 rounded bg-[#8295F6] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]"
+                    disabled={
+                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
+                        ?.update
+                        ? true
+                        : false
+                    }
+                    className={`text-white px-4 py-2 rounded ${
+                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
+                        ?.update
+                        ? "opacity-1 cursor-pointer"
+                        : "opacity-50 cursor-not-allowed"
+                    } bg-[#374fcb] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
                   >
                     Edit
                   </button>
                   <button
                     type="button"
-                    className="text-white px-4 py-2 rounded bg-[#EE7A78]  3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]"
+                    disabled={
+                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
+                        ?.update
+                        ? true
+                        : false
+                    }
+                    className={`text-white px-4 py-2 rounded ${
+                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
+                        ?.update
+                        ? "opacity-1 cursor-pointer"
+                        : "opacity-50 cursor-not-allowed"
+                    } bg-[#f25350] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
                   >
                     Suspend{" "}
                   </button>
                   <button
                     type="button"
-                    className="text-white px-4 py-2 rounded 3xl:text-2xl bg-[#E53935] 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]"
+                    disabled={
+                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
+                        ?.delete
+                        ? true
+                        : false
+                    }
+                    className={`text-white px-4 py-2 rounded 3xl:text-2xl${
+                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
+                        ?.delete
+                        ? "opacity-1 cursor-pointer"
+                        : "opacity-50 cursor-not-allowed"
+                    } bg-[#E53935] 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
                   >
                     Delete
                   </button>
@@ -265,20 +309,18 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
                   </div> */}
               </div>
               <div className="grid grid-cols-2  w-full p-10 gap-2">
-                {
-                  getImages?.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        loading="lazy"
-                        key={index}
-                        className="w-[100%] h-[100%] cursor-pointer"
-                        src={s3Url + image}
-                        alt=""
-                        onClick={() => openModal(s3Url + image)}
-                      />
-                    </div>
-                  ))
-                }
+                {getImages?.map((image, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      loading="lazy"
+                      key={index}
+                      className="w-[100%] h-[100%] cursor-pointer"
+                      src={s3Url + image}
+                      alt=""
+                      onClick={() => openModal(s3Url + image)}
+                    />
+                  </div>
+                ))}
                 {modalImageUrl && (
                   <ImageModal
                     imageUrl={modalImageUrl}

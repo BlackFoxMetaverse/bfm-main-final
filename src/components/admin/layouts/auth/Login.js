@@ -181,7 +181,7 @@ const Login = () => {
                     : "opacity-1"
                 } gap-2 self-stretch px-8 py-3 rounded-xl bg-[#925FF0] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6`}
               >
-                  "Verify"
+                Verify
               </button>
             </div>
           </form>
