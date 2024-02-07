@@ -1,4 +1,6 @@
 "use client";
+
+import axios from "@/utils/axios";
 import React, { useEffect, useState } from "react";
 import UserCount from "../../Modules/UserCount/UserCount";
 import UserList from "../../layouts/UserList/UserList";
@@ -12,22 +14,16 @@ const User = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://form.blackfoxmetaverse.io/api/admin/getAllUsers",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              admintoken: accessToken,
-            },
-          }
-        );
-        const data = await response.json();
-        console.log(data.message);
-        if (data.message === "Admin token has expired") {
-          router.replace('/admin/auth/login');
+        const response = await axios.get("/super_user/users", {
+          headers: {
+            token: accessToken,
+          },
+        });
+        console.log(response.data.message);
+        if (response.data.message === "token is required !!!") {
+          router.replace("/admin/auth/login");
         }
-        setUserData(data.users);
+        setUserData(response.data.users);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -35,7 +31,7 @@ const User = () => {
 
     fetchData();
   }, []);
-  console.log(userData);
+
   return (
     <div className=" ">
       <div className="w-full p-5 bg-gray-200 ">

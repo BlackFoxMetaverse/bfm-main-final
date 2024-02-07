@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { BsExclamationCircleFill } from "react-icons/bs";
@@ -33,8 +34,8 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
             },
           }
         );
-        const data = await response.json();
-        console.log(data);
+        // const data = await response.json();
+        console.log(response.data);
         if (data.message === "Admin token has expired") {
           router.replace("/admin/auth/login");
         }
