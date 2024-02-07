@@ -572,7 +572,6 @@ const Login = () => {
     });
   }
 
-  console.log("exs:", experiences);
   return (
     <main
       className="flex max-w-[1920px] lg:w-11/12 mx-auto h-screen overflow-hidden justify-center 3xl:items-start 3xl:mt-5 md:items-center items-start"

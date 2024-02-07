@@ -24,7 +24,6 @@ const UserList = ({ data }) => {
     setSortBy(event.target.value);
   };
   // const [userList, setUserList] = useState(data);
-  console.log(data);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -152,7 +151,6 @@ const UserList = ({ data }) => {
     );
   };
 
-  console.log(data);
 
   return (
     <div className="w-full space-y-4">

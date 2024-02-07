@@ -19,8 +19,9 @@ const User = () => {
             token: accessToken,
           },
         });
-        console.log(response.data.message);
-        if (response.data.message === "token is required !!!") {
+        if (response?.status !== 200) {
+          router.replace("/admin/auth/login");
+        } else if (response.data.message === "token is required !!!") {
           router.replace("/admin/auth/login");
         }
         setUserData(response.data.users);

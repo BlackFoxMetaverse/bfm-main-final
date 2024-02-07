@@ -7,8 +7,6 @@ import { MdOutlineMessage } from "react-icons/md";
 import { AiFillBell } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 const Header = () => {
-  const [userData, setData] = useState();
-
   return (
     <div className=" w-full flex shrink-0 fill-white bg-white justify-center items-center sticky inset-x-0 top-0">
       <div className="bg-black px-20 max-w-80 w-1/6 py-4">

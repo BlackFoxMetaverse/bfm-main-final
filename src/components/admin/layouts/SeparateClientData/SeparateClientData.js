@@ -19,7 +19,6 @@ const SeperateClientData = () => {
             token: accessToken,
           },
         });
-        console.log(response.data.message);
         if (response.data.message === "token is required !!!") {
           router.replace("/admin/auth/login");
         }
