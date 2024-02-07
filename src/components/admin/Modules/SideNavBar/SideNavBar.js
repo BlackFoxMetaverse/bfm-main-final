@@ -36,8 +36,8 @@ const SideNavBar = () => {
   return (
     <div className="fixed w-1/6 h-[90%] max-w-80 flex flex-col p-6 bg-white ">
       <div className="flex-grow  space-y-8">
-        {userData?.data?.super_user?.role === 2101 ||
-        userData?.data?.super_user?.role === 2001 ||
+        {userData?.data?.data?.super_user?.role === 2101 ||
+        userData?.data?.data?.super_user?.role === 2001 ||
         userData?.data?.data?.super_user?.role === 2151 ? (
           <div className="w-full space-y-8">
             <Link
@@ -109,7 +109,7 @@ const SideNavBar = () => {
         ) : (
           <div>Nothing For You!</div>
         )}
-        {userData?.data?.super_user?.role === 2001 && (
+        {userData?.data?.data?.super_user?.role === 2001 && (
           <Link
             href={"/admin/admin-management"}
             className={`text-[#9197B3] flex justify-start cursor-pointer items-center gap-2 px-6 py-2 shrink-0 rounded-lg ${
@@ -137,9 +137,9 @@ const SideNavBar = () => {
                 : userData?.data?.data?.super_user?.name}
             </p>
             <p className="text-[#757575] text-xs not-italic font-normal leading-[normal] tracking-[0.12px] capitalize">
-              {userData?.data?.super_user?.role === 2001
+              {userData?.data?.data?.super_user?.role === 2001
                 ? "Super Admin"
-                : userData?.data?.super_user?.role === 2101
+                : userData?.data?.data?.super_user?.role === 2101
                 ? "Admin"
                 : userData?.data?.data?.super_user?.role === 2151
                 ? "Sub Admin"
