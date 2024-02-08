@@ -1,12 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import Suggestions from "../../../layouts/Suggestions/Suggestions";
-import Categories from "../../../layouts/Categories/Categories";
-import { RxCross1 } from "react-icons/rx";
-import { FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import SearchLayout from "../../../layouts/SearchLayout/SearchLayout";
-import ServicesCard from "@/components/Modules/ServicesCard/ServicesCard";
+import ServicesCard from "@/components/client/modules/ServicesCard/ServicesCard";
 import Image from "next/image";
 import { HiMiniSignal } from "react-icons/hi2";
 import { FaChevronDown, FaRegCompass } from "react-icons/fa6";
@@ -20,6 +15,11 @@ const dummyData = [
   { id: 3, title: "Gaming", category: "Entertainment" },
   { id: 4, title: "Developer", category: "Technology" },
 ];
+
+const services = [{
+  src: require("../../../../../public/clients_images/services/graphics-design.svg"),
+}];
+
 const Hero = () => {
   const router = useRouter();
   const [searchInput, setSearchInput] = useState("");
@@ -97,7 +97,7 @@ const Hero = () => {
         <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
           <Image
             loading="eager"
-            src={require("../../../../public/hero_bg.svg")}
+            src={require("../../../../../public/hero_bg.svg")}
             alt=""
             className="w-full h-full object-cover"
           />
@@ -247,6 +247,13 @@ const Hero = () => {
             <AiFillRightSquare />
           </button>
         </div>
+      </section>
+
+      {/* Selection Section */}
+      <section className="flex flex-col items-start gap-10 w-5/6">
+        <h1 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
+          You need it, we've got it
+        </h1>
       </section>
     </main>
   );
