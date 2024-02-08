@@ -156,7 +156,7 @@ const Hero = () => {
                 alt=""
                 className="w-[57.749px] h-[57.749px] shrink-0"
               />
-              <p className="text-[#222325] text-center [font-family:Gotham] text-[18.436px] font-normal leading-[27.653px]">
+              <p className="text-[#222325] text-center text-[18.436px] font-normal leading-[27.653px]">
                 {service.name}
               </p>
             </button>
