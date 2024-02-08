@@ -141,7 +141,7 @@ const Hero = () => {
       {/* Selection Section */}
       <section className="flex flex-col items-start gap-10 w-5/6">
         <h1 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
-          You need it, we've got it
+          You need it, we&apos;ve got it
         </h1>
         <div className="grid grid-cols-5 flex-wrap justify-between w-full h-[400px] items-center">
           {services?.map((service, index) => (

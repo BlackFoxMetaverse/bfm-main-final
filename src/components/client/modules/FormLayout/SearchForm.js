@@ -1,5 +1,6 @@
 "use client";
 
+import Location from "@/components/DeviceLocation/location";
 import React, { useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { FaChevronDown } from "react-icons/fa6";

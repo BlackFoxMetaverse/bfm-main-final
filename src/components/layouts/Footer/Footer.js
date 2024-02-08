@@ -24,7 +24,7 @@ const Footer = () => {
         <div className="h-1/2  grid grid-cols-7 p-4 lg:px-20">
           <div className="p-5 col-span-7 lg:col-span-3 ">
             {/*  */}
-            <Image src={Logo} className="w-[200px] h-[80px]" />
+            <Image src={Logo} alt="" className="w-[200px] h-[80px]" />
             <p className="text-[#777E90] text-sm my-4">
               The goal of Black Fox Metaverse, the company we formed, is to
               completely transform the NFT e-commerce sector. We are a rapidly
