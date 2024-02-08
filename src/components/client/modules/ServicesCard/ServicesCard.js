@@ -1,10 +1,18 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FaHeart } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
 
-const ServicesCard = () => {
+const ServicesCard = ({ username, id }) => {
+  const router = useRouter();
+
   return (
-    <div className="flex flex-col items-start w-full shadow-[0px_6px_12px_0px_rgba(41,41,41,0.08)] bg-transparent rounded-[18px] overflow-hidden">
+    <div
+      onClick={() => router.push(`/client/username/${username}/${id}`)}
+      className="flex flex-col cursor-pointer items-start w-full shadow-[0px_6px_12px_0px_rgba(41,41,41,0.08)] bg-transparent rounded-[18px] overflow-hidden"
+    >
       <div className="flex h-[233px] w-full items-center overflow-hidden relative">
         <img
           loading="eager"

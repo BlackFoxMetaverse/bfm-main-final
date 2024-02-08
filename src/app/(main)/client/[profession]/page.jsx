@@ -1,9 +1,8 @@
-import React from 'react'
+import SellerLists from "@/components/client/layout/SellerLists/SellerLists";
+import React from "react";
 
-const page = ({params}) => {
-  return (
-    <div>{params}</div>
-  )
-}
+const page = ({ params }) => {
+  return <SellerLists params={params.profession} />;
+};
 
-export default page
+export default page;

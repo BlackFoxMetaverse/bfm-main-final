@@ -19,7 +19,7 @@ const SellerDetails = () => {
   const [showImage, setShowImage] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState(null);
-  const image = [Frame2, Frame3, Frame4, Frame5];
+  const image = [Frame1, Frame2, Frame3, Frame4, Frame5, Frame1];
   const openModal = () => {
     setShowModal(true);
   };
@@ -245,27 +245,23 @@ const SellerDetails = () => {
                   </div> */}
               </div>
               {showImage ? (
-                <div className=" justify-center items-center grid grid-cols-2 col-span-1  w-full p-10 gap-2">
-                  {image.map((data, i) => (
-                    <div key={i} className="relative">
+                <div className=" justify-center items-center grid grid-cols-2  w-full p-10 gap-2">
+                  {image?.map((data, i) => (
+                    <div
+                      key={i}
+                      className={`relative ${
+                        i === 5 || i === 0 ? "col-span-2 row-span-2" : ""
+                      }`}
+                    >
                       <Image
                         loading="lazy"
-                        className="w-[100%] h-[100%] cursor-pointer"
+                        className="w-[100%] h-[100%] cursor-pointer object-cover"
                         src={data}
                         alt=""
                         onClick={() => openImageModal(data)}
                       />
                     </div>
                   ))}
-                  <div className="relative">
-                    <Image
-                      loading="lazy"
-                      className="w-[100%] h-[100%] cursor-pointer"
-                      src={Frame1}
-                      alt=""
-                      onClick={() => openImageModal(Frame1)}
-                    />
-                  </div>
 
                   {modalImageUrl && (
                     <ImageModal
