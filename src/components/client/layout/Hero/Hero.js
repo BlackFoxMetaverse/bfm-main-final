@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import Suggestions from "../Suggestions/Suggestions";
-import Categories from "../Categories/Categories";
+import Suggestions from "../../../layouts/Suggestions/Suggestions";
+import Categories from "../../../layouts/Categories/Categories";
 import { RxCross1 } from "react-icons/rx";
 import { FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import SearchLayout from "../SearchLayout/SearchLayout";
+import SearchLayout from "../../../layouts/SearchLayout/SearchLayout";
 import ServicesCard from "@/components/Modules/ServicesCard/ServicesCard";
 import Image from "next/image";
 import { HiMiniSignal } from "react-icons/hi2";
