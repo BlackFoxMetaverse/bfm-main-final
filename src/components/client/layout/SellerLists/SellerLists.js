@@ -50,7 +50,7 @@ const SellerLists = ({ params }) => {
       </section>
 
       {/* Recent Section */}
-      <section className="space-y-5 w-5/6 mx-auto">
+      <section className="space-y-5 w-5/6 mx-auto my-12">
         <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
           Recents
         </h2>
@@ -62,7 +62,7 @@ const SellerLists = ({ params }) => {
       </section>
 
       {/* Recommended Section */}
-      <section className="space-y-5 w-5/6 mx-auto">
+      <section className="space-y-5 w-5/6 mx-auto my-12">
         <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
           Recommended
         </h2>

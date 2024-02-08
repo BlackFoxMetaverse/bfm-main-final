@@ -13,7 +13,9 @@ import { FaInfoCircle } from "react-icons/fa";
 import Modal from "@/components/Modules/Modal/Modal";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import ImageModal from "@/components/admin/Modules/ImageModal/ImageModal";
+import { useRouter } from "next/navigation";
 const SellerDetails = () => {
+  const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showImage, setShowImage] = useState(true);
@@ -37,11 +39,16 @@ const SellerDetails = () => {
   return (
     <div className="pt-20 bg-[#fff]">
       <div className={` h-full pb-10 p-10`}>
-        <button className="bg-blue-50 text-blue-600 p-2 flex justify-center items-center gap-2 rounded">
-          {" "}
-          <IoArrowBackCircleOutline className="w-5 h-5" />
-          Back
-        </button>
+        <div className="w-11/12 mx-auto mb-10">
+          <button
+            onClick={() => router.back()}
+            className="bg-blue-50 text-blue-600 p-2 flex justify-center items-center gap-2 rounded"
+          >
+            {" "}
+            <IoArrowBackCircleOutline className="w-5 h-5" />
+            Back
+          </button>
+        </div>
 
         <div className="space-y-10 h-full">
           <div className="flex w-10/12 gap-5 mx-auto shrink-0 rounded-[20px]">
@@ -57,7 +64,7 @@ const SellerDetails = () => {
 
                   <div className="space-y-2">
                     <p className="text-black  whitespace-pre-wrap break-words 3xl:text-[20px] 2xl:text-xl xl:text-base lg:text-medium not-italic font-bold leading-[normal] capitalize">
-                      Rit****
+                      Ri*****
                     </p>
 
                     <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]">
