@@ -18,7 +18,7 @@ const Footer = () => {
         pathname.startsWith("/auth") || pathname.startsWith("/about")
           ? "hidden"
           : "block"
-      }`}
+      } bg-white`}
     >
       <div className="mx-auto 2xl:w-[1440px] w-full lg:w-full">
         <div className="h-1/2  grid grid-cols-7 p-4 lg:px-20">
