@@ -18,7 +18,7 @@ const SellerDetails = () => {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showImage, setShowImage] = useState(true);
+  const [showImage, setShowImage] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const image = [Frame1, Frame2, Frame3, Frame4, Frame5, Frame1];
