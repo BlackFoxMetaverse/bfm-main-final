@@ -12,7 +12,7 @@ import Avatar from "../../../assets/avatar.svg";
 import { FaAngleDown } from "react-icons/fa6";
 import Location from "@/components/DeviceLocation/location";
 
-const Header = () => {
+const Header = ({ isSeller }) => {
   const [userLocation, setUserLocation] = useState(null);
 
   const handleLocationChange = (location) => {
@@ -40,9 +40,11 @@ const Header = () => {
         </div>
 
         <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
-          <buttom className=" text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]">
-            Become a Seller
-          </buttom>
+          {!isSeller && (
+            <buttom className=" text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]">
+              Become a Seller
+            </buttom>
+          )}
           <button>
             <LuBellDot className="lg:text-2xl text-2xl" />
           </button>
