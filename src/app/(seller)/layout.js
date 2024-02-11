@@ -13,9 +13,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className={inter.className}>
+      <body
+        suppressHydrationWarning
+        className={`${inter.className} flex flex-col min-h-screen`}
+      >
         <Header isSeller />
-        {children}
+        <div className="flex-grow">{children}</div>
         <Footer />
       </body>
     </html>
