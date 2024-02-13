@@ -31,6 +31,7 @@ import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
 import Toast from "@/components/Modules/Toast/Toast";
 import { updateUserLocation } from "@/utils/location";
+
 const Professions = [
   "Photographer",
   "Designer",

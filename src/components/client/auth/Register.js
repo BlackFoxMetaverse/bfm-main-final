@@ -1,15 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../../../public/logos/white_fox.svg";
 import { FaUserAlt } from "react-icons/fa";
 import { FaCamera } from "react-icons/fa6";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import instance from "@/utils/axios";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { RiCrossFill } from "react-icons/ri";
+import { RxCrossCircled } from "react-icons/rx";
+import PreLoader from "@/components/Modules/Preloader/preLoader";
 
 const Register = () => {
+  const [document, setDocument] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [isUniqueUser, setUniqueUser] = useState(true);
+  const [isUniqueEmail, setUniqueEmail] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    image: "",
+    name: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    setDocument(window.document);
+  });
+
   const router = useRouter();
 
   const handleImageChange = (e) => {
@@ -18,13 +37,74 @@ const Register = () => {
       setProfileImage(file);
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
+      setFormData({ ...formData, image: file?.name });
     }
   };
 
+  function checkUniqueUserName(e) {
+    const userName = e.target.value;
+    if (userName === "") {
+      return;
+    }
+    setFormData({ ...formData, name: userName });
+    var checkTimeout;
+    if (checkTimeout) {
+      clearTimeout(checkTimeout);
+    }
+    checkTimeout = setTimeout(() => {
+      instance
+        .get(`/check/userName?userName=${userName}`)
+        .then((res) => {
+          setUniqueUser(res.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }, 500);
+  }
+
+  function checkUniqueEmail(e) {
+    const email = e.target.value;
+    if (email === "") {
+      return;
+    }
+    var checkTimeout;
+    if (checkTimeout) {
+      clearTimeout(checkTimeout);
+    }
+    setFormData({ ...formData, email: email });
+    checkTimeout = setTimeout(() => {
+      instance
+        .get(`/check/email?email=${email}`)
+        .then((res) => {
+          setUniqueEmail(res.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }, 500);
+  }
+
   const handleSubmit = (e) => {
+    const token = localStorage.getItem("bfm-client-token");
+    console.log(token);
     e.preventDefault();
-    router.replace("/");
+
+    instance
+      .post("/user/user", formData, {
+        headers: {
+          token: token,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        router.replace("/");
+      })
+      .catch((err) => console.error(err.message))
+      .finally(() => setSubmitting(true));
   };
+
+  console.log(formData);
 
   return (
     <div className="flex flex-col h-screen overflow-x-hidden justify py-12 space-y-20 shrink items-center xl:px-[288px] ">
@@ -84,20 +164,33 @@ const Register = () => {
           </div>
           <div className="flex w-[458px] flex-col justify-center items-start gap-[5px]">
             <label
-              htmlFor="full_name"
+              htmlFor="Username"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] text-base font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
               Full Name
             </label>
             <input
               type="text"
-              name="full_name"
-              id="full_name"
-              placeholder="Enter Full Name"
+              name="Username"
+              id="Username"
+              placeholder="Enter User Name"
+              onChange={checkUniqueUserName}
               required
               className="flex h-11 items-center gap-[5px] self-stretch border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] p-3.5 rounded-lg border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />
           </div>
+          {document?.getElementById("Username").value !== "" &&
+            (isUniqueUser ? (
+              <div className="flex gap-1.5 items-center w-full text-green-600 xl:text-sm text-xs capitalize">
+                <BsCheckCircleFill />
+                this username is unique and valid
+              </div>
+            ) : (
+              <div className="flex gap-1.5 items-center text-red-600 xl:text-sm text-xs capitalize">
+                <RxCrossCircled />
+                this username is already taken
+              </div>
+            ))}
           <div className="flex w-[458px] flex-col justify-center items-start gap-[5px]">
             <label
               htmlFor="email"
@@ -109,11 +202,24 @@ const Register = () => {
               type="email"
               name="email"
               id="email"
+              onChange={checkUniqueEmail}
               placeholder="Enter Email Address"
               required
               className="flex h-11 items-center gap-[5px] self-stretch border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] p-3.5 rounded-lg border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />
           </div>
+          {document?.getElementById("email").value !== "" &&
+            (isUniqueEmail ? (
+              <div className="flex gap-1.5 items-center w-full text-green-600 xl:text-sm text-xs capitalize">
+                <BsCheckCircleFill />
+                this email is unique and valid
+              </div>
+            ) : (
+              <div className="flex gap-1.5 items-center text-red-600 xl:text-sm text-xs capitalize">
+                <RxCrossCircled />
+                this email is already taken
+              </div>
+            ))}
           <div className="flex items-center gap-1">
             <div className="flex w-[16.701px] h-[16.701px] justify-center items-center shrink-0">
               <input
@@ -138,10 +244,17 @@ const Register = () => {
             </label>
           </div>
           <button
+            disabled={submitting}
             type="submit"
-            className="flex justify-center items-center gap-[5px] rounded [background:var(--Primary-1,#4461F2)] px-8 py-4 text-[color:var(--White,#FFF)] text-xl font-normal leading-[100%] tracking-[-1px]"
+            className={`${
+              submitting ? "opacity-50 cursor-not-allowed" : "opacity-1"
+            } flex justify-center items-center gap-[5px] rounded [background:var(--Primary-1,#4461F2)] px-8 py-4 text-[color:var(--White,#FFF)] text-xl font-normal leading-[100%] tracking-[-1px]`}
           >
-            Create Account
+            {submitting ? (
+              <PreLoader color={"white"} size={20} />
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
       </div>

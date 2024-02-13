@@ -13,14 +13,14 @@ const SellerLists = ({ params }) => {
   return (
     <main className="w-full">
       {/* Search section */}
-      <section className="max-w-[1920px] min-h-[343px] flex justify-center items-center shrink-0 [background:#320E8F]">
-        <div className="flex flex-wrap w-5/6 h-32 justify-center mx-auto items-center">
+      <section className=" min-h-[343px] flex justify-center items-center shrink-0 [background:#320E8F]">
+        <div className="flex max-w-[1920px] flex-wrap w-5/6 h-32 justify-center mx-auto items-center">
           <SearchForm
             handleSubmit={(e) => e.preventDefault()}
             onChange={setSearchTerm}
             value={searchTerm}
           />
-          <div className="flex items-start gap-[13.806px] w-full">
+          <div className="lg:flex hidden items-start gap-[13.806px] w-full">
             <button
               type="button"
               className="flex justify-center items-center gap-[6.139px] [background:var(--Foundation-Blue-blue-50,#ECEFFE)] px-[12.278px] py-[6.139px] rounded-[14.734px] text-[color:var(--Primary-1,#4461F2)] text-[17.189px] font-normal leading-[100%] tracking-[-0.859px]"
@@ -54,7 +54,7 @@ const SellerLists = ({ params }) => {
         <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
           Recents
         </h2>
-        <div className="grid grid-cols-4 justify-between gap-10 w-full">
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-10 w-full">
           {RecentData?.map((_, index) => (
             <ServicesCard key={index} />
           ))}

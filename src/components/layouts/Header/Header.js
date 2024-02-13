@@ -41,7 +41,7 @@ const Header = ({ isSeller }) => {
 
         <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
           {!isSeller && (
-            <buttom className=" text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]">
+            <buttom className="text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]">
               Become a Seller
             </buttom>
           )}

@@ -9,7 +9,14 @@ import { IoLocationOutline } from "react-icons/io5";
 
 const dummyData = ["Photography", "Marketing", "Gaming", "Developer"];
 
-const SearchForm = ({ value, onChange, handleSubmit, tags, isShown, width }) => {
+const SearchForm = ({
+  value,
+  onChange,
+  handleSubmit,
+  tags,
+  isShown,
+  width,
+}) => {
   const [rangeSection, setRangeSection] = useState(false);
   const [rangeValue, setRangeValue] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
@@ -26,14 +33,17 @@ const SearchForm = ({ value, onChange, handleSubmit, tags, isShown, width }) => 
   }
 
   return (
-    <div style={{width: width}} className="w-full max-w-[1920px] flex justify-center items-center">
+    <div
+      style={{ width: width }}
+      className="w-full max-w-[1920px] flex justify-center items-center"
+    >
       <form
         action=""
         onSubmit={handleSubmit}
-        className="w-full  inline-flex flex-col relative items-center gap-2.5 rounded-[10px]"
+        className="w-full  inline-flex flex-col items-center gap-2.5 rounded-[10px] relative"
       >
-        <div className="flex justify-center items-center gap-10 h-full w-full bg-white border-[color:var(--Foundation-Grey-grey-50,#E9E9E9)] relative shadow-[0px_1px_4px_0px_rgba(0,0,0,0.10)] px-[25px] py-3 rounded-[10px] border-2 border-solid">
-          <div className="flex items-center gap-5">
+        <div className="flex justify-center items-center gap-10 h-full w-full bg-white border-[color:var(--Foundation-Grey-grey-50,#E9E9E9)] relative shadow-[0px_1px_4px_0px_rgba(0,0,0,0.10)] lg:px-[25px] lg:py-3 px-4 py-1.5 rounded-[10px] border-2 border-solid">
+          <div className="flex items-center gap-5 lg:static absolute top-full lg:translate-y-0 translate-y-1/2 right-0 py-1.5 px-3 lg:px-0 lg:py-0 rounded-lg bg-white justify-end">
             <div className="flex justify-end items-center gap-[21px]">
               <label
                 htmlFor="range"
@@ -100,7 +110,7 @@ const SearchForm = ({ value, onChange, handleSubmit, tags, isShown, width }) => 
               </button>
             </div>
           </div>
-          <div className="h-10 w-px shrink-0 bg-black/50"></div>
+          <div className="h-10 w-px lg:static hidden shrink-0 bg-black/50"></div>
           <div className="flex items-center gap-4 flex-grow">
             <label htmlFor="search">
               <BsSearch />
@@ -111,7 +121,7 @@ const SearchForm = ({ value, onChange, handleSubmit, tags, isShown, width }) => 
               id="search"
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              className="min-w-[294px] w-full h-full text-base font-[450] leading-[150.687%] focus:outline-none"
+              className="lg:min-w-[294px] w-full h-full text-base font-[450] leading-[150.687%] focus:outline-none"
               placeholder="Search by profession..."
             />
           </div>
@@ -123,7 +133,9 @@ const SearchForm = ({ value, onChange, handleSubmit, tags, isShown, width }) => 
           </button>
         </div>
         {isShown && (
-          <div className={`flex items-center justify-end w-full gap-2.5`}>
+          <div
+            className={`lg:flex hidden items-center justify-end w-full gap-2.5`}
+          >
             <p className="text-white text-lg font-normal leading-[27px]">
               Popular tags :{" "}
             </p>

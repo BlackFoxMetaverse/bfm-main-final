@@ -14,11 +14,12 @@ import Modal from "@/components/Modules/Modal/Modal";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import ImageModal from "@/components/admin/Modules/ImageModal/ImageModal";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const SellerDetails = () => {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showImage, setShowImage] = useState(false);
+  const [showImage, setShowImage] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const image = [Frame1, Frame2, Frame3, Frame4, Frame5, Frame1];
@@ -39,7 +40,7 @@ const SellerDetails = () => {
   return (
     <div className="pt-20 bg-[#fff]">
       <div className={` h-full pb-10 p-10`}>
-        <div className="w-11/12 mx-auto mb-10">
+        <div className="w-11/12 mx-auto lg:block hidden mb-10">
           <button
             onClick={() => router.back()}
             className="bg-blue-50 text-blue-600 p-2 flex justify-center items-center gap-2 rounded"
@@ -51,23 +52,23 @@ const SellerDetails = () => {
         </div>
 
         <div className="space-y-10 h-full">
-          <div className="flex w-10/12 gap-5 mx-auto shrink-0 rounded-[20px]">
-            <div className="w-1/3 space-y-5 ">
+          <div className="flex lg:flex-row flex-col lg:w-5/6 gap-5 mx-auto shrink-0 rounded-[20px]">
+            <div className="lg:w-1/3 w-full space-y-5 ">
               <div className="w-full overflow-hidden px-5 p-4 bg-white  shadow-md shadow-gray-500 gap-8 rounded-[25.636px] items-center">
                 <div className=" p-4 bg-white flex gap-8 rounded-[25.636px] items-center">
                   <Image
                     src={Profile}
                     onClick={() => openImageModal(Profile)}
-                    className="flex cursor-pointer object-cover 3xl:w-[9.17rem] 2xl:w-[7rem] xl:w-[5rem] lg:w-[3rem] aspect-square justify-center items-center shrink-0 rounded-full"
+                    className="flex cursor-pointer object-cover 3xl:w-[9.17rem] 2xl:w-[7rem] xl:w-[5rem] w-[5rem] aspect-square justify-center items-center shrink-0 rounded-full"
                     alt=""
                   />
 
-                  <div className="space-y-2">
+                  <div className="xl:space-y-2">
                     <p className="text-black  whitespace-pre-wrap break-words 3xl:text-[20px] 2xl:text-xl xl:text-base lg:text-medium not-italic font-bold leading-[normal] capitalize">
                       Ri*****
                     </p>
 
-                    <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]">
+                    <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-normal">
                       FrontEnd Developer
                     </p>
 
@@ -173,7 +174,7 @@ const SellerDetails = () => {
                 404 Not Found
               </div>
             ) : ( */}
-            <div className="flex flex-col w-2/3 space-y-10  space-x-10 bg-white p-10 rounded-[20px]">
+            <div className="flex flex-col lg:w-2/3 w-full space-y-10  space-x-10 bg-white lg:p-10 rounded-[20px]">
               <div className="  space-y-6">
                 <div className="bg-blue-50 rounded-full px-3">
                   <p className="shrink-0 text-blue-600 text-sm  not-italic font-normal leading-[160%]">
@@ -230,10 +231,13 @@ const SellerDetails = () => {
                         placeholder before the final copy is available.
                       </p>
                       <div className="bg-blue-50 rounded-full px-3">
-                        <p className="shrink-0 text-blue-600 text-sm  not-italic font-normal leading-[160%]">
+                        <Link
+                          href={"/"}
+                          className="break-words whitespace-pre-wrap shrink-0 text-blue-600 text-sm  not-italic font-normal leading-[160%]"
+                        >
                           www.randomlinkoftheproject.com/sefhsf12r93rhxm29h47r29
                           hc29r37h923h293r7s,hm29hrxh
-                        </p>
+                        </Link>
                       </div>
                     </div>
                   </div>

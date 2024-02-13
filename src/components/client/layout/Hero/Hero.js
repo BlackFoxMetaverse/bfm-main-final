@@ -86,7 +86,7 @@ const Hero = () => {
   return (
     <main className="inline-flex w-full flex-col items-center gap-[120px]">
       {/* Hero */}
-      <section className="relative flex w-full h-screen flex-col justify-center items-center gap-2.5 bg-[#331d71]/50">
+      <section className="relative flex w-full lg:h-screen py-32 flex-col justify-center items-center gap-2.5 bg-[#331d71]/50">
         <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
           <Image
             loading="eager"
@@ -97,7 +97,7 @@ const Hero = () => {
         </div>
         <div className="xl:w-3/4 w-5/6 max-w-[1920px]  flex justify-center flex-col items-start">
           <div className="flex flex-col justify-cente items-center gap-[37px] px-0 py-[15px]">
-            <div className="SearchForProfessionals text-white text-8xl font-bold">
+            <div className="SearchForProfessionals text-white lg:text-8xl text-4xl font-bold">
               Search <br />
               for Professionals
             </div>
@@ -121,7 +121,7 @@ const Hero = () => {
           <h5 className="text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#562FB9))] w-full text-left text-[32px] not-italic font-bold leading-[normal]">
             Services Near You
           </h5>
-          <div className="flex items-start gap-[46px] w-full">
+          <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start gap-[46px] w-full">
             <ServicesCard />
             <ServicesCard />
             <ServicesCard />
@@ -143,7 +143,7 @@ const Hero = () => {
         <h1 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
           You need it, we&apos;ve got it
         </h1>
-        <div className="grid grid-cols-5 flex-wrap justify-between w-full h-[400px] items-center">
+        <div className="grid lg:grid-cols-5 grid-cols-2 flex-wrap gap-10 justify-between w-full mt-16 items-center">
           {services?.map((service, index) => (
             <button
               type="button"
@@ -224,9 +224,9 @@ const Hero = () => {
       </section>
 
       {/* signup */}
-      <section className="w-5/6  bg-gradient-to-r from-black from-45% to-black/5 h-[390px] flex items-center relative mb-10">
-        <div className="w-full flex flex-col justify-center items-start px-24 gap-11">
-          <div className="flex justify-center shrink-0 text-white text-5xl font-bold leading-[56px] gap-4">
+      <section className="lg:w-5/6 w-11/12 bg-gradient-to-r from-black from-45% to-black/5 h-[390px] flex items-center relative mb-10">
+        <div className="w-full flex flex-col justify-center items-start xl:px-24 lg:px-12 px-6 gap-11">
+          <div className="flex lg:flex-row flex-col justify-center text-white text-5xl font-bold leading-[56px] gap-4">
             <p className="whitespace-nowrap">Join our</p>
             <p className="text-white text-5xl font-normal leading-[56px]">
               Metaverse
@@ -244,7 +244,7 @@ const Hero = () => {
           loading="eager"
           src={require("../../../../../public/clients_images/div.signup.png")}
           alt=""
-          className="w-full -z-10 h-full object-cover"
+          className="w-full -z-10 h-full object-cover xl:static absolute inset-0"
         />
       </section>
     </main>

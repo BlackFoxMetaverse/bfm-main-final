@@ -28,26 +28,27 @@ const SellerForm = () => {
     }
   };
 
-  console.log({ personalInfo, professionalInfo, gigsInfo });
+  console.log([personalInfo, professionalInfo, gigsInfo]);
 
   return (
     <main className="w-full mx-auto my-24">
       <Image
+        loading="eager"
         alt=""
         src={require("../../../../../public/seller/theme_bg.svg")}
-        className="absolute inst-0 -z-10 h-1/2"
+        className="absolute inst-0 -z-10"
       />
-      <div className="mx-auto w-5/6">
+      <div className="md:block hidden mx-auto w-5/6">
         <button
           type="button"
-          className="inline-flex px-6 py-4 justify-center items-center gap-[8px] rounded-[4px] [background:var(--Foundation-Blue-blue-50,#ECEFFE)] pl-[24px)] pr-[16px)] text-[color:var(--Primary-1,#4461F2)] text-xl font-normal leading-[100%] tracking-[-1px]"
+          className="inline-flex px-6 py-4 justify-center items-center gap-[8px] rounded-[4px] [background:var(--Foundation-Blue-blue-50,#ECEFFE)] pl-[24px)] pr-[16px text-[color:var(--Primary-1,#4461F2)] text-xl font-normal leading-[100%] tracking-[-1px]"
         >
           <IoChevronBackCircleOutline />
           Back
         </button>
       </div>
-      <div className="w-2/3 bg-white mx-auto flex flex-col items-center gap-[51.561px] [background:#FFF] shadow-[0px_4.583px_9.166px_0px_rgba(41,41,41,0.08)] pt-[45.832px] rounded-[45.832px]">
-        <div className="flex w-[766.546px] flex-col justify-center items-start gap-[34px]">
+      <div className="md:w-2/3 w-full bg-white mx-auto flex flex-col items-center gap-[51.561px] [background:#FFF] shadow-[0px_4.583px_9.166px_0px_rgba(41,41,41,0.08)] py-[45.832px] rounded-[45.832px]">
+        <div className="flex max-w-[766.546px] w-5/6 flex-col justify-center items-start gap-[34px]">
           <div className="flex max-w-[669px] flex-col items-start md:gap-[29px] gap-[17.21px]">
             <h1 className="text-black md:text-[32px] text-[18.99px]  not-italic font-bold leading-[normal]">
               Profile Form

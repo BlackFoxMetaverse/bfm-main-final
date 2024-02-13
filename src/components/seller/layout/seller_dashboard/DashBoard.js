@@ -48,7 +48,7 @@ const DashBoard = () => {
   ];
   return (
     <div className="p-32 bg-[#F7F7F7]">
-      <div className="flex gap-12">
+      <div className="flex gap-12 flex-col xl:flex-row">
         <div className="space-y-5">
           <div className=" overflow-hidden px-5 py-3 bg-white  gap-8 rounded-[25.636px] items-center space-y-2">
             <div className="  bg-white flex gap-4 rounded-[25.636px] items-center">

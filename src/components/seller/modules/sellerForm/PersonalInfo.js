@@ -7,11 +7,17 @@ import { FaChevronRight } from "react-icons/fa6";
 import { RxCrossCircled } from "react-icons/rx";
 
 const PersonalInfo = ({ setData }) => {
+  const [profession, setProfession] = useState([
+    "Photographer",
+    "Designer",
+    "Developer",
+    "Software Developer",
+  ]);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
-    address: "",
+    profession: "",
   });
 
   const [isUniqueUsername, setIsUniqueUserName] = useState(false);
@@ -55,16 +61,16 @@ const PersonalInfo = ({ setData }) => {
           });
       }, 300);
     }
-    };
-    
-    useEffect(() => {
-        setData(formData);
-    }, [formData])
+  };
+
+  useEffect(() => {
+    setData(formData);
+  }, [formData]);
 
   return (
     <form
       action=""
-    //   onChange={() => setData(formData)}
+      //   onChange={() => setData(formData)}
       className="flex flex-col w-5/6 mx-auto justify-center items-center gap-[45px]"
     >
       <div className="flex flex-col items-start gap-5 w-full">
@@ -153,21 +159,28 @@ const PersonalInfo = ({ setData }) => {
           </div>
           <div className="flex flex-col items-start justify-center gap-[5px]">
             <label
-              htmlFor="address"
+              htmlFor="profession"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
-              address
+              profession
             </label>
-            <textarea
-              name="address"
-              id="address"
-              cols="30"
-              rows="10"
-              value={formData.address}
+            <select
+              name="profession"
+              id="profession"
+              value={formData.profession}
               onChange={onFormDataChange}
-              placeholder="804, t5, eldico colony, Chandigarh,Punjab"
-              className="resize-none flex items-center border focus:outline-none w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-            ></textarea>
+              required
+              className="flex items-center border focus:outline-none w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+            >
+              <option value="" className="text-[#9F9F9F]">
+                Select Profession
+              </option>
+              {profession?.map((profession, index) => (
+                <option key={index} value={profession}>
+                  {profession}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
