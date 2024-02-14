@@ -23,10 +23,10 @@ const Header = ({ isSeller }) => {
 
   return (
     <main
-      className={`flex flex-col justify-end items-center top-5 w-full fixed z-50 `}
+      className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 `}
     >
       <Location onLocationChange={handleLocationChange} />
-      <div className="mx-auto w-11/12 max-w-[1920px] flex items-center justify-between rounded-full bg-white px-12 py-1 shadow-md ">
+      <div className="mx-auto w-full max-w-[1920px] flex items-center justify-between rounded-b-xl bg-white px-12 py-1 shadow-md ">
         <div className="flex items-center lg:gap-[65px] gap-0.5">
           <Image
             src={logo}

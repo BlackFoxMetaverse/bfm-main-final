@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ServicesCard from "@/components/client/modules/ServicesCard/ServicesCard";
 import Image from "next/image";
@@ -10,6 +10,8 @@ import Location from "@/components/DeviceLocation/location";
 import { BsSearch } from "react-icons/bs";
 import { AiFillRightSquare } from "react-icons/ai";
 import SearchForm from "../../modules/FormLayout/SearchForm";
+import instance from "@/utils/axios";
+import SearchCard from "@/components/Modules/SearchedCard/SearchCard";
 
 const services = [
   {
@@ -80,8 +82,9 @@ const Plans = [
 ];
 
 const Hero = () => {
+  const [searchInput, setSearchInputData] = useState({});
+  const [searchResult, setSearchResult] = useState({});
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <main className="inline-flex w-full flex-col items-center gap-[120px]">
@@ -103,14 +106,10 @@ const Hero = () => {
             </div>
           </div>
           <SearchForm
-            handleSubmit={(e) => {
-              e.preventDefault();
-              console.log("serched");
-            }}
-            value={searchTerm}
-            onChange={setSearchTerm}
+            // handleSubmit={handleSearch}
+            data={setSearchResult}
+            searchInputData={setSearchInputData}
             position={"justify-end"}
-            isShown
           />
         </div>
       </section>
@@ -122,10 +121,17 @@ const Hero = () => {
             Services Near You
           </h5>
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start gap-[46px] w-full">
-            <ServicesCard />
-            <ServicesCard />
-            <ServicesCard />
-            <ServicesCard />
+            {searchResult?.length !== 0 ? (
+              // searchResult?.map((data, index) => <ServicesCard key={index} />
+              <SearchCard />
+            ) : (
+              <div>
+                <ServicesCard />
+                <ServicesCard />
+                <ServicesCard />
+                <ServicesCard />
+              </div>
+            )}
           </div>
           <button
             type="button"

@@ -1,36 +1,80 @@
 "use client";
 
 import Location from "@/components/DeviceLocation/location";
-import React, { useState } from "react";
+import instance from "@/utils/axios";
+import React, { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown, FaRegCompass } from "react-icons/fa6";
 import { HiMiniSignal } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
 
 const dummyData = ["Photography", "Marketing", "Gaming", "Developer"];
 
-const SearchForm = ({
-  value,
-  onChange,
-  handleSubmit,
-  tags,
-  isShown,
-  width,
-}) => {
+const SearchForm = ({ searchInputData, tags, width, data }) => {
   const [rangeSection, setRangeSection] = useState(false);
   const [rangeValue, setRangeValue] = useState(0);
-  const [userLocation, setUserLocation] = useState(null);
   const [isLocation, setIsLocation] = useState(false);
+  const [searchData, setSearchData] = useState({
+    distance: 0,
+    latitude: 0,
+    longitude: 0,
+    term: "",
+    limitUser: 50,
+  });
 
   const handleLocationChange = (location) => {
-    setUserLocation(location);
+    setSearchData({
+      ...searchData,
+      latitude: location.latitude,
+      longitude: location.longitude,
+    });
   };
-
-  console.log(userLocation);
 
   if (tags) {
     dummyData.push(tags);
   }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSearchData({ ...searchData, [name]: value });
+  };
+
+  // console.log(parseInt(searchData.distance));
+
+  const [searchResult, setSearchResult] = useState(null);
+
+  console.log(searchData?.term);
+
+  async function handleSearch(e) {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("bfm-client-token");
+      console.log(token);
+      const res = await instance.get(
+        `search/nearby?longitude=${searchData?.longitude}&latitude=${searchData?.latitude}&distance=${searchData?.distance}&limitUser=${searchData?.limitUser}&profession=${searchData?.term}`,
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+      if (res.status === 200) {
+        console.log(res.data?.data);
+        setSearchResult(res.data?.data);
+      } else if (res.data.message === "User token has expired") {
+        
+      } else {
+        throw new Error("Something went wrong");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    // searchInputData(searchData);
+    data(searchResult);
+  }, [searchResult]);
 
   return (
     <div
@@ -39,7 +83,7 @@ const SearchForm = ({
     >
       <form
         action=""
-        onSubmit={handleSubmit}
+        onSubmit={handleSearch}
         className="w-full  inline-flex flex-col items-center gap-2.5 rounded-[10px] relative"
       >
         <div className="flex justify-center items-center gap-10 h-full w-full bg-white border-[color:var(--Foundation-Grey-grey-50,#E9E9E9)] relative shadow-[0px_1px_4px_0px_rgba(0,0,0,0.10)] lg:px-[25px] lg:py-3 px-4 py-1.5 rounded-[10px] border-2 border-solid">
@@ -62,32 +106,35 @@ const SearchForm = ({
                   } transition-all duration-500 ease-in-out`}
                 />
               </div>
-              {/* {rangeSection && (
-                      <div
-                        className={`w-full h-56 space-y-5 bg-white absolute inset-x-0 top-full px-10 py-16`}
-                      >
-                        <div className="relative flex justify-center items-center">
-                          <input
-                            type="range"
-                            value={rangeValue}
-                            onChange={(e) => setRangeValue(e.target.value)}
-                            min="0"
-                            max="100"
-                            className="appearance-none w-full h-2 bg-gray-300 overflow-hidden rounded-full focus:outline-none"
-                          />
-                          <div
-                            style={{
-                              position: "absolute",
-                              left: `${rangeValue}%`,
-                            }}
-                            className="w-12 h-12 rounded-full overflow-hidden bg-white cursor-e-resize"
-                          >
-                            <FaRegCompass className="w-full h-full" />
-                          </div>
-                        </div>
-                        <div>{rangeValue} Kms</div>
-                      </div>
-                    )} */}
+              {rangeSection && (
+                <div
+                  className={`w-full h-56 space-y-5 bg-white absolute inset-x-0 top-full px-10 py-16`}
+                >
+                  <div className="relative flex justify-center items-center">
+                    <input
+                      type="range"
+                      name="distance"
+                      id="distance"
+                      value={searchData.distance}
+                      onChange={handleChange}
+                      min="0"
+                      max="1000000"
+                      className="appearance-none w-full h-2 bg-gray-300 overflow-hidden rounded-full focus:outline-none"
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: `${searchData.distance / 10000}%`,
+                        translate: "12",
+                      }}
+                      className="w-12 h-12 transition-all duration-700 ease-in-out rounded-full overflow-hidden bg-white cursor-e-resize"
+                    >
+                      <FaRegCompass className="w-full h-full" />
+                    </div>
+                  </div>
+                  <div>{searchData.distance / 1000} Kms</div>
+                </div>
+              )}
               <label
                 htmlFor="location"
                 className="w-9 h-[26px] shrink-0 text-[#737579]"
@@ -98,7 +145,8 @@ const SearchForm = ({
                 <Location onLocationChange={handleLocationChange} />
               )}
               <button
-                // onClick={() => setIsLocation(!isLocation)}
+                onClick={() => setIsLocation(!isLocation)}
+                type="button"
                 className="group cursor-pointer gap-5 flex items-center text-[#737579] text-base not-italic font-normal leading-[normal]"
               >
                 <p>location</p>
@@ -117,10 +165,10 @@ const SearchForm = ({
             </label>
             <input
               type="text"
-              name="search"
-              id="search"
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
+              name="term"
+              id="term"
+              value={searchData.term}
+              onChange={handleChange}
               className="lg:min-w-[294px] w-full h-full text-base font-[450] leading-[150.687%] focus:outline-none"
               placeholder="Search by profession..."
             />
@@ -132,7 +180,7 @@ const SearchForm = ({
             Search
           </button>
         </div>
-        {isShown && (
+        {/* {isShown && (
           <div
             className={`lg:flex hidden items-center justify-end w-full gap-2.5`}
           >
@@ -150,7 +198,7 @@ const SearchForm = ({
               </button>
             ))}
           </div>
-        )}
+        )} */}
       </form>
     </div>
   );

@@ -5,11 +5,13 @@ import React from "react";
 import { FaHeart } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
 
-const ServicesCard = ({ username, id }) => {
+const ServicesCard = ({ username, id, distance, profession }) => {
   const router = useRouter();
+  console.log(username);
 
   return (
     <div
+      suppressHydrationWarning
       onClick={() => router.push(`/client/username/${username}/${id}`)}
       className="flex flex-col cursor-pointer items-start w-full shadow-[0px_6px_12px_0px_rgba(41,41,41,0.08)] bg-transparent rounded-[18px] overflow-hidden"
     >
@@ -35,13 +37,18 @@ const ServicesCard = ({ username, id }) => {
               alt=""
               className="w-[25px] h-[25px] shrink-0 rounded-[25px] object-cover"
             />
-            <p className="text-black text-sm font-normal leading-[normal] tracking-[-0.28px]">
-              Username
-            </p>
+            <div className="space-y-1">
+              <p className="text-black text-sm font-normal leading-[normal] tracking-[-0.28px] capitalize">
+                {username}
+              </p>
+              <p className="text-black/50 text-sm font-normal leading-[normal] tracking-[-0.28px]">
+                {profession}
+              </p>
+            </div>
           </div>
           <div className="w-[65px] h-[25px] shrink-0 bg-[#E6E6E6] rounded-[31px] flex justify-center items-center text-[#464646] text-[13px] font-normal leading-[normal] tracking-[-0.26px]">
             <IoLocationOutline />
-            <p>2 km</p>
+            <p>{parseInt(distance / 1000)} km</p>
           </div>
         </div>
         <p className="text-[#303030] text-lg font-normal leading-[normal]">

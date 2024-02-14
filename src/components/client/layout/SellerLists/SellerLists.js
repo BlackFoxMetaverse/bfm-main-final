@@ -8,7 +8,9 @@ const RecommendedData = [1, 2, 3, 4, 5, 6, 7, 8];
 const RecentData = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const SellerLists = ({ params }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+
+  console.log(searchResult);
 
   return (
     <main className="w-full">
@@ -17,8 +19,7 @@ const SellerLists = ({ params }) => {
         <div className="flex max-w-[1920px] flex-wrap w-5/6 h-32 justify-center mx-auto items-center">
           <SearchForm
             handleSubmit={(e) => e.preventDefault()}
-            onChange={setSearchTerm}
-            value={searchTerm}
+            data={setSearchResult}
           />
           <div className="lg:flex hidden items-start gap-[13.806px] w-full">
             <button
@@ -50,28 +51,49 @@ const SellerLists = ({ params }) => {
       </section>
 
       {/* Recent Section */}
-      <section className="space-y-5 w-5/6 mx-auto my-12">
-        <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
-          Recents
-        </h2>
-        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-10 w-full">
-          {RecentData?.map((_, index) => (
-            <ServicesCard key={index} />
-          ))}
-        </div>
-      </section>
+      {searchResult?.length === 0 || searchResult === null ? (
+        <section className="space-y-5 w-5/6 mx-auto my-12">
+          <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
+            Recents
+          </h2>
+          <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-10 w-full">
+            {RecentData?.map((_, index) => (
+              <ServicesCard key={index} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className="space-y-5 w-5/6 mx-auto my-12">
+          <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
+            Result
+          </h2>
+          <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-10 w-full">
+            {searchResult?.map((data, index) => (
+              <ServicesCard
+                key={index}
+                id={data?.uid}
+                username={data?.userName}
+                distance={data?.distance}
+                profession={data?.profession}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Recommended Section */}
-      <section className="space-y-5 w-5/6 mx-auto my-12">
-        <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
-          Recommended
-        </h2>
-        <div className="grid grid-cols-4 justify-between gap-10 w-full">
-          {RecommendedData?.map((_, index) => (
-            <ServicesCard key={index} />
-          ))}
-        </div>
-      </section>
+      {searchResult?.length === 0 && (
+        <section className="space-y-5 w-5/6 mx-auto my-12">
+          <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
+            Recommended
+          </h2>
+          <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-10 w-full">
+            {RecommendedData?.map((_, index) => (
+              <ServicesCard key={index} />
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 };

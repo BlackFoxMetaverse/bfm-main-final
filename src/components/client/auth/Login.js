@@ -15,7 +15,7 @@ const Login = () => {
   const [number, setNumber] = useState("");
   const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
-  const [isExistingUser, setExistingUser] = useState(false);
+  const [isExistingUser, setExistingUser] = useState(true);
   const [otp, setOtp] = useState("");
 
   const router = useRouter();
