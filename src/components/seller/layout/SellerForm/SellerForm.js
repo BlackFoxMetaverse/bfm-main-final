@@ -10,6 +10,7 @@ import { FaUserAlt } from "react-icons/fa";
 import ProfessionalInfo from "../../modules/sellerForm/ProfessionalInfo";
 import GigsInfo from "../../modules/sellerForm/GigsInfo";
 import { BsCheckCircleFill } from "react-icons/bs";
+import instance from "@/utils/axios";
 
 const SellerForm = () => {
   const router = useRouter();
@@ -18,6 +19,12 @@ const SellerForm = () => {
   const [personalInfo, setPersonalInfo] = useState(null);
   const [professionalInfo, setProfessionalInfo] = useState(null);
   const [gigsInfo, setGigsInfo] = useState(null);
+  const [formData, setFormData] = useState({
+    personalInfo,
+    professionalInfo,
+    gigsInfo,
+  })
+  const [isClient, setIsClient] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -28,7 +35,35 @@ const SellerForm = () => {
     }
   };
 
-  console.log([personalInfo, professionalInfo, gigsInfo]);
+  async function checkUser() {
+    try {
+      const token = localStorage.getItem("bfm-client-token");
+      const res = await instance.get("user/user", {
+        headers: {
+          token: token
+        }
+      })
+      console.log(res.data);
+      return Promise.resolve(res.data);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  useEffect(() => {
+    checkUser().then((data) => {
+      if (typeof data?.data === 'object' && data?.data.isSeller === false) {
+        setIsClient(true);
+      } else {
+        setIsClient(false);
+      }
+    }).catch((error) => {
+      console.error(error);
+      setIsClient(false);
+    });
+  }, [])
+
+  console.log(formData);
 
   return (
     <main className="w-full mx-auto my-24">

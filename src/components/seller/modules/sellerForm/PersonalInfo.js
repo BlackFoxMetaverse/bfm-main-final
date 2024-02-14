@@ -83,7 +83,7 @@ const PersonalInfo = ({ setData }) => {
           </p>
         </div>
         <div className="grid sm:grid-cols-2 grid-cols-1 w-full items-start content-start md:gap-[31px_20px] gap-[15px]">
-          <div className="flex flex-col items-start gap-[5px]">
+          {/* <div className="flex flex-col items-start gap-[5px]">
             <label
               htmlFor="name"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
@@ -100,7 +100,7 @@ const PersonalInfo = ({ setData }) => {
               placeholder="Harsh Singh"
               className="flex items-center gap-[5px] border w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
             />
-          </div>
+          </div> */}
           <div className="flex flex-col items-start gap-[5px]">
             <label
               htmlFor="username"
@@ -129,7 +129,7 @@ const PersonalInfo = ({ setData }) => {
                 </div>
               ))}
           </div>
-          <div className="flex flex-col items-start gap-[5px]">
+          {/* <div className="flex flex-col items-start gap-[5px]">
             <label
               htmlFor="email"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
@@ -156,7 +156,7 @@ const PersonalInfo = ({ setData }) => {
                   <RxCrossCircled /> Email already taken
                 </div>
               ))}
-          </div>
+          </div> */}
           <div className="flex flex-col items-start justify-center gap-[5px]">
             <label
               htmlFor="profession"

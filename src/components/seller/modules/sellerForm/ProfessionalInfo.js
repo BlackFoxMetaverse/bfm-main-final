@@ -60,7 +60,7 @@ const ProfessionalInfo = ({ setData }) => {
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      certification: e.target.files[0]?.name,
+      certification: e.target.files[0],
     }));
   };
 
