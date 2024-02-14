@@ -11,6 +11,8 @@ import ProfessionalInfo from "../../modules/sellerForm/ProfessionalInfo";
 import GigsInfo from "../../modules/sellerForm/GigsInfo";
 import { BsCheckCircleFill } from "react-icons/bs";
 import instance from "@/utils/axios";
+import s3FileUpload from "@/utils/imageUploader";
+import { getUserPreciseLocation } from "@/utils/location";
 
 const SellerForm = () => {
   const router = useRouter();
@@ -23,7 +25,7 @@ const SellerForm = () => {
     personalInfo,
     professionalInfo,
     gigsInfo,
-  })
+  });
   const [isClient, setIsClient] = useState(false);
 
   const handleImageChange = (e) => {
@@ -40,9 +42,9 @@ const SellerForm = () => {
       const token = localStorage.getItem("bfm-client-token");
       const res = await instance.get("user/user", {
         headers: {
-          token: token
-        }
-      })
+          token: token,
+        },
+      });
       console.log(res.data);
       return Promise.resolve(res.data);
     } catch (error) {
@@ -51,19 +53,89 @@ const SellerForm = () => {
   }
 
   useEffect(() => {
-    checkUser().then((data) => {
-      if (typeof data?.data === 'object' && data?.data.isSeller === false) {
-        setIsClient(true);
-      } else {
+    checkUser()
+      .then((data) => {
+        if (typeof data?.data === "object" && data?.data.isSeller === false) {
+          setIsClient(true);
+        } else {
+          setIsClient(false);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
         setIsClient(false);
-      }
-    }).catch((error) => {
-      console.error(error);
-      setIsClient(false);
-    });
-  }, [])
+      });
+  }, []);
 
-  console.log(formData);
+  useEffect(() => {
+    setFormData({ personalInfo, professionalInfo, gigsInfo });
+  }, [personalInfo, professionalInfo, gigsInfo]);
+
+  console.log("formData", formData);
+
+  async function dataModifier(data) {
+    try {
+      let obj = {
+        seller: {
+          userName: data.personalInfo.username,
+          profession: data.personalInfo.profession,
+          coordinates: await getUserPreciseLocation(),
+        },
+        sellerProfile: {
+          experience: data.professionalInfo.experience,
+          collegeName: data.professionalInfo.college_name,
+          tags: data.professionalInfo.skills,
+          certificate: await s3FileUpload(data.professionalInfo.certification),
+          description: data.gigsInfo.description,
+          socialMediaLinks: data.gigsInfo.socialMedia,
+          experienceDetail: data.gigsInfo.experiences,
+          images: await Promise.all(
+            data.gigsInfo.galleryImages.map(async (file, index) => {
+              if (file !== null) {
+                return await s3FileUpload(file);
+              } else {
+                return null;
+              }
+            })
+          ),
+        },
+      };
+
+      return obj;
+    } catch (error) {
+      throw error; // Rethrow the error to propagate it
+    }
+  }
+
+  async function submitServer() {
+    const token = localStorage.getItem("bfm-client-token");
+    try {
+      const obj = await dataModifier(formData);
+      const sellerRes = await instance.post("/user/seller", obj.seller, {
+        headers: { token },
+      });
+      const sellerProfileRes = await instance.post(
+        "/user/sellerProfile",
+        obj.sellerProfile,
+        {
+          headers: { token },
+        }
+      );
+      return { sellerRes, sellerProfileRes };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  function handleSubmit() {
+    submitServer()
+      .then((res) => {
+        console.log("reg res", res);
+      })
+      .catch((err) => {
+        console.log("reg res error", err);
+      });
+  }
 
   return (
     <main className="w-full mx-auto my-24">
@@ -136,6 +208,7 @@ const SellerForm = () => {
         <GigsInfo setData={setGigsInfo} />
         <button
           type="submit"
+          onClick={handleSubmit}
           className="flex justify-center items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
         >
           Submit

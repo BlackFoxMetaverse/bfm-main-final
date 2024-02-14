@@ -104,7 +104,7 @@ const GigsInfo = ({ setData }) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      socialMedia: [{ [name]: value }],
+      socialMedia: value,
     }));
   };
 

@@ -14,7 +14,7 @@ export function getUserPreciseLocation() {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-          resolve([longitude, latitude]);
+          resolve({ longitude, latitude });
         },
         function (error) {
           console.error(`Error getting location: ${error.message}`);
@@ -27,28 +27,4 @@ export function getUserPreciseLocation() {
       reject(new Error("Geolocation is not supported"));
     }
   });
-}
-
-export async function updateUserLocation(token) {
-  try {
-    const coordinates = await getUserPreciseLocation();
-
-    await axios.put(
-      "/user/updateLocation",
-      {
-        coordinates: coordinates,
-      },
-      {
-        headers: {
-          idToken: token,
-        },
-      }
-    );
-
-    console.log("User location updated successfully.");
-    return Promise.resolve(true);
-  } catch (error) {
-    console.error("Error updating user location:", error.message);
-    return Promise.reject(false);
-  }
 }
