@@ -12,10 +12,12 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { RiCrossFill } from "react-icons/ri";
 import { RxCrossCircled } from "react-icons/rx";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
+import s3FileUpload from "@/utils/imageUploader";
 
 const Register = () => {
   const [document, setDocument] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [imageKey, setImageKey] = useState("");
   const [isUniqueUser, setUniqueUser] = useState(true);
   const [isUniqueEmail, setUniqueEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -37,7 +39,10 @@ const Register = () => {
       setProfileImage(file);
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
-      setFormData({ ...formData, image: file?.name });
+      s3FileUpload(file)
+        .then((key) => setImageKey(key))
+        .catch((error) => console.error(error));
+      // setFormData({ ...formData, image: file?.name });
     }
   };
 
@@ -91,7 +96,11 @@ const Register = () => {
     e.preventDefault();
 
     instance
-      .post("/user/user", formData, {
+      .post("/user/user", {
+        image: imageKey,
+        name: formData.name,
+        email: formData.email
+      }, {
         headers: {
           token: token,
         },
