@@ -43,7 +43,7 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
 
   const [searchResult, setSearchResult] = useState(null);
 
-  console.log(searchData?.term);
+  console.log(searchData);
 
   async function handleSearch(e) {
     e.preventDefault();
@@ -62,7 +62,6 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
         console.log(res.data?.data);
         setSearchResult(res.data?.data);
       } else if (res.data.message === "User token has expired") {
-        
       } else {
         throw new Error("Something went wrong");
       }
@@ -125,14 +124,13 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
                       style={{
                         position: "absolute",
                         left: `${searchData.distance / 10000}%`,
-                        translate: "12",
                       }}
-                      className="w-12 h-12 transition-all duration-700 ease-in-out rounded-full overflow-hidden bg-white cursor-e-resize"
+                      className="w-12 h-12 z-0 transition-all duration-700 ease-in-out -translate-x-1/2 rounded-full overflow-hidden bg-white cursor-e-resize"
                     >
                       <FaRegCompass className="w-full h-full" />
                     </div>
                   </div>
-                  <div>{searchData.distance / 1000} Kms</div>
+                  <div>{parseInt(searchData.distance / 1000)} Kms</div>
                 </div>
               )}
               <label

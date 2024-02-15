@@ -1,32 +1,61 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import logo from "../../../assets/dark_logo.svg";
 import Image from "next/image";
 import { HiLocationMarker } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
 import { LuBellDot } from "react-icons/lu";
-import Link from "next/link";
-import Avatar from "../../../assets/avatar.svg";
 import { FaAngleDown } from "react-icons/fa6";
 import Location from "@/components/DeviceLocation/location";
+import instance from "@/utils/axios";
 
 const Header = ({ isSeller }) => {
+  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
+
   const [userLocation, setUserLocation] = useState(null);
+  const [isLogin, setIsLogin] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const router = useRouter();
 
   const handleLocationChange = (location) => {
     setUserLocation(location);
   };
 
-  console.log(userLocation);
+  async function fetchUserData() {
+    try {
+      const token = localStorage.getItem("bfm-client-token");
+      const res = await instance.get("/user/user", {
+        headers: {
+          token: token,
+        },
+      });
+      if (res?.status === 200) {
+        console.log(res.data?.data);
+        setIsLogin(true);
+        setUserData(res.data.data);
+      } else if (res?.status === 401) {
+        setIsLogin(false);
+      } else {
+        setIsLogin(false);
+        throw new Error("Something went wrong!!");
+      }
+    } catch (error) {
+      return error?.message;
+    }
+  }
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
     <main
-      className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 `}
+      className={`flex flex-col justify-end items-center top-0 w-full fixed z-50`}
     >
       <Location onLocationChange={handleLocationChange} />
-      <div className="mx-auto w-full max-w-[1920px] flex items-center justify-between rounded-b-xl bg-white px-12 py-1 shadow-md ">
+      <div className="mx-auto w-full max-w-[1920px] flex items-center justify-between py-4 rounded-b-xl bg-white px-12 py-1 shadow-md ">
         <div className="flex items-center lg:gap-[65px] gap-0.5">
           <Image
             src={logo}
@@ -41,31 +70,59 @@ const Header = ({ isSeller }) => {
 
         <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
           {!isSeller && (
-            <buttom className="text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]">
+            <button
+              onClick={() => router.push("/seller")}
+              className="text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]"
+            >
               Become a Seller
-            </buttom>
+            </button>
           )}
-          <button>
-            <LuBellDot className="lg:text-2xl text-2xl" />
-          </button>
-          <div className="flex items-center justify-center">
-            <div className=" w-12 h-12 rounded-full flex">
-              <Image src={Avatar} alt="" />
+          {isLogin ? (
+            <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
+              <button>
+                <LuBellDot className="lg:text-2xl text-2xl" />
+              </button>
+              <div className="flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() =>
+                    isSeller ? "" : router.push("/client/settings")
+                  }
+                  className="w-12 h-12 rounded-full flex justify-center items-center overflow-hidden"
+                >
+                  <img
+                    src={s3Url + userData?.image}
+                    alt={userData?.image}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+                {/* <FaAngleDown /> */}
+              </div>
             </div>
-            <FaAngleDown />
-          </div>
-          {/* <Link
-            href={"/auth/register"}
-            className="flex bg-[#282828] h-full items-center gap-2.5 lg:px-[23px] lg:py-[7px] px-[11.754px] py-[3.577px] rounded-[34px] text-white lg:text-xl text-[10.22px] not-italic font-normal leading-[normal]"
-          >
-            Sign Up
-          </Link>
-          <Link
-            href={"/auth/login"}
-            className="lg:flex hidden h-full items-center gap-2.5 px-[23px] py-[7px] rounded-[34px] text-black text-xl not-italic font-normal leading-[normal]"
-          >
-            Log In
-          </Link> */}
+          ) : (
+            <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
+              <button
+                onClick={() => {
+                  isSeller
+                    ? router.replace("/auth/login")
+                    : router.replace("/client/auth/login");
+                }}
+                className="flex bg-[#282828] h-full items-center gap-2.5 lg:px-[23px] lg:py-[7px] px-[11.754px] py-[3.577px] rounded-[34px] text-white lg:text-xl text-[10.22px] not-italic font-normal leading-[normal]"
+              >
+                Sign Up
+              </button>
+              <button
+                onClick={() => {
+                  isSeller
+                    ? router.replace("/auth/login")
+                    : router.replace("/client/auth/login");
+                }}
+                className="lg:flex hidden h-full items-center gap-2.5 px-[23px] py-[7px] rounded-[34px] text-black text-xl not-italic font-normal leading-[normal]"
+              >
+                Log In
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </main>

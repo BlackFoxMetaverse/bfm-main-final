@@ -9,6 +9,8 @@ import axios from "axios";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../firebase";
+// import { updateUserLocation } from "@/utils/location";
+import instance from "@/utils/axios";
 
 const Login = () => {
   const [countryCode, setCountryCode] = useState("+91");
@@ -28,6 +30,25 @@ const Login = () => {
     setNumber(e.target.value);
     setLength(e.target.value.toString().length);
   };
+
+  // async function loginUser(token) {
+  //   try {
+  //     const response = await instance.post("/user/login", null, {
+  //       headers: {
+  //         token: `${token}`,
+  //       },
+  //     });
+  //     const data = response?.data;
+  //     if (data?.check?.isUser) {
+  //       const ok = await updateUserLocation(token);
+  //       console.log("user location updated:", ok);
+  //     }
+  //     return Promise.resolve(data);
+  //   } catch (e) {
+  //     console.log("axios error: ", e.message);
+  //     return Promise.reject(e.message);
+  //   }
+  // }
 
   const generateRecaptcha = () => {
     const recaptchaElement = document.getElementById("recaptcha");
@@ -73,16 +94,22 @@ const Login = () => {
 
         localStorage.setItem("bfm-client-token", token);
 
-        // setVerified(true);
+        // loginUser(token).then((data) => {
+        //   const { check, message, details } = data;
+
+        //   if (check.isProfile && check.isUser) {
+        //     router.replace("/");
+        //     // router.replace("/thanksPage/already");
+        //   } else {
+        //     router.replace("/client/auth/register");
+        //   }
+        // });
+        
         if (isExistingUser) {
           router.replace("/");
         } else {
           router.replace("/client/auth/register");
         }
-
-        // const timer = setTimeout(() => {
-        //   setVerified(false);
-        // }, 2000);
 
         return () => clearTimeout(timer);
       })
@@ -196,7 +223,7 @@ const Login = () => {
             <div className=" w-full flex justify-center items-center">
               <button
                 type="submit"
-                className="   gap-2 self-stretch px-8 py-3 rounded-xl bg-[#925FF0] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6"
+                className="   gap-2 self-stretch px-8 py-3 rounded-xl bg-[#4461F2] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6"
               >
                 Verify
               </button>

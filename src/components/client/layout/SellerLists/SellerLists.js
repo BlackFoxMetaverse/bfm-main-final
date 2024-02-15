@@ -58,7 +58,13 @@ const SellerLists = ({ params }) => {
           </h2>
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-10 w-full">
             {RecentData?.map((_, index) => (
-              <ServicesCard key={index} />
+              <ServicesCard
+                key={index}
+                id={_?.uid}
+                username={_?.userName}
+                distance={_?.distance}
+                profession={_?.profession}
+              />
             ))}
           </div>
         </section>

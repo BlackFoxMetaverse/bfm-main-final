@@ -590,7 +590,7 @@ const Login = () => {
             style={{
               width: `${(formCount * 100) / 5}%`,
             }}
-            className="h-4 shrink-0 rounded-[53.067px] absolute bg-white"
+            className="h-4 shrink-0 rounded-[53.067px] absolute bg-white transition-all duration-700 ease-in-out"
           ></div>
         </div>
         <div className="xl:w-1/2 sm:w-5/6 w-full overflow-auto rounded-[14px] sm:rounded-t-[40px] sm:rounded-b-[0px] lg:my-0 my-5">

@@ -46,10 +46,12 @@ const ServicesCard = ({ username, id, distance, profession }) => {
               </p>
             </div>
           </div>
-          <div className="w-[65px] h-[25px] shrink-0 bg-[#E6E6E6] rounded-[31px] flex justify-center items-center text-[#464646] text-[13px] font-normal leading-[normal] tracking-[-0.26px]">
-            <IoLocationOutline />
-            <p>{parseInt(distance / 1000)} km</p>
-          </div>
+          {distance && (
+            <div className="w-[65px] h-[25px] shrink-0 bg-[#E6E6E6] rounded-[31px] flex justify-center items-center text-[#464646] text-[13px] font-normal leading-[normal] tracking-[-0.26px]">
+              <IoLocationOutline />
+              <p>{parseInt(distance / 1000)} km</p>
+            </div>
+          )}
         </div>
         <p className="text-[#303030] text-lg font-normal leading-[normal]">
           I will design responsive websites

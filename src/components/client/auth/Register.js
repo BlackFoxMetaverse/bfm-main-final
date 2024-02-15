@@ -17,7 +17,6 @@ import s3FileUpload from "@/utils/imageUploader";
 const Register = () => {
   const [document, setDocument] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  const [imageKey, setImageKey] = useState("");
   const [isUniqueUser, setUniqueUser] = useState(true);
   const [isUniqueEmail, setUniqueEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -40,9 +39,8 @@ const Register = () => {
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
       s3FileUpload(file)
-        .then((key) => setImageKey(key))
+        .then((key) => setFormData({...formData, image: key}))
         .catch((error) => console.error(error));
-      // setFormData({ ...formData, image: file?.name });
     }
   };
 
@@ -96,15 +94,19 @@ const Register = () => {
     e.preventDefault();
 
     instance
-      .post("/user/user", {
-        image: imageKey,
-        name: formData.name,
-        email: formData.email
-      }, {
-        headers: {
-          token: token,
+      .post(
+        "/user/user",
+        {
+          image: imageKey,
+          name: formData.name,
+          email: formData.email,
         },
-      })
+        {
+          headers: {
+            token: token,
+          },
+        }
+      )
       .then((response) => {
         console.log(response);
         router.replace("/");
@@ -188,18 +190,19 @@ const Register = () => {
               className="flex h-11 items-center gap-[5px] self-stretch border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] p-3.5 rounded-lg border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />
           </div>
-          {document?.getElementById("Username").value !== "" &&
-            (isUniqueUser ? (
+          {document?.getElementById("Username").value !== "" ? (
+            isUniqueUser ? (
               <div className="flex gap-1.5 items-center w-full text-green-600 xl:text-sm text-xs capitalize">
                 <BsCheckCircleFill />
                 this username is unique and valid
               </div>
             ) : (
-              <div className="flex gap-1.5 items-center text-red-600 xl:text-sm text-xs capitalize">
+              <div className="flex gap-1.5 items-center w-full text-red-600 xl:text-sm text-xs capitalize">
                 <RxCrossCircled />
                 this username is already taken
               </div>
-            ))}
+            )
+          ) : null}
           <div className="flex w-[458px] flex-col justify-center items-start gap-[5px]">
             <label
               htmlFor="email"
@@ -217,18 +220,19 @@ const Register = () => {
               className="flex h-11 items-center gap-[5px] self-stretch border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] p-3.5 rounded-lg border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />
           </div>
-          {document?.getElementById("email").value !== "" &&
-            (isUniqueEmail ? (
+          {document?.getElementById("email").value !== "" ? (
+            isUniqueEmail ? (
               <div className="flex gap-1.5 items-center w-full text-green-600 xl:text-sm text-xs capitalize">
                 <BsCheckCircleFill />
                 this email is unique and valid
               </div>
             ) : (
-              <div className="flex gap-1.5 items-center text-red-600 xl:text-sm text-xs capitalize">
+              <div className="flex gap-1.5 items-center w-full text-red-600 xl:text-sm text-xs capitalize">
                 <RxCrossCircled />
                 this email is already taken
               </div>
-            ))}
+            )
+          ) : null}
           <div className="flex items-center gap-1">
             <div className="flex w-[16.701px] h-[16.701px] justify-center items-center shrink-0">
               <input
