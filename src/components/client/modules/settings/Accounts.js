@@ -86,8 +86,8 @@ const Accounts = () => {
     <div className="w-5/6 h-full mx-auto">
       {isLogin ? (
         <div className="w-full space-y-12">
-          <div className="flex w-3/4 items-center gap-[1.5rem]">
-            <div className="flex flex-col gap-10">
+          <div className="flex lg:w-3/4 w-full items-center gap-[1.5rem]">
+            <div className="flex flex-1 flex-col gap-10">
               <h5 className="text-black 2xl:text-2xl xl:text-xl lg:text-lg text-base font-bold leading-[normal]">
                 Account
               </h5>
@@ -96,7 +96,7 @@ const Accounts = () => {
               </p>
             </div>
             {image ? (
-              <div className="relative w-1/6">
+              <div className="relative lg:w-1/6 w-1/3">
                 <div className="w-full aspect-square rounded-full flex justify-center items-center overflow-hidden">
                   <img
                     src={image}
@@ -119,7 +119,7 @@ const Accounts = () => {
                 </label>
               </div>
             ) : (
-              <div className="relative w-1/6">
+              <div className="relative lg:w-1/6 w-1/3">
                 <div className="w-full aspect-square rounded-full flex justify-center items-center overflow-hidden">
                   <img
                     src={s3Url + userData?.image}
@@ -150,7 +150,7 @@ const Accounts = () => {
           >
             <label
               htmlFor="name"
-              className="text-black w-1/3 2xl:text-2xl xl:text-xl lg:text-lg text-base font-bold leading-[normal]"
+              className="text-black lg:w-full lg:flex-1 w-1/3 2xl:text-2xl xl:text-xl lg:text-lg text-base font-bold leading-[normal]"
             >
               Full name
             </label>
@@ -158,7 +158,7 @@ const Accounts = () => {
               type="text"
               name="name"
               id="name"
-              className="w-2/3 flex flex-col justify-center items-start gap-1.5 border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
+              className="lg:w-full lg:flex-1 w-2/3 flex flex-col justify-center items-start gap-1.5 border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
               value={
                 newUserData?.name === null ? userData?.name : newUserData.name
               }
@@ -167,7 +167,7 @@ const Accounts = () => {
             />
           </form>
           <hr className="w-full h-0.5 bg-black/90" />
-          <div className="w-full flex justify-between gap-5 items-start">
+          <div className="w-full flex flex-col lg:flex-row justify-between gap-5 items-start">
             <h5 className="text-black whitespace-nowrap font-bold leading-[normal] 2xl:text-2xl xl:text-xl lg:text-lg text-base">
               Account Deactivation
             </h5>
@@ -193,10 +193,10 @@ const Accounts = () => {
             action=""
             className="w-full space-y-10"
           >
-            <div className="w-full flex justify-between items-start gap-5">
+            <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-5">
               <label
                 htmlFor="reason"
-                className="text-black whitespace-nowrap flex-1 2xl:text-2xl xl:text-xl lg:text-lg text-base font-bold leading-[normal]"
+                className="text-black whitespace-nowrap flex-1 w-full 2xl:text-2xl xl:text-xl lg:text-lg text-base font-bold leading-[normal]"
               >
                 I&apos;m leaving because...
               </label>
@@ -204,7 +204,7 @@ const Accounts = () => {
                 type="text"
                 name="name"
                 id="name"
-                className="flex-1 flex flex-col justify-center items-start gap-1.5 border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
+                className="flex-1 w-full flex flex-col justify-center items-start gap-1.5 border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
                 placeholder="Describe the reason of leaving."
               />
             </div>

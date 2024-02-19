@@ -180,7 +180,7 @@ const ProfessionalInfo = ({ setData }) => {
             } whitespace-break-spaces break-words shrink text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]`}
           >
             {formData.certification
-              ? formData.certification?.slice(0, 40) + "..."
+              ? formData.certification?.name?.slice(0, 40) + "..."
               : "Upload your certification here"}
           </label>
           <input

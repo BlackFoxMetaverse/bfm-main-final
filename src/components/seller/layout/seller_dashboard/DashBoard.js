@@ -153,13 +153,16 @@ const DashBoard = () => {
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-2  w-full  gap-2">
+            <div className="grid grid-cols-3 w-full gap-2">
               {showImage.map((image, index) => (
-                <div key={index} className="relative">
+                <div
+                  key={index}
+                  className={`relative w-full h-full rounded-2xl overflow-hidden ${
+                    index === 0 ? "col-span-2 row-span-2" : ""
+                  }`}
+                >
                   <Image
-                    loading="lazy"
-                    key={index}
-                    className=" cursor-pointer"
+                    className={`cursor-pointer w-full h-full object-cover`}
                     src={image}
                     alt=""
                     // onClick={() => openModal(s3Url + image)}

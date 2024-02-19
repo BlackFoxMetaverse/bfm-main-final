@@ -2,6 +2,7 @@
 
 import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { FaChevronDown, FaRegCompass } from "react-icons/fa6";
@@ -10,9 +11,11 @@ import { IoLocationOutline } from "react-icons/io5";
 
 const dummyData = ["Photography", "Marketing", "Gaming", "Developer"];
 
-const SearchForm = ({ searchInputData, tags, width, data }) => {
+const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [rangeSection, setRangeSection] = useState(false);
-  const [rangeValue, setRangeValue] = useState(0);
   const [isLocation, setIsLocation] = useState(false);
   const [searchData, setSearchData] = useState({
     distance: 0,
@@ -39,17 +42,12 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
     setSearchData({ ...searchData, [name]: value });
   };
 
-  // console.log(parseInt(searchData.distance));
-
   const [searchResult, setSearchResult] = useState(null);
-
-  console.log(searchData);
 
   async function handleSearch(e) {
     e.preventDefault();
     try {
       const token = localStorage.getItem("bfm-client-token");
-      console.log(token);
       const res = await instance.get(
         `search/nearby?longitude=${searchData?.longitude}&latitude=${searchData?.latitude}&distance=${searchData?.distance}&limitUser=${searchData?.limitUser}&profession=${searchData?.term}`,
         {
@@ -59,9 +57,21 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
         }
       );
       if (res.status === 200) {
-        console.log(res.data?.data);
-        setSearchResult(res.data?.data);
+        if (pathname === "/") {
+          window.scrollTo({
+            behavior: "smooth",
+            top: 560,
+          });
+          setSearchData(searchData);
+          setSearchResult(res.data?.data);
+          console.log(res.data?.data);
+        } else {
+          setSearchResult(res.data?.data);
+          console.log(res.data?.data);
+          // setSearchResult(res.data?.data);
+        }
       } else if (res.data.message === "User token has expired") {
+        router.push("/client/auth/login");
       } else {
         throw new Error("Something went wrong");
       }
@@ -74,6 +84,8 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
     // searchInputData(searchData);
     data(searchResult);
   }, [searchResult]);
+
+  console.log(searchData);
 
   return (
     <div
@@ -98,7 +110,11 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
                 onClick={() => setRangeSection(!rangeSection)}
                 className="group cursor-pointer gap-5 flex items-center text-[#737579] text-base not-italic font-normal leading-[normal]"
               >
-                <p>Range</p>
+                <p>
+                  {searchData?.distance === 0 || searchData?.distance === "0"
+                    ? "Range"
+                    : `${parseInt(searchData?.distance / 1000)} kms`}
+                </p>
                 <FaChevronDown
                   className={`${
                     rangeSection && "rotate-180"
@@ -107,7 +123,8 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
               </div>
               {rangeSection && (
                 <div
-                  className={`w-full h-56 space-y-5 bg-white absolute inset-x-0 top-full px-10 py-16`}
+                  onBlur={() => setRangeSection(false)}
+                  className={`w-full h-32 space-y-5 bg-white absolute inset-x-0 top-full px-10 py-16`}
                 >
                   <div className="relative flex justify-center items-center">
                     <input
@@ -145,14 +162,14 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
               <button
                 onClick={() => setIsLocation(!isLocation)}
                 type="button"
-                className="group cursor-pointer gap-5 flex items-center text-[#737579] text-base not-italic font-normal leading-[normal]"
+                className="group cursor-pointer gap-5 flex items-center text-[#737579] text-base capitalize not-italic font-normal leading-[normal]"
               >
                 <p>location</p>
-                <FaChevronDown
+                {/* <FaChevronDown
                   className={`${
                     isLocation ? "rotate-180" : "rotate-0"
-                  }transition-all duration-500 ease-in-out`}
-                />
+                  } transition-all duration-500 ease-in-out`}
+                /> */}
               </button>
             </div>
           </div>
@@ -178,7 +195,7 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
             Search
           </button>
         </div>
-        {/* {isShown && (
+        {isShown && (
           <div
             className={`lg:flex hidden items-center justify-end w-full gap-2.5`}
           >
@@ -189,14 +206,14 @@ const SearchForm = ({ searchInputData, tags, width, data }) => {
               <button
                 key={index}
                 type="button"
-                onClick={() => onChange(item)}
+                onClick={() => setSearchData({ ...searchData, term: item })}
                 className="flex bg-[#BED7BF] justify-center items-center gap-[5px] border [background:#EAF2EB] px-2 py-1 rounded-xl border-solid border-[#BED7BF]"
               >
                 {item}
               </button>
             ))}
           </div>
-        )} */}
+        )}
       </form>
     </div>
   );

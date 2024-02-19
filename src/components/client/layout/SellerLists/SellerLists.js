@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchForm from "../../modules/FormLayout/SearchForm";
 import ServicesCard from "../../modules/ServicesCard/ServicesCard";
 
@@ -71,7 +71,7 @@ const SellerLists = ({ params }) => {
       ) : (
         <section className="space-y-5 w-5/6 mx-auto my-12">
           <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
-            Result
+            {`${searchResult?.length} Results`}
           </h2>
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-10 w-full">
             {searchResult?.map((data, index) => (
@@ -88,7 +88,7 @@ const SellerLists = ({ params }) => {
       )}
 
       {/* Recommended Section */}
-      {searchResult?.length === 0 && (
+      {searchResult?.length === 0 || searchResult === null ? (
         <section className="space-y-5 w-5/6 mx-auto my-12">
           <h2 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
             Recommended
@@ -99,7 +99,7 @@ const SellerLists = ({ params }) => {
             ))}
           </div>
         </section>
-      )}
+      ) : null}
     </main>
   );
 };

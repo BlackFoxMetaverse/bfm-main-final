@@ -83,13 +83,13 @@ const Plans = [
 
 const Hero = () => {
   const [searchInput, setSearchInputData] = useState({});
-  const [searchResult, setSearchResult] = useState({});
+  const [searchResult, setSearchResult] = useState([]);
   const router = useRouter();
 
   return (
     <main className="inline-flex w-full flex-col items-center gap-[120px]">
       {/* Hero */}
-      <section className="relative flex w-full lg:h-screen py-32 flex-col justify-center items-center gap-2.5 bg-[#331d71]/50">
+      <section className="relative flex w-full lg:py-40 py-32 flex-col justify-center items-center gap-2.5 bg-[#331d71]/50">
         <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
           <Image
             loading="eager"
@@ -108,6 +108,7 @@ const Hero = () => {
           <SearchForm
             // handleSubmit={handleSearch}
             data={setSearchResult}
+            isShown
             searchInputData={setSearchInputData}
             position={"justify-end"}
           />
@@ -115,33 +116,56 @@ const Hero = () => {
       </section>
 
       {/* Services */}
-      <section className="w-full max-w-[1920px]">
-        <div className="flex flex-col items-center gap-10 w-5/6 m-auto">
-          <h5 className="text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#562FB9))] w-full text-left text-[32px] not-italic font-bold leading-[normal]">
-            Services Near You
-          </h5>
-          <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start gap-[46px] w-full">
-            {searchResult?.length !== 0 ? (
-              // searchResult?.map((data, index) => <ServicesCard key={index} />
-              <SearchCard />
-            ) : (
-              <div>
-                <ServicesCard />
-                <ServicesCard />
-                <ServicesCard />
-                <ServicesCard />
-              </div>
+      <section className="w-full max-w-[1920px] mx-auto">
+        {searchResult?.length === 0 || searchResult === null ? (
+          <div className="flex flex-col items-center gap-10 w-5/6 m-auto">
+            <h5 className="text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#562FB9))] w-full text-left text-[32px] not-italic font-bold leading-[normal]">
+              Services Near You
+            </h5>
+            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start gap-[46px] w-full">
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push(`/client/more`)}
+              className="flex justify-center items-center gap-2 rounded pl-8 pr-6 py-4 text-[#562FB9] text-xl font-normal leading-[100%] tracking-[-1px]"
+            >
+              View More
+              <AiFillRightSquare />
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-10 w-5/6 m-auto">
+            <h5 className="text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#562FB9))] w-full text-left text-[32px] not-italic font-bold leading-[normal]">
+              {searchResult?.length} Services
+            </h5>
+            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start gap-[46px] w-full">
+              {searchResult?.map((data, index) => (
+                <ServicesCard
+                  key={index}
+                  img={data?.image}
+                  distance={data?.distance}
+                  id={data?.uid}
+                  username={data?.userName}
+                  profession={data?.profession}
+                />
+              ))}
+            </div>
+            {searchResult?.length > 4 && (
+              <button
+                type="button"
+                onClick={() => router.push(`/client/more`)}
+                className="flex justify-center items-center gap-2 rounded pl-8 pr-6 py-4 text-[#562FB9] text-xl font-normal leading-[100%] tracking-[-1px]"
+              >
+                View More
+                <AiFillRightSquare />
+              </button>
             )}
           </div>
-          <button
-            type="button"
-            onClick={() => router.push(`/client/more`)}
-            className="flex justify-center items-center gap-2 rounded pl-8 pr-6 py-4 text-[#562FB9] text-xl font-normal leading-[100%] tracking-[-1px]"
-          >
-            View More
-            <AiFillRightSquare />
-          </button>
-        </div>
+        )}
       </section>
 
       {/* Selection Section */}

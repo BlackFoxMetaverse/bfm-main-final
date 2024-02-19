@@ -15,14 +15,14 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import ImageModal from "@/components/admin/Modules/ImageModal/ImageModal";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-const SellerDetails = () => {
+const SellerDetails = ({ params }) => {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showImage, setShowImage] = useState(true);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const [modalImageUrl, setModalImageUrl] = useState(null);
-  const image = [Frame1, Frame2, Frame3, Frame4, Frame5, Frame1];
+  const image = [Frame1, Frame2, Frame3, Frame4, Frame5];
   const openModal = () => {
     setShowModal(true);
   };
@@ -37,6 +37,7 @@ const SellerDetails = () => {
   const closeImageModal = () => {
     setModalImageUrl(null);
   };
+
   return (
     <div className="pt-20 bg-[#fff]">
       <div className={` h-full pb-10 p-10`}>
@@ -68,6 +69,9 @@ const SellerDetails = () => {
                       Ri*****
                     </p>
 
+                    <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-normal">
+                      {params?.username}
+                    </p>
                     <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-normal">
                       FrontEnd Developer
                     </p>
@@ -135,24 +139,26 @@ const SellerDetails = () => {
                     </div>
                   </div>
                   <div className="w-full relative justify-end items-end py-5 text-end ">
-                    <div
-                      className="relative inline-block"
-                      onMouseEnter={() => setShowTooltip(true)}
-                      onMouseLeave={() => setShowTooltip(false)}
-                    >
-                      <FaInfoCircle className="w-4 h-4 text-blue-600 cursor-pointer" />
-                      {showTooltip && (
-                        <div className="absolute right-6 w-[270px] p-2 space-y-4 bottom-full bg-white  rounded shadow-lg">
-                          <h2 className="font-semibold text-sm text-center ">
-                            How to get contact information?
-                          </h2>
-                          <p className=" text-xs text-center ">
-                            There are a lot of things you can do in space, and
-                            space essentially is unlimited resources.
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                    {!showDetails && (
+                      <div
+                        className="relative inline-block"
+                        onMouseEnter={() => setShowTooltip(true)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                      >
+                        <FaInfoCircle className="w-4 h-4 text-blue-600 cursor-pointer" />
+                        {showTooltip && (
+                          <div className="absolute right-6 w-[270px] p-2 space-y-4 bottom-full bg-white  rounded shadow-lg">
+                            <h2 className="font-semibold text-sm text-center ">
+                              How to get contact information?
+                            </h2>
+                            <p className=" text-xs text-center ">
+                              There are a lot of things you can do in space, and
+                              space essentially is unlimited resources.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -175,14 +181,21 @@ const SellerDetails = () => {
               </div>
             ) : ( */}
             <div className="flex flex-col lg:w-2/3 w-full space-y-10  space-x-10 bg-white lg:p-10 rounded-[20px]">
-              <div className="  space-y-6">
+              <div className=" space-y-6">
+                {image && (
+                  <img
+                    src={image[0]?.src}
+                    alt={image[0]?.src}
+                    className="w-full"
+                  />
+                )}
                 <div className="bg-blue-50 rounded-full px-3">
                   <p className="shrink-0 text-blue-600 text-sm  not-italic font-normal leading-[160%]">
                     www.randomlinkoftheproject.com/sefhsf12r93rhxm29h47r29
                     hc29r37h923h293r7s,hm29hrxh
                   </p>
                 </div>
-                <div>
+                <div className="w-full">
                   <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
                     In publishing and graphic design, Lorem ipsum is a
                     placeholder text commonly used to demonstrate the visual
@@ -192,7 +205,7 @@ const SellerDetails = () => {
                   </p>
                 </div>
                 <div className="border w-full"></div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 w-full">
                   <p className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
                     Illustration
                   </p>
@@ -204,7 +217,7 @@ const SellerDetails = () => {
                   </p>
                 </div>
                 {!showImage ? (
-                  <div className="space-y-10">
+                  <div className="space-y-10 w-full">
                     <div className="space-y-6">
                       <h1 className="text-xl font-bold">Project Title</h1>
                       <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
@@ -256,14 +269,14 @@ const SellerDetails = () => {
                   </div> */}
               </div>
               {showImage ? (
-                <div className=" justify-center items-center grid grid-cols-2  w-full p-10 gap-2">
-                  {image?.map((data, i) => (
-                    <div
-                      key={i}
-                      className={`relative ${
-                        i === 5 || i === 0 ? "col-span-2 row-span-2" : ""
-                      }`}
-                    >
+                <div
+                  style={{
+                    margin: 0,
+                  }}
+                  className="grid grid-cols-2 justify-center py-7 items-center w-full gap-2"
+                >
+                  {image?.slice(1, image?.length)?.map((data, i) => (
+                    <div key={i} className={`relative`}>
                       <Image
                         loading="lazy"
                         className="w-[100%] h-[100%] cursor-pointer object-cover"
