@@ -7,7 +7,7 @@ import Image from "next/image";
 import { HiLocationMarker } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
 import { LuBellDot } from "react-icons/lu";
-import { FaAngleDown } from "react-icons/fa6";
+import { FaAngleDown, FaAnglesDown } from "react-icons/fa6";
 import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
 
@@ -15,6 +15,7 @@ const Header = ({ isSeller }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
 
   const [userLocation, setUserLocation] = useState(null);
+  const [isBusiness, setisBusiness] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
   const router = useRouter();
@@ -66,12 +67,50 @@ const Header = ({ isSeller }) => {
             <HiLocationMarker className="lg:text-xl text-xs text-[#784DC7]" />
             New Delhi,India
           </div> */}
+          {isSeller && isLogin && userData?.isSeller && (
+            <div className="pr-[32px] justify-start items-center gap-[4.5rem] inline-flex">
+              <button
+                type="button"
+                className="text-neutral-600 text-xl font-bold"
+              >
+                Dashboard
+              </button>
+              <button
+                type="button"
+                onClick={() => setisBusiness(!isBusiness)}
+                className="pr-[21px] py-[2.50px] justify-start items-start gap-3 inline-flex relative"
+              >
+                <div className="text-neutral-600 text-xl font-bold">
+                  My Business
+                </div>
+                <div
+                  className={`w-6 ${
+                    isBusiness ? "rotate-180" : "rotate-0"
+                  } transition-all ease-in-out duration-500 self-stretch justify-center items-center inline-flex`}
+                >
+                  <FaAngleDown className="w-6 h-6" />
+                </div>
+                <div
+                  className={`absolute inset-x-0 top-full bg-gray-800/95 p-5 rounded-2xl space-y-4 ${
+                    isBusiness ? "translate-y-0 z-0" : "-translate-y-full -z-30"
+                  } transition-all duration-150`}
+                >
+                  <p className="text-white text-2xl font-bold font-['Neue Helvetica']">
+                    Orders
+                  </p>
+                  <p className="text-white text-2xl font-bold font-['Neue Helvetica']">
+                    Earnings
+                  </p>
+                </div>
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
           {!isSeller && (
             <button
-              onClick={() => router.push("/seller")}
+              onClick={() => userData?.isSeller ? router.push("/seller/dashboard") : router.push("/seller")}
               className="text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]"
             >
               Become a Seller

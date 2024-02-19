@@ -197,7 +197,7 @@ const Hero = () => {
       {/* Payement Section */}
       <section className="w-full h-full relative overflow-hidden pt-5 pb-12 flex flex-col gap-6 items-center justify-between">
         <img
-          src="https://s3-alpha-sig.figma.com/img/4a02/2805/627ca7cb3bae6e8eaadc8c650b3fcc91?Expires=1708300800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~jcw~rp9U9I8FedubA6LEkuCsgY97Xo7v0FCKhmUwRzsnIk3aX7M7rucyMgrttQnGB6qwqCDFijawQC15RDS9VlBb3DR8pJu3Cv2m7LOMYoUDo2P-ku74TBsqO0pYPt6JtsXYTfe8d6sVE9WjkFjEyT-4aYIO9Ic9s9-3o2n8nzM4tTsVWsSblORrp5w5AOPBU1b4gSh4lA5d4IigjuYtFv85MGY3NFx29ZkQVjPzYOa-ntg9wFu20rAV603TYSB50Tg6TVi~5jcwzqkOqTJ57lK8PDRpWxp6Wftuo0eo4bpqC6KCp17Zu0NNcM~KC2bLVD2VHHeLgjbV2G9e5Qxg__"
+          src="https://c.wallhere.com/photos/8d/c0/1920x1080_px_black_background_digital_art_geometry_lines_Low_Poly_minimalism_monochrome-571899.jpg!d"
           alt=""
           className="w-full h-full absolute inset-0 -z-10 object-cover"
         />
