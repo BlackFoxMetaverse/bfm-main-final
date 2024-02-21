@@ -21,7 +21,7 @@ const Register = () => {
   const [isUniqueEmail, setUniqueEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    image: "",
+    imageFile: "",
     name: "",
     email: "",
   });
@@ -38,9 +38,7 @@ const Register = () => {
       setProfileImage(file);
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
-      s3FileUpload(file)
-        .then((key) => setFormData({...formData, image: key}))
-        .catch((error) => console.error(error));
+      setFormData({ ...formData, imageFile: file });
     }
   };
 
@@ -94,19 +92,11 @@ const Register = () => {
     e.preventDefault();
 
     instance
-      .post(
-        "/user/user",
-        {
-          image: imageKey,
-          name: formData.name,
-          email: formData.email,
+      .post("/user/user", formData, {
+        headers: {
+          token: token,
         },
-        {
-          headers: {
-            token: token,
-          },
-        }
-      )
+      })
       .then((response) => {
         console.log(response);
         router.replace("/");

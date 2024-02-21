@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { FaDribbble, FaLinkedinIn } from "react-icons/fa6";
 import { IoAdd, IoCloseCircleSharp } from "react-icons/io5";
+import { MdOutlineUploadFile } from "react-icons/md";
 import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
 
@@ -26,18 +27,28 @@ const SocialTypes = [
   },
 ];
 
-const GigsInfo = ({ setData }) => {
+const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
+
+const GigsInfo = ({ setData, handleSubmit }) => {
   const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
   const [galleryImagesFile, setGalleryImagesFile] = useState([]);
+  const [document, setDocument] = useState(null);
+  const [documentFile, setDocumentFile] = useState(null);
   const [experiences, setExperiences] = useState([]);
   const [socialType, setSocialType] = useState("");
   const [formData, setFormData] = useState({
+    college_name: "",
+    certification: null,
     description: "",
     socialMedia: [],
     experiences: [],
     galleryImages: [],
     legalization: false,
   });
+
+  useEffect(() => {
+    setDocument(window.document);
+  }, []);
 
   const handleGalleryImageUpload = (index, file) => {
     if (file) {
@@ -101,10 +112,17 @@ const GigsInfo = ({ setData }) => {
   };
 
   const handleSocialChange = (e) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
       socialMedia: value,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      certification: e.target.files[0],
     }));
   };
 
@@ -117,6 +135,76 @@ const GigsInfo = ({ setData }) => {
       action=""
       className="flex flex-col items-start gap-[22.77px] self-stretch w-5/6 mx-auto"
     >
+      <div className="flex flex-col w-full items-start gap-[5px]">
+        <label
+          htmlFor="college_name"
+          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+        >
+          College name
+        </label>
+        <select
+          name="college_name"
+          id="college_name"
+          value={formData.college_name}
+          onChange={onFormChange}
+          className="flex items-center border w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+        >
+          <option value="">Select your college</option>
+          {CollegeName?.map((college, index) => (
+            <option value={college} key={index}>
+              {college}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
+        <label
+          htmlFor="certification"
+          className={`${
+            formData.certification ? "text-black" : "text-black/60"
+          } whitespace-break-spaces break-words shrink text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]`}
+        >
+          {formData.certification
+            ? formData.certification?.name?.slice(0, 40) + "..."
+            : "Upload your Resume here"}
+        </label>
+        <input
+          type="file"
+          name="certification"
+          id="certification"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        <button
+          type="button"
+          onClick={() => document?.getElementById("certification")?.click()}
+          className="flex h-[31.259px] justify-center items-center gap-[2.605px] pl-[7.815px] pr-[10.42px] py-[5.21px] rounded-[15.63px] bg-[#E9DFFC] text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-[18.235px] not-italic font-normal leading-[100%] tracking-[-0.912px]"
+        >
+          <MdOutlineUploadFile />
+          Upload
+        </button>
+      </div>
+      <div className="flex flex-col items-start gap-2.5 self-stretch">
+        <label
+          htmlFor="description"
+          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-xs not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+        >
+          tell us about yourself
+        </label>
+        <textarea
+          name="description"
+          id="description"
+          required
+          value={formData.description}
+          onChange={onFormChange}
+          className="w-full resize-none focus:outline-none h-full text-black text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] flex flex-col items-start gap-[var(--numberLength,0px)] self-stretch border-[color:var(--Main-Colors-Purple-3,#BE9FF6)] pl-5 pr-2.5 pt-3.5 pb-2.5 rounded-lg border-[1.2px] border-solid"
+          placeholder="Describe your Gig"
+          cols="30"
+          rows="10"
+          minLength={100}
+          maxLength={1000}
+        ></textarea>
+      </div>
       <div className="flex flex-col items-start gap-[7px]">
         <h5 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
           Show Your Gigs
@@ -126,27 +214,6 @@ const GigsInfo = ({ setData }) => {
         </p>
       </div>
       <div className="flex flex-col lg:items-start items-center gap-[30px] self-stretch">
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <label
-            htmlFor="description"
-            className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-xs not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-          >
-            tell us about yourself
-          </label>
-          <textarea
-            name="description"
-            id="description"
-            required
-            value={formData.description}
-            onChange={onFormChange}
-            className="w-full resize-none focus:outline-none h-full text-[#9F9F9F] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] flex flex-col items-start gap-[var(--numberLength,0px)] self-stretch border-[color:var(--Main-Colors-Purple-3,#BE9FF6)] pl-5 pr-2.5 pt-3.5 pb-2.5 rounded-lg border-[1.2px] border-solid"
-            placeholder="Describe your Gig"
-            cols="30"
-            rows="10"
-            minLength={100}
-            maxLength={1000}
-          ></textarea>
-        </div>
         <div className="flex flex-col gap-2 self-stretch">
           <label
             htmlFor="social"
@@ -319,7 +386,13 @@ const GigsInfo = ({ setData }) => {
                       id={`imageInput${index}`}
                       name={`imageInput${index}`}
                       className="hidden"
-                      required={false}
+                      required={
+                        formData.galleryImages[0] !== null ||
+                        formData?.galleryImages.length > 0
+                          ? false
+                          : true
+                      }
+                      // required
                       onChange={(e) =>
                         handleGalleryImageUpload(index, e.target.files[0])
                       }
@@ -348,6 +421,14 @@ const GigsInfo = ({ setData }) => {
           </label>
         </div>
       </div>
+      <button
+        type="submit"
+        onClick={handleSubmit}
+        className="flex justify-center mx-auto items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
+      >
+        Submit
+        <BsCheckCircleFill />
+      </button>
     </form>
   );
 };

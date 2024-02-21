@@ -13,31 +13,23 @@ import { BsCheckCircleFill, BsGear, BsPhone } from "react-icons/bs";
 import instance from "@/utils/axios";
 import s3FileUpload from "@/utils/imageUploader";
 import { getUserPreciseLocation } from "@/utils/location";
+import Form1 from "../../modules/sellerForm/Form1";
 
 const SellerForm = () => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   const router = useRouter();
-  const [image, setImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
-  const [personalInfo, setPersonalInfo] = useState(null);
-  const [professionalInfo, setProfessionalInfo] = useState(null);
+
+  const [formCount, setCount] = useState(1);
   const [gigsInfo, setGigsInfo] = useState(null);
+  const [form1Data, setForm1Data] = useState(null);
   const [userData, setData] = useState(null);
   const [formData, setFormData] = useState({
-    personalInfo,
-    professionalInfo,
-    gigsInfo,
+    // personalInfo,
+    // professionalInfo,
+    ...form1Data,
+    ...gigsInfo,
   });
-  const [isClient, setIsClient] = useState(false);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl);
-    }
-  };
+  const [isClient, setIsClient] = useState(true);
 
   async function checkUser() {
     try {
@@ -72,8 +64,8 @@ const SellerForm = () => {
   }, []);
 
   useEffect(() => {
-    setFormData({ personalInfo, professionalInfo, gigsInfo });
-  }, [personalInfo, professionalInfo, gigsInfo]);
+    setFormData({ ...form1Data, ...gigsInfo });
+  }, [form1Data, gigsInfo]);
 
   console.log("formData", formData);
 
@@ -143,17 +135,24 @@ const SellerForm = () => {
 
   return (
     <main className="w-full mx-auto py-24 space-y-10">
-      {isClient && (
+      {!isClient && (
         <Image
           loading="eager"
           alt=""
           src={require("../../../../../public/seller/theme_bg.svg")}
-          className="absolute inst-0 -z-10"
+          className="absolute inset-0 w-full h-screen object-cover -z-10"
         />
       )}
       <div className="md:block hidden mx-auto w-5/6">
         <button
           type="button"
+          onClick={() => {
+            if (formCount === 2) {
+              setCount(1);
+            } else {
+              router.back();
+            }
+          }}
           className="inline-flex px-6 py-4 justify-center items-center gap-[8px] rounded-[4px] [background:var(--Foundation-Blue-blue-50,#ECEFFE)] pl-[24px)] pr-[16px text-[color:var(--Primary-1,#4461F2)] text-xl font-normal leading-[100%] tracking-[-1px]"
         >
           <IoChevronBackCircleOutline />
@@ -161,7 +160,7 @@ const SellerForm = () => {
         </button>
       </div>
       <div className="w-5/6 mx-auto flex gap-10 justify-between items-start flex-col lg:flex-row">
-        {!isClient && (
+        {isClient ? (
           <div className="w-1/3 min-h-[455px] space-y-7 flex flex-col items-center py-5 bg-white rounded-[20px]">
             <div className="flex w-5/6 justify-between items-center gap-11 py-10 mx-auto">
               <img
@@ -206,10 +205,19 @@ const SellerForm = () => {
               </div>
             </button>
           </div>
-        )}
-        <div className="md:w-2/3 w-full bg-white mx-auto flex flex-col items-center gap-[51.561px] [background:#FFF] shadow-[0px_4.583px_9.166px_0px_rgba(41,41,41,0.08)] py-[45.832px] rounded-[45.832px]">
-          <div className="flex max-w-[766.546px] w-5/6 flex-col justify-center items-start gap-[34px]">
-            <div className="flex max-w-[669px] flex-col items-start md:gap-[29px] gap-[17.21px]">
+        ) : null}
+        <div className="md:w-2/3 w-full mx-auto flex flex-col items-center gap-[51.561px] relative">
+          <div className="flex items-center gap-3 w-11/12 absolute inset-x-0 top-0 -translate-y-full mx-auto pb-10">
+            <div onClick={() => setCount(1)} className="flex-1 border rounded-full bg-blue-700 h-3 w-full"></div>
+            <div
+              onClick={() => setCount(2)}
+              className={`flex-1 border rounded-full ${
+                formCount === 2 ? "bg-blue-700" : "bg-transparent"
+              } w-full h-3`}
+            ></div>
+          </div>
+          <div className="w-full bg-white mx-auto flex flex-col items-center gap-[51.561px] [background:#FFF] shadow-[0px_4.583px_9.166px_0px_rgba(41,41,41,0.08)] py-[45.832px] rounded-[45.832px]">
+            <div className="flex flex-col w-5/6 mx-auto items-start md:gap-[29px] gap-[17.21px]">
               <h1 className="text-black md:text-[32px] text-[18.99px]  not-italic font-bold leading-[normal]">
                 Profile Form
               </h1>
@@ -218,60 +226,32 @@ const SellerForm = () => {
                 profile.
               </p>
             </div>
-            <div
-              className={`lg:w-[121.962px] lg:h-[121.962px] w-[93.196px] h-[93.196px] relative shrink-0 rounded-[121.962px]`}
+            {formCount === 1 && (
+              <Form1
+                setData={setForm1Data}
+                handleSubmit={(e) => {
+                  e.preventDefault();
+                  setCount(formCount + 1);
+                }}
+              />
+            )}
+            {formCount === 2 && (
+              <GigsInfo
+                setData={setGigsInfo}
+                handleSubmit={(e) => e.preventDefault()}
+              />
+            )}
+            {/* {formCount === 2 && (
+            <button
+              type="submit"
+              // onClick={handleSubmit}
+              className="flex justify-center items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
             >
-              {image ? (
-                <div className="w-full h-full">
-                  <img
-                    src={image}
-                    alt=""
-                    className="flex w-full h-full aspect-square items-start rounded-[102px]"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-full">
-                  <img
-                    src={s3Url + userData?.image}
-                    alt=""
-                    className="w-full h-full bg-black/20 flex aspect-square items-start rounded-[102px]"
-                  />
-                  <input
-                    type="file"
-                    id="imageInput"
-                    name="imageInput"
-                    className="hidden"
-                    required={false}
-                    onChange={handleImageChange}
-                  />
-                </div>
-              )}
-              <label
-                htmlFor="imageInput"
-                className="flex lg:w-[38.418px] lg:h-[37.031px] w-[29.357px] h-[28.297px] flex-col justify-center items-center gap-[12.274px] shrink-0 bg-[#DADADA] z-10 lg:p-[12.274px] p-[9.379px] rounded-[71.19px] absolute bottom-0 right-0"
-              >
-                <FaCamera />
-                <input
-                  type="file"
-                  id="imageInput"
-                  name="imageInput"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
-              </label>
-            </div>
+              Submit
+              <BsCheckCircleFill />
+            </button>
+          )} */}
           </div>
-          <PersonalInfo setData={setPersonalInfo} />
-          <ProfessionalInfo setData={setProfessionalInfo} />
-          <GigsInfo setData={setGigsInfo} />
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="flex justify-center items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
-          >
-            Submit
-            <BsCheckCircleFill />
-          </button>
         </div>
       </div>
     </main>

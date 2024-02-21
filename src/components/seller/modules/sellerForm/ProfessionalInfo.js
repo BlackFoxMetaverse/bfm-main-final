@@ -9,10 +9,16 @@ const Experience = ["0-1", "1-3", "3-5", "5+"];
 const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
 
 const ProfessionalInfo = ({ setData }) => {
-  const [Skills, setSkills] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
+  const [currentService, setCurrentService] = useState("");
   const [document, setDocument] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
+  const [profession, setProfession] = useState([
+    "Photographer",
+    "Designer",
+    "Developer",
+    "Software Developer",
+  ]);
 
   useEffect(() => {
     setDocument(window.document);
@@ -20,9 +26,9 @@ const ProfessionalInfo = ({ setData }) => {
 
   const [formData, setFormData] = useState({
     experience: "",
-    college_name: "",
+    profession: "",
     skills: [],
-    certification: null,
+    services: [],
   });
 
   const handleTagInputChange = (e) => {
@@ -32,7 +38,6 @@ const ProfessionalInfo = ({ setData }) => {
   const handleTagInputKeyPress = (e) => {
     if (e.key === " " && currentTag.trim() !== "") {
       e.preventDefault();
-      setSkills((prevSkills) => [...prevSkills, currentTag.trim()]);
       setCurrentTag("");
       setFormData((prevData) => ({
         ...prevData,
@@ -42,10 +47,34 @@ const ProfessionalInfo = ({ setData }) => {
   };
 
   const handleTagRemove = (tagToRemove) => {
-    setSkills((prevSkills) => prevSkills.filter((tag) => tag !== tagToRemove));
     setFormData((prevData) => ({
       ...prevData,
       skills: prevData.skills.filter((skill) => skill !== tagToRemove),
+    }));
+  };
+
+  const handleServiceInputChange = (e) => {
+    setCurrentService(e.target.value);
+  };
+
+  const handleServiceInputKeyPress = (e) => {
+    if (e.key === " " && currentService.trim() !== "") {
+      e.preventDefault();
+      setCurrentService("")
+      setFormData((prevData) => ({
+        ...prevData,
+        services: [...prevData.services, currentService.trim()],
+      }));
+    }
+  };
+
+  const handleServiceRemove = (ServiceToRemove) => {
+    ((prevServices) =>
+      prevServices.filter((Service) => Service !== ServiceToRemove)
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      services: prevData.services.filter((service) => service !== ServiceToRemove),
     }));
   };
 
@@ -69,10 +98,10 @@ const ProfessionalInfo = ({ setData }) => {
   }, [formData]);
 
   return (
-    <form
-      action=""
+    <div
+      // action=""
       //   onChange={() => setData(formData)}
-      className="inline-flex w-5/6 mx-auto flex-col items-center gap-[45px] md:pt-10 rounded-[40px]"
+      className="flex w-5/6 mx-auto flex-col items-center gap-[45px] md:pt-10 rounded-[40px]"
     >
       <div className="flex flex-col items-start gap-5 w-full">
         <div className="flex flex-col items-start text-left gap-[7px]">
@@ -111,7 +140,32 @@ const ProfessionalInfo = ({ setData }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col items-start gap-[5px]">
+          <div className="flex flex-col items-start justify-center gap-[5px]">
+            <label
+              htmlFor="profession"
+              className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+            >
+              profession
+            </label>
+            <select
+              name="profession"
+              id="profession"
+              value={formData.profession}
+              onChange={handleInputChange}
+              required
+              className="flex items-center border focus:outline-none w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+            >
+              <option value="" className="text-[#9F9F9F]">
+                Select Profession
+              </option>
+              {profession?.map((profession, index) => (
+                <option key={index} value={profession}>
+                  {profession}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* <div className="flex flex-col items-start gap-[5px]">
             <label
               htmlFor="college_name"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
@@ -132,16 +186,55 @@ const ProfessionalInfo = ({ setData }) => {
                 </option>
               ))}
             </select>
+          </div> */}
+          <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
+            <label
+              htmlFor="services"
+              className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+            >
+              services
+            </label>
+            <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
+              {formData?.services.map((service) => (
+                <div
+                  key={service}
+                  className="flex h-6 justify-center items-center gap-0.5 border bg-[#E9DFFC] border-[#BE9FF6] pl-1.5 pr-2 py-1 rounded-xl text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleServiceRemove(service)}
+                  >
+                    <RxCrossCircled />
+                  </button>
+                  <span className="">{service}</span>
+                </div>
+              ))}
+              <input
+                type="text"
+                name="services"
+                id="services"
+                placeholder="Developement"
+                value={currentService}
+                onChange={handleServiceInputChange}
+                onKeyPress={handleServiceInputKeyPress}
+                className={`text-sm not-italic font-normal leading-[100%] w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
+                  formData?.services.length === 7 ? "hidden" : "block"
+                }`}
+              />
+            </div>
+            {/* <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
+              Maximum 4 services
+            </p> */}
           </div>
           <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
             <label
               htmlFor="skills"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
-              Skills
+              skills
             </label>
             <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
-              {Skills.map((tag) => (
+              {formData?.skills.map((tag) => (
                 <div
                   key={tag}
                   className="flex h-6 justify-center items-center gap-0.5 border bg-[#E9DFFC] border-[#BE9FF6] pl-1.5 pr-2 py-1 rounded-xl text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
@@ -161,16 +254,16 @@ const ProfessionalInfo = ({ setData }) => {
                 onChange={handleTagInputChange}
                 onKeyPress={handleTagInputKeyPress}
                 className={`text-sm not-italic font-normal leading-[100%] w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
-                  Skills.length === 4 ? "hidden" : "block"
+                  formData?.skills.length === 7 ? "hidden" : "block"
                 }`}
               />
             </div>
             <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
-              Maximum 4 skills
+              Maximum 4-7 skills
             </p>
           </div>
         </div>
-        <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
+        {/* <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
           <label
             htmlFor="certification"
             className={`${
@@ -198,9 +291,9 @@ const ProfessionalInfo = ({ setData }) => {
             <MdOutlineUploadFile />
             Upload
           </button>
-        </div>
+        </div> */}
       </div>
-    </form>
+    </div>
   );
 };
 

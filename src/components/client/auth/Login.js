@@ -17,7 +17,7 @@ const Login = () => {
   const [number, setNumber] = useState("");
   const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
-  const [isExistingUser, setExistingUser] = useState(true);
+  const [isExistingUser, setExistingUser] = useState();
   const [otp, setOtp] = useState("");
 
   const router = useRouter();
@@ -33,20 +33,15 @@ const Login = () => {
 
   // async function loginUser(token) {
   //   try {
-  //     const response = await instance.post("/user/login", null, {
+  //     const response = await instance.get("/user/login", {
   //       headers: {
-  //         token: `${token}`,
+  //         token: token,
   //       },
   //     });
-  //     const data = response?.data;
-  //     if (data?.check?.isUser) {
-  //       const ok = await updateUserLocation(token);
-  //       console.log("user location updated:", ok);
-  //     }
-  //     return Promise.resolve(data);
+  //     const data = response?.data?.check;
+  //     setExistingUser(data.isUser);
   //   } catch (e) {
-  //     console.log("axios error: ", e.message);
-  //     return Promise.reject(e.message);
+  //     console.log(e);
   //   }
   // }
 
@@ -89,27 +84,40 @@ const Login = () => {
     let confirmationResult = window.confirmationResult;
     confirmationResult
       .confirm(otp)
-      .then((result) => {
+      .then(async (result) => {
         let token = result.user.accessToken;
 
         localStorage.setItem("bfm-client-token", token);
 
-        // loginUser(token).then((data) => {
-        //   const { check, message, details } = data;
-
-        //   if (check.isProfile && check.isUser) {
-        //     router.replace("/");
-        //     // router.replace("/thanksPage/already");
-        //   } else {
-        //     router.replace("/client/auth/register");
-        //   }
+        // loginUser(token)
+        //   .then(() => {
+        //     console.log(isExistingUser)
+        //   // if (isExistingUser) {
+        //   //   router.replace("/");
+        //   // } else {
+        //   //   router.replace("/client/auth/register");
+        //   // }
         // });
-        
-        if (isExistingUser) {
-          router.replace("/");
-        } else {
-          router.replace("/client/auth/register");
-        }
+
+        // loginUser(token);
+
+        instance.get("/user/login", {
+          headers: {
+            token: token,
+          }
+        }).then((res) => {
+          console.log(res?.data?.check?.isUser);
+          setExistingUser(res?.data?.check?.isUser)
+        }).catch((err) => {
+          console.error(err?.message);
+          setExistingUser(false)
+        }).then(() => {
+          if (isExistingUser) {
+            router.replace("/")
+          } else {
+            router.replace("/client/auth/register")
+          }
+        })
 
         return () => clearTimeout(timer);
       })

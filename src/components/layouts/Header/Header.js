@@ -63,10 +63,12 @@ const Header = ({ isSeller }) => {
             alt=""
             className="w-[52.443px] h-[16.492px] lg:w-[87.515px] lg:h-[34.376px]"
           />
-          {/* <div  className="flex justify-center items-center rounded-full text-xs focus:outline-none text-[#784DC7] bg-[#E9DFFC] lg:gap-[2.04px] gap-[5.44px] p-[5.439px] lg:px-[8px]">
-            <HiLocationMarker className="lg:text-xl text-xs text-[#784DC7]" />
-            New Delhi,India
-          </div> */}
+          {userLocation !== null && (
+            <div className="flex justify-center items-center rounded-full text-xs focus:outline-none text-[#784DC7] bg-[#E9DFFC] lg:gap-[2.04px] gap-[5.44px] p-[5.439px] lg:px-[8px]">
+              <HiLocationMarker className="lg:text-xl text-xs text-[#784DC7]" />
+              {userLocation.toString()}
+            </div>
+          )}
           {isSeller && isLogin && userData?.isSeller && (
             <div className="pr-[32px] justify-start items-center gap-[4.5rem] inline-flex">
               <button
@@ -110,7 +112,11 @@ const Header = ({ isSeller }) => {
         <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
           {!isSeller && (
             <button
-              onClick={() => userData?.isSeller ? router.push("/seller/dashboard") : router.push("/seller")}
+              onClick={() =>
+                userData?.isSeller
+                  ? router.push("/seller/dashboard")
+                  : router.push("/seller")
+              }
               className="text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]"
             >
               Become a Seller

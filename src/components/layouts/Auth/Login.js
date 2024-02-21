@@ -118,7 +118,7 @@ const Login = () => {
   const [mobilenumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
-  const [formCount, setCount] = useState(1);
+  const [formCount, setCount] = useState(4);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imageKey, setImageKey] = useState(null);
@@ -126,6 +126,8 @@ const Login = () => {
   const [galleryImagesFile, setGalleryImagesFile] = useState([]);
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
+  const [services, setServices] = useState([]);
+  const [currentService, setCurrentService] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [experiences, setExperiences] = useState([]); //TODO : state for exs,,
   const [form4Obj, setForm4Obj] = useState({});
@@ -236,6 +238,22 @@ const Login = () => {
 
   const handleTagRemove = (tagToRemove) => {
     setTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
+  };
+
+  const handleServiceInputChange = (e) => {
+    setCurrentService(e.target.value);
+  };
+
+  const handleServiceInputKeyPress = (e) => {
+    if (e.key === " " && currentService.trim() !== "") {
+      e.preventDefault();
+      setServices((prevServices) => [...prevServices, currentService.trim()]);
+      setCurrentService("");
+    }
+  };
+
+  const handleServiceRemove = (ServiceToRemove) => {
+    setServices((prevServices) => prevServices.filter((Service) => Service !== ServiceToRemove));
   };
 
   //--------------user to backend interaction-------------
@@ -917,6 +935,21 @@ const Login = () => {
                       </div>
                       <div className="flex flex-col items-start gap-[5px]">
                         <label
+                          htmlFor="city"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          city
+                        </label>
+                        <input
+                          type="text"
+                          name="city"
+                          id="city"
+                          placeholder="Delhi"
+                          className="flex items-center gap-[5px] self-stretch border focus:outline-none w-full sm:text-sm text-[10px] not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] xl:p-3.5 lg:p-2.5 p-1.5 rounded-lg"
+                        />
+                      </div>
+                      <div className="flex flex-col col-span-2 items-start gap-[5px]">
+                        <label
                           htmlFor="college_name"
                           className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
                         >
@@ -937,10 +970,49 @@ const Login = () => {
                       </div>
                       <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
                         <label
+                          htmlFor="services"
+                          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+                        >
+                          services
+                        </label>
+                        <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
+                          {services.map((service) => (
+                            <div
+                              key={service}
+                              className="flex h-6 justify-center items-center gap-0.5 border bg-[#E9DFFC] border-[#BE9FF6] pl-1.5 pr-2 py-1 rounded-xl text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                            >
+                              <button
+                                type="button"
+                                onClick={() => handleServiceRemove(service)}
+                              >
+                                <RxCrossCircled />
+                              </button>
+                              <span className="">{service}</span>
+                            </div>
+                          ))}
+                          <input
+                            type="text"
+                            name="services"
+                            id="services"
+                            placeholder="Developement"
+                            value={currentService}
+                            onChange={handleServiceInputChange}
+                            onKeyPress={handleServiceInputKeyPress}
+                            className={`text-sm not-italic font-normal leading-[100%] w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
+                              services.length === 7 ? "hidden" : "block"
+                            }`}
+                          />
+                        </div>
+                        {/* <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
+                          Maximum 4 skills
+                        </p> */}
+                      </div>
+                      <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
+                        <label
                           htmlFor="skills"
                           className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
                         >
-                          tags
+                          skills
                         </label>
                         <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
                           {tags.map((tag) => (
@@ -966,12 +1038,12 @@ const Login = () => {
                             onChange={handleTagInputChange}
                             onKeyPress={handleTagInputKeyPress}
                             className={`text-sm not-italic font-normal leading-[100%] w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
-                              tags.length === 4 ? "hidden" : "block"
+                              tags.length === 7 ? "hidden" : "block"
                             }`}
                           />
                         </div>
                         <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
-                          Maximum 4 skills
+                          Maximum 4-7 skills
                         </p>
                       </div>
                     </div>
@@ -988,7 +1060,7 @@ const Login = () => {
                           ? document
                               ?.getElementById("certification")
                               ?.value?.slice(12, 40) + "..."
-                          : "Upload your certification here"}
+                          : "Upload your resume here"}
                       </label>
                       <input
                         type="file"
