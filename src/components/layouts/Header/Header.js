@@ -17,7 +17,7 @@ const Header = ({ isSeller }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
 
   const pathname = usePathname();
-  const [isScrolling, setScrolling] = useState(pathname.startsWith("/client/username") || pathname.startsWith("/client/settings") ? true : false);
+  const [isScrolling, setScrolling] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [isBusiness, setisBusiness] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
@@ -57,9 +57,7 @@ const Header = ({ isSeller }) => {
 
   useEffect(() => {
     const scrolling = () => {
-      if (pathname.startsWith("/client/username") || pathname.startsWith("/client/settings")) {
-        setScrolling(true);
-      } else if (window.scrollY >= 69) {
+      if (window.scrollY >= 69) {
         setScrolling(true);
       } else {
         setScrolling(false);
@@ -76,7 +74,12 @@ const Header = ({ isSeller }) => {
   return (
     <main
       className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 transition-all duration-500 ease-in-out ${
-        isScrolling ? "bg-black" : "bg-transparent"
+        pathname.startsWith("/client/username") ||
+        pathname.startsWith("/client/settings")
+          ? isScrolling
+            ? "bg-black"
+            : "bg-transparent"
+          : "bg-black"
       }`}
     >
       <Location onLocationChange={handleLocationChange} />

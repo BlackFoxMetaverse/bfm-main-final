@@ -110,7 +110,7 @@ const Hero = () => {
             </span>
             <span className="text-white text-[54.39px] font-bold leading-[57.66px]">
               {" "}
-              your business's back office with Freelancers
+              your business&apos;s back office with Freelancers
             </span>
           </div>
           <SearchForm
