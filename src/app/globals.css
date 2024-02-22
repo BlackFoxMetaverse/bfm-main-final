@@ -19,12 +19,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  z-index: 1;
-}
-
-::-webkit-slider-runnable-track{
-  appearance: none;
-  color: black;
+  z-index: 50;
 }
 
 .loader{

@@ -4,10 +4,15 @@ import { useRouter } from "next/navigation";
 import ServicesCard from "@/components/client/modules/ServicesCard/ServicesCard";
 import Image from "next/image";
 import { HiMiniSignal } from "react-icons/hi2";
-import { FaChevronDown, FaRegCompass } from "react-icons/fa6";
+import {
+  FaAngleRight,
+  FaCheck,
+  FaChevronDown,
+  FaRegCompass,
+} from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
 import Location from "@/components/DeviceLocation/location";
-import { BsSearch } from "react-icons/bs";
+import { BsCheck2, BsSearch } from "react-icons/bs";
 import { AiFillRightSquare } from "react-icons/ai";
 import SearchForm from "../../modules/FormLayout/SearchForm";
 import instance from "@/utils/axios";
@@ -87,30 +92,32 @@ const Hero = () => {
   const router = useRouter();
 
   return (
-    <main className="inline-flex w-full flex-col items-center gap-[120px]">
+    <main className="flex w-full flex-col items-center gap-[120px]">
       {/* Hero */}
-      <section className="relative flex w-full lg:py-40 py-32 flex-col justify-center items-center gap-2.5 bg-[#331d71]/50">
+      <section className="relative flex w-full lg:py-40 py-32 min-h-screen flex-col justify-center items-center gap-2.5 bg-[#331d71]/50">
         <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
-          <Image
+          <img
             loading="eager"
-            src={require("../../../../../public/hero_bg.svg")}
+            src="https://4kwallpapers.com/images/walls/thumbs_3t/6789.jpg"
             alt=""
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="xl:w-3/4 w-5/6 max-w-[1920px]  flex justify-center flex-col items-start">
-          <div className="flex flex-col justify-cente items-center gap-[37px] px-0 py-[15px]">
-            <div className="SearchForProfessionals text-white lg:text-8xl text-4xl font-bold">
-              Search <br />
-              for Professionals
-            </div>
+        <div className="w-11/12 max-w-[1920px] space-y-7 flex justify-center flex-col items-start">
+          <div className="max-w-[769.44px]">
+            <span className="text-white text-[54.39px] font-medium leading-[57.66px]">
+              Automate
+            </span>
+            <span className="text-white text-[54.39px] font-bold leading-[57.66px]">
+              {" "}
+              your business's back office with Freelancers
+            </span>
           </div>
           <SearchForm
             // handleSubmit={handleSearch}
             data={setSearchResult}
             isShown
             searchInputData={setSearchInputData}
-            position={"justify-end"}
           />
         </div>
       </section>
@@ -118,24 +125,29 @@ const Hero = () => {
       {/* Services */}
       <section className="w-full max-w-[1920px] mx-auto">
         {searchResult?.length === 0 || searchResult === null ? (
-          <div className="flex flex-col items-center gap-10 w-5/6 m-auto">
-            <h5 className="text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#562FB9))] w-full text-left text-[32px] not-italic font-bold leading-[normal]">
-              Services Near You
-            </h5>
-            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start gap-[46px] w-full">
-              <ServicesCard />
-              <ServicesCard />
-              <ServicesCard />
-              <ServicesCard />
+          <div className="flex flex-col items-start gap-10 w-11/12 m-auto">
+            <div className="flex justify-between items-center w-full">
+              <p>
+                <span className="text-neutral-900 text-[32px] font-bold font-['Neue Helvetica']">
+                  Professionals{" "}
+                </span>
+                <span className="text-neutral-900 text-xl font-['Neue Helvetica']">
+                  Near You
+                </span>
+              </p>
+              <button
+                type="button"
+                onClick={() => router.push(`/client/more`)}
+                className="w-[34.02px] h-[29.69px] px-[12.37px] py-[7.42px] bg-neutral-900 rounded border border-violet-50 justify-center items-center gap-[4.95px] inline-flex"
+              >
+                <FaAngleRight className="text-white" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => router.push(`/client/more`)}
-              className="flex justify-center items-center gap-2 rounded pl-8 pr-6 py-4 text-[#562FB9] text-xl font-normal leading-[100%] tracking-[-1px]"
-            >
-              View More
-              <AiFillRightSquare />
-            </button>
+            <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
+              {services?.map((_, index) => (
+                <ServicesCard key={index} />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-10 w-5/6 m-auto">
@@ -168,11 +180,62 @@ const Hero = () => {
         )}
       </section>
 
+      {/* unknown section */}
+      <section className="flex flex-col lg:flex-row w-full items-center lg:h-screen h-full overflow-hidden">
+        <img
+          className="flex-1 lg:w-1/2 w-full h-full object-cover"
+          src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        />
+        <div className="w-full h-full flex-1 bg-red-950 py-10 lg:py-0 justify-center items-center flex">
+          <div className="w-3/4 h-full mx-auto flex-col justify-center items-start gap-[51.84px] inline-flex">
+            <div className="text-white 2xl:text-6xl xl:text-4xl lg:text-3xl text-3xl font-bold leading-[normal]">
+              Paperwork is our passion. What&apos;s yours?
+            </div>
+            <div className="flex-col justify-end items-start gap-[35.38px] flex">
+              <button
+                type="button"
+                className="pl-[24.55px] pr-[31.45px] pt-[13.50px] pb-4 bg-emerald-500 rounded-[4.91px] border border-emerald-500 justify-start items-start inline-flex"
+              >
+                <p className="text-white text-[22.09px] font-bold leading-[33.14px]">
+                  Get Started for Free
+                </p>
+              </button>
+              <div className="flex-col justify-start items-start gap-[18.41px] flex">
+                <div className="justify-start items-center gap-3.5 flex">
+                  <FaCheck className="text-white text-2xl" />
+                  <div className="text-white/70 text-2xl font-normal leading-loose">
+                    No credit card
+                  </div>
+                </div>
+                <div className="justify-start items-center gap-3.5 flex">
+                  <FaCheck className="text-white text-2xl" />
+                  <div className="text-white/70 text-2xl font-normal leading-loose">
+                    No spam
+                  </div>
+                </div>
+                <div className="justify-start items-center gap-3.5 flex">
+                  <FaCheck className="text-white text-2xl" />
+                  <div className="text-white/70 text-2xl font-normal leading-loose">
+                    No hassle
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Selection Section */}
       <section className="flex flex-col items-start gap-10 w-5/6">
-        <h1 className="text-[#562FB9] text-[32px] font-bold leading-[normal]">
-          You need it, we&apos;ve got it
-        </h1>
+        <div>
+          <span className="text-neutral-900 text-[32px] font-normal font-['Neue Helvetica']">
+            What you Need?
+          </span>
+          <span className="text-neutral-900 text-[32px] font-extrabold font-['Neue Helvetica']">
+            {" "}
+            We Got it!
+          </span>
+        </div>
         <div className="grid lg:grid-cols-5 grid-cols-2 flex-wrap gap-10 justify-between w-full mt-16 items-center">
           {services?.map((service, index) => (
             <button
@@ -195,7 +258,7 @@ const Hero = () => {
       </section>
 
       {/* Payement Section */}
-      <section className="w-full h-full relative overflow-hidden pt-5 pb-12 flex flex-col gap-6 items-center justify-between">
+      {/* <section className="w-full h-full relative overflow-hidden pt-5 pb-12 flex flex-col gap-6 items-center justify-between">
         <img
           src="https://c.wallhere.com/photos/8d/c0/1920x1080_px_black_background_digital_art_geometry_lines_Low_Poly_minimalism_monochrome-571899.jpg!d"
           alt=""
@@ -251,32 +314,35 @@ const Hero = () => {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* signup */}
-      <section className="lg:w-5/6 w-11/12 bg-gradient-to-r from-black from-45% to-black/5 h-[390px] flex items-center relative mb-10">
-        <div className="w-full flex flex-col justify-center items-start xl:px-24 lg:px-12 px-6 gap-11">
-          <div className="flex lg:flex-row flex-col justify-center text-white text-5xl font-bold leading-[56px] gap-4">
-            <p className="whitespace-nowrap">Join our</p>
-            <p className="text-white text-5xl font-normal leading-[56px]">
-              Metaverse
-            </p>
+      <div className="w-5/6 h-[293.71px] mb-20 relative bg-gradient-to-r from-black/40 to-black/5 overflow-hidden">
+        <img
+          src="https://miro.medium.com/v2/resize:fit:828/format:webp/0*MVU81WeBRsliVq3U"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover -z-10"
+        />
+        <div className="w-11/12 mx-auto py-[37.94px] flex-col justify-start items-start gap-[5.37px] flex">
+          <div className="text-neutral-50 text-[39.16px] font-bold leading-[46.99px]">
+            Build a strong online presence
           </div>
+          <div className="text-neutral-50 text-[22.03px] font-normal leading-loose">
+            Boost your business with this course on personal branding
+            techniques.
+          </div>
+        </div>
+        <div className="w-11/12 mx-auto">
           <button
             type="button"
-            onClick={() => router.push("/client/auth/login")}
-            className="inline-flex w-fit justify-center items-center rounded [background:var(--Primary-1,#4461F2)] px-[22px] py-[9px] text-white text-center text-base font-normal leading-6"
+            className="px-8 py-4 bg-white rounded border-2 justify-center items-center gap-2 inline-flex"
           >
-            Get Started Now
+            <div className="text-indigo-500 text-xl font-['Neue Helvetica'] leading-tight">
+              Become a Seller
+            </div>
           </button>
         </div>
-        <Image
-          loading="eager"
-          src={require("../../../../../public/clients_images/div.signup.png")}
-          alt=""
-          className="w-full -z-10 h-full object-cover xl:static absolute inset-0"
-        />
-      </section>
+      </div>
     </main>
   );
 };

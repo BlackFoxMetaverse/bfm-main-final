@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import logo from "../../../assets/dark_logo.svg";
+import logo from "../../../../public/logos/white_fox.svg";
 import Image from "next/image";
 import { HiLocationMarker } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
@@ -10,10 +10,14 @@ import { LuBellDot } from "react-icons/lu";
 import { FaAngleDown, FaAnglesDown } from "react-icons/fa6";
 import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
+import { IoLocationOutline } from "react-icons/io5";
+import Link from "next/link";
 
 const Header = ({ isSeller }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
 
+  const pathname = usePathname();
+  const [isScrolling, setScrolling] = useState(pathname.startsWith("/client/username") || pathname.startsWith("/client/settings") ? true : false);
   const [userLocation, setUserLocation] = useState(null);
   const [isBusiness, setisBusiness] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
@@ -51,22 +55,53 @@ const Header = ({ isSeller }) => {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    const scrolling = () => {
+      if (pathname.startsWith("/client/username") || pathname.startsWith("/client/settings")) {
+        setScrolling(true);
+      } else if (window.scrollY >= 69) {
+        setScrolling(true);
+      } else {
+        setScrolling(false);
+      }
+    };
+
+    window.addEventListener("scroll", scrolling);
+
+    return () => {
+      window.removeEventListener("scroll", scrolling);
+    };
+  }, [isScrolling]);
+
   return (
     <main
-      className={`flex flex-col justify-end items-center top-0 w-full fixed z-50`}
+      className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 transition-all duration-500 ease-in-out ${
+        isScrolling ? "bg-black" : "bg-transparent"
+      }`}
     >
       <Location onLocationChange={handleLocationChange} />
-      <div className="mx-auto w-full max-w-[1920px] flex items-center justify-between py-4 rounded-b-xl bg-white px-12 shadow-md ">
-        <div className="flex items-center lg:gap-[65px] gap-0.5">
-          <Image
-            src={logo}
-            alt=""
-            className="w-[52.443px] h-[16.492px] lg:w-[87.515px] lg:h-[34.376px]"
-          />
+      <div
+        className={`mx-auto w-11/12 max-w-[1920px] h-[5rem] flex items-center justify-between rounded-b-xl`}
+      >
+        <div className="flex items-center lg:gap-[3.6rem] gap-0.5">
+          <Link
+            href={"/"}
+            className="w-[99px] h-[30px] relative flex-col justify-start items-start inline-flex"
+          >
+            <Image
+              src={logo}
+              alt=""
+              className="w-[52.443px] h-[16.492px] lg:w-[87.515px] lg:h-[34.376px]"
+            />
+          </Link>
           {userLocation !== null && (
-            <div className="flex justify-center items-center rounded-full text-xs focus:outline-none text-[#784DC7] bg-[#E9DFFC] lg:gap-[2.04px] gap-[5.44px] p-[5.439px] lg:px-[8px]">
-              <HiLocationMarker className="lg:text-xl text-xs text-[#784DC7]" />
-              {userLocation.toString()}
+            <div className="max-w-[181.33px] h-8 pl-2 pr-[10.67px] py-[5.33px] text-white text-sm font-normal leading-[14px] rounded-2xl justify-center items-center gap-[2.67px] flex">
+              <div className="w-6 h-6 justify-center items-center flex">
+                <IoLocationOutline className="text-base" />
+              </div>
+              <div className="text-white text-sm font-normal leading-[14px]">
+                New Delhi, India
+              </div>
             </div>
           )}
           {isSeller && isLogin && userData?.isSeller && (
@@ -117,16 +152,15 @@ const Header = ({ isSeller }) => {
                   ? router.push("/seller/dashboard")
                   : router.push("/seller")
               }
-              className="text-[color:var(--Foundation-Green-green-400,#58975B)] text-xl not-italic font-medium leading-[100%] tracking-[-1px]"
+              className="text-white text-[19px] font-bold font-['Helvetica Neue'] leading-[12.80px]"
             >
               Become a Seller
             </button>
           )}
+          <button></button>
           {isLogin ? (
             <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
-              <button>
-                <LuBellDot className="lg:text-2xl text-2xl" />
-              </button>
+              <LuBellDot className="lg:text-2xl text-2xl text-white" />
               <div className="flex items-center justify-center">
                 <button
                   type="button"
@@ -145,28 +179,15 @@ const Header = ({ isSeller }) => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
-              <button
-                onClick={() => {
-                  isSeller
-                    ? router.replace("/auth/login")
-                    : router.replace("/client/auth/login");
-                }}
-                className="flex bg-[#282828] h-full items-center gap-2.5 lg:px-[23px] lg:py-[7px] px-[11.754px] py-[3.577px] rounded-[34px] text-white lg:text-xl text-[10.22px] not-italic font-normal leading-[normal]"
-              >
-                Sign Up
-              </button>
-              <button
-                onClick={() => {
-                  isSeller
-                    ? router.replace("/auth/login")
-                    : router.replace("/client/auth/login");
-                }}
-                className="lg:flex hidden h-full items-center gap-2.5 px-[23px] py-[7px] rounded-[34px] text-black text-xl not-italic font-normal leading-[normal]"
-              >
-                Log In
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/client/auth/login")}
+              className="w-[94px] h-[48.98px] px-7 pt-[10.49px] pb-[10.48px] rounded border border-white justify-center items-center inline-flex"
+            >
+              <p className="text-white text-lg font-bold font-['Helvetica Neue'] leading-7">
+                Join
+              </p>
+            </button>
           )}
         </div>
       </div>

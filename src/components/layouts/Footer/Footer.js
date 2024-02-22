@@ -2,121 +2,146 @@
 
 import Link from "next/link";
 import React from "react";
-import { FaInstagram, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
-import FooterColumn from "../../Modules/FooterColumn/FooterColumn";
-import { BsReddit, BsDiscord } from "react-icons/bs";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
-import Logo from "../../../assets/dark_logo.svg";
 
-const Footer = () => {
-  const pathname = usePathname();
+const SectionTitle = ({ title }) => (
+  <div className="text-base font-bold leading-7">{title}</div>
+);
+
+const ItemList = ({ title, items }) => (
+  <div className="flex flex-col w-3/12 max-md:ml-0 max-md:w-full">
+    <div className="flex flex-col text-base font-medium text-indigo-200 whitespace-nowrap max-md:mt-10">
+      <SectionTitle title={title} />
+      {items.map((item, index) => (
+        <Link href={item.href} key={index} className={`mt-${index === 0 ? "4" : "2.5"}`}>
+          {item.name}
+        </Link>
+      ))}
+    </div>
+  </div>
+);
+
+const FooterLink = ({ src, altText }) => (
+  <img
+    loading="lazy"
+    src={src}
+    alt={altText}
+    className="aspect-square w-[35px]"
+  />
+);
+
+const Footer = () => (
+  <footer className="flex gap-5 justify-between items-center mx-auto mt-10 max-md:flex-wrap w-5/6">
+    <FooterLink
+      src="https://cdn.builder.io/api/v1/image/assets/TEMP/fc48f3c8b133eedbccaa1fa9bae188116982f1f52ab42bc8683499d5cbaaf537?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+      altText=""
+    />
+    <div className="flex gap-5 justify-between self-stretch my-auto text-sm font-bold leading-7 text-indigo-200">
+      <div>Terms</div>
+      <div className="flex-auto">Data Privacy Statement</div>
+      <div>Cookies</div>
+    </div>
+    <div className="flex gap-4 self-stretch my-auto">
+      <FooterLink
+        src="https://cdn.builder.io/api/v1/image/assets/TEMP/f3aff4d5fa96d9063f30eb16f0d4d8b8ca8e40954f28672aa1c08d1a317c183d?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+        altText=""
+      />
+      <FooterLink
+        src="https://cdn.builder.io/api/v1/image/assets/TEMP/b7048516f2117dfdeb4d47b8285f1fea8908b53cd8481256b336a630617aab02?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+        altText=""
+      />
+      <FooterLink
+        src="https://cdn.builder.io/api/v1/image/assets/TEMP/5e8c3b7f77a32898f873f9cd1b9c9e9391edcf3ea116a38d56d058ffd4f999c7?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+        altText=""
+      />
+    </div>
+  </footer>
+);
+
+const WebsiteFooter = () => {
+  const sectionData = [
+    {
+      title: "BFM",
+      items: [
+        { name: "Explore", href: "#" },
+        { name: "All NFTs", href: "#" },
+        { name: "Blog", href: "#" },
+        { name: "About", href: "#" },
+        { name: "SideMap", href: "#" },
+      ],
+    },
+    {
+      title: "My Account",
+      items: [
+        { name: "Profile", href: "#" },
+        { name: "Favourite", href: "#" },
+        { name: "Watchlist", href: "#" },
+        { name: "My Collection", href: "#" },
+        { name: "Settings", href: "#" },
+      ],
+    },
+    {
+      title: "Resources",
+      items: [
+        { name: "Platform Status", href: "#" },
+        { name: "Partners", href: "#" },
+        { name: "Taxes", href: "#" },
+        { name: "News Letter", href: "#" },
+      ],
+    },
+    {
+      title: "Community",
+      items: [
+        { name: "Help Center", href: "#" },
+        { name: "BFM Token", href: "#" },
+        { name: "Suggest Feature", href: "#" },
+        { name: "Subscribe", href: "#" },
+      ],
+    },
+  ];
 
   return (
-    <div
-      className={` border-t-2 pt-5 ${
-        pathname.startsWith("/auth") || pathname.startsWith("/about")
-          ? "hidden"
-          : "block"
-      } bg-white`}
-    >
-      <div className="mx-auto 2xl:w-[1440px] w-full lg:w-full">
-        <div className="h-1/2  grid grid-cols-7 p-4 lg:px-20">
-          <div className="p-5 col-span-7 lg:col-span-3 ">
-            {/*  */}
-            <Image src={Logo} alt="" className="w-[200px] h-[80px]" />
-            <p className="text-[#777E90] text-sm my-4">
-              The goal of Black Fox Metaverse, the company we formed, is to
-              completely transform the NFT e-commerce sector. We are a rapidly
-              expanding platform with a vibrant vision for our artists,
-              constantly exploring fresh approaches to push the limits of what
-              is practical in the NFT e-commerce sector.
-            </p>
-
-            <ul>
-              <div className="flex gap-6 pb-5">
-                <a
-                  target={"_blank"}
-                  rel="noreferrer"
-                  href="https://www.instagram.com/blackfoxmetaverse/"
-                >
-                  <FaInstagram className="text-2xl   cursor-pointer hover:text-pink-500" />
-                </a>
-                <a
-                  target={"_blank"}
-                  rel="noreferrer"
-                  href="https://twitter.com/fox_metaverse/"
-                >
-                  <FaTwitter className="text-2xl   cursor-pointer hover:text-blue-400" />
-                </a>
-
-                <a
-                  target={"_blank"}
-                  rel="noreferrer"
-                  href="https://www.linkedin.com/showcase/black-fox-metaverse/?viewAsMember=true"
-                >
-                  <FaLinkedin className="text-2xl   cursor-pointer hover:text-blue-500" />
-                </a>
-
-                <a
-                  target={"_blank"}
-                  rel="noreferrer"
-                  href="https://www.youtube.com/@BlackFoxMetaverse/featured"
-                >
-                  <FaYoutube className="text-2xl   cursor-pointer hover:text-red-600" />
-                </a>
-
-                <BsReddit className="text-2xl  cursor-pointer hover:text-red-600" />
-
-                <BsDiscord className="text-2xl   cursor-pointer hover:text-blue-500" />
-              </div>
-            </ul>
-            <div className="flex  items-center gap-4">
-              <p className="text-[#777E90] text-md ">Terms</p>
-              <p className="text-[#777E90] text-md ">Privacy Policy</p>
-            </div>
+    <div className="flex flex-col justify-center py-12 bg-stone-950 max-md:px-5">
+      <div className="flex flex-col xl:flex-row py-9 w-5/6 mx-auto justify-between gap-10 text-sm text-indigo-200 max-md:max-w-full">
+        <nav className="grid grid-cols-2 md:grid-cols-4 gap-5 justify-between mt-14 max-w-full w-full">
+          {sectionData.map((section, idx) => (
+            <ItemList key={idx} title={section.title} items={section.items} />
+          ))}
+        </nav>
+        <div className="flex flex-col py-9 text-sm text-indigo-200 max-md:max-w-full">
+          <SectionTitle title="Subscribe" />
+          <form action="" onSubmit={(e) => e.preventDefault()} className="flex gap-5 justify-between pl-4 mt-4 rounded-md border-gray-900 border-solid bg-zinc-800 border-[1.5px]">
+            <label htmlFor="emailInput" className="sr-only">
+              Email address
+            </label>
+            <input
+              type="email"
+              id="emailInput"
+              placeholder="Email address"
+              aria-label="Email address"
+              className="my-auto bg-transparent w-full focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="aspect-square w-[50px] bg-transparent border-none"
+            >
+              <img
+                loading="lazy"
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/3ca6a6ab99227b6e4d5993f041b946924fc9ac4b660999a8ef447a255e424fc2?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+                alt="Subscribe"
+                className="aspect-square w-[50px]"
+              />
+            </button>
+          </form>
+          <div className="mt-10">
+            Hello, we are BFM. trying to make an effort to put the right people
+            for you to get the best results. Just insight.
           </div>
-          <div className="grid grid-cols-2  w-full col-span-7 lg:col-span-4 md:grid-cols-4">
-            <FooterColumn
-              heading={"BFM"}
-              content={["Explore", "All NFTs", "About"]}
-            ></FooterColumn>
-            <FooterColumn
-              heading={"Personal"}
-              content={[
-                "Profile",
-                "Favourites",
-                "Watchlist",
-                "My collections",
-                "Settings",
-              ]}
-            ></FooterColumn>
-            <FooterColumn
-              heading={"Resources"}
-              content={["Platform status", "Partners", "Taxes", "Newsletter"]}
-            ></FooterColumn>
-            <FooterColumn
-              heading={"Community"}
-              content={[
-                "Help Center",
-                "BFM Token",
-                "suggest Feature",
-                "Subscribe",
-              ]}
-            ></FooterColumn>
-          </div>
-        </div>
-
-        <div className="h-[1px] w-full bg-[#65676B]/50"></div>
-        <div className="flex md:flex-row flex-col px-20 justify-center  py-6 gap-4">
-          <p className="text-center ">
-            © BlackFoxMetaverse, Inc @ All Rights Reserved
-          </p>
-          <div></div>
         </div>
       </div>
+      <div className="self-center mt-10 max-w-full h-px bg-indigo-200 border border-indigo-200 border-solid w-5/6 mx-auto" />
+      <Footer />
     </div>
   );
 };
 
-export default Footer;
+export default WebsiteFooter;
