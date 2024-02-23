@@ -1,28 +1,144 @@
 "use client";
-import React, { useState } from "react";
-import { CiFacebook, CiLocationOn } from "react-icons/ci";
-import { FaHeart, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa6";
-import Profile from "../../../../assets/graphicDesigner.png";
-import Image from "next/image";
-import Frame1 from "../../../../assets/Frame1.svg";
-import Frame2 from "../../../../assets/Frame2.svg";
-import Frame3 from "../../../../assets/Frame3.svg";
-import Frame4 from "../../../../assets/Frame4.svg";
-import Frame5 from "../../../../assets/Frame5.svg";
-import { FaInfoCircle } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import {
+  FaAngleRight,
+  FaBehance,
+  FaGithub,
+  FaLinkedinIn,
+} from "react-icons/fa6";
 import Modal from "@/components/Modules/Modal/Modal";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
 import ImageModal from "@/components/admin/Modules/ImageModal/ImageModal";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BsStarFill } from "react-icons/bs";
+import { IoLocationOutline } from "react-icons/io5";
+import FeedBackCard from "../../modules/FeedBackSection/FeedBackCard";
+
+const ImageComponent = ({ src, alt, className, onClick }) => (
+  <img
+    loading="eager"
+    src={src}
+    alt={alt}
+    onClick={onClick}
+    className={className}
+  />
+);
+
+const FeedBackModal = ({ feedbackData, close }) => {
+  const stars = [1, 2, 3, 4, 5];
+  const [feedback, setFeedback] = useState({
+    rating: 0,
+    feedbackTerm: "",
+  });
+
+  const handleSubmit = () => {
+    feedbackData(feedback);
+    close();
+  };
+
+  // useEffect(() => {
+  //   feedbackData(feedback);
+  // },[feedback])
+
+  console.log(feedback);
+
+  return (
+    <div className="w-full h-screen flex items-center justify-center bg-black/50 fixed inset-0 z-50">
+      <div className="bg-white flex flex-col max-w-[1920px] aspect-video 2xl:w-1/2 xl:w-2/3 lg:w-5/6 w-full rounded-2xl p-10">
+        <h2 className="3xl:text-5xl 2xl:text-3xl text-2xl font-bold">
+          Give a Feedback
+        </h2>
+        <p className="text-black/70 mt-3 3xl:text-lg">
+          Please rate your experience below
+        </p>
+        <div className="flex gap-10 items-center mt-7">
+          <div className="flex items-center gap-5">
+            {stars?.map((_, index) => (
+              <BsStarFill
+                onClick={() => {
+                  setFeedback({ ...feedback, rating: index + 1 });
+                }}
+                className={`${
+                  index + 1 <= feedback.rating
+                    ? "text-yellow-400"
+                    : "text-stone-300"
+                } text-5xl cursor-pointer`}
+                key={index}
+              />
+            ))}
+          </div>
+          <p className="3xl:text-3xl 2xl:text-2xl text-xl text-stone-600">
+            {feedback.rating}/5
+          </p>
+        </div>
+        <h5 className="mt-5 px-5 3xl:text-xl 2xl:text-lg">
+          Additional Feedback
+        </h5>
+        <textarea
+          name="feedback"
+          id="feedback"
+          placeholder="My Feedback!!"
+          value={feedback.feedbackTerm}
+          onChange={(e) =>
+            setFeedback({ ...feedback, feedbackTerm: e.target.value })
+          }
+          cols="30"
+          rows=""
+          className="flex-grow border 3xl:text-xl 2xl:text-lg border-stone-500 focus:outline-none rounded-xl mt-4 p-5"
+        ></textarea>
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="w-full py-3 items-center mt-6 rounded-lg justify-center flex bg-black text-white 3xl:text-xl 2xl:text-lg"
+        >
+          Submit Feedback
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const SellerDetails = ({ params }) => {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showImage, setShowImage] = useState(true);
+  const [addFeedBack, setAddFeedback] = useState(false);
   const [showDetails, setShowDetails] = useState(true);
   const [modalImageUrl, setModalImageUrl] = useState(null);
-  const image = [Frame1, Frame2, Frame3, Frame4, Frame5];
+  const services = [
+    "SEO",
+    "Freelancing",
+    "User Research",
+    "UI Research",
+    "Prototyping",
+    "Wireframing",
+  ];
+  const feedbacksData = [
+    {
+      imageSrc:
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/ec9057b567c10586011945dc82f27532d518f41f637d48ef6ef795e6a9034a88?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+      authorName: "Jane Doe",
+      feedback:
+        "I really appreciate the insights and perspective shared in this article. It's definitely given me something to think about and has helped me see things from a different angle. Thank you for writing and sharing!",
+      ratingText: "3",
+    },
+    {
+      imageSrc:
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/ec9057b567c10586011945dc82f27532d518f41f637d48ef6ef795e6a9034a88?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+      authorName: "Jane Doe",
+      feedback:
+        "I really appreciate the insights and perspective shared in this article. It's definitely given me something to think about and has helped me see things from a different angle. Thank you for writing and sharing!",
+      ratingText: "1",
+    },
+  ];
+  const image = [
+    "https://s3-alpha-sig.figma.com/img/088d/f14d/a208675f602fab1876f249bacd792579?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Kvks0aVQm6JuAEkVZSA11e7lEy4NReDZbC1mhMfCleDvwiiH~-wmw48Bzd7ZL867hevFWK9Ni5iGk96lyLzvyS9PMFkfFAkyiH3bXuDDJIBv9xUMqaXqpLjiLj2DsxYqS647eV~SGPsWXxDoVNS3dHP0wWapBhYTxbxBiQ3QpxxcsxtDbfytR38j1T-JmYGmxaBQP5wxMGaN1lG1FO7pdc18wsHi1-iIi5n1zqfKD3EdHgdHe6yTOQS9U9JWjFW2gyh51pcNkJNUSbh9q1DKdABohwyowYDtF9Ydf5Uul9sMrE~V15T3S4Ee9lJKNH1-Hr5XLeGBlamh7jAkGdA1tA__",
+    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
+    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
+    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
+    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
+  ];
   const openModal = () => {
     setShowModal(true);
   };
@@ -39,268 +155,310 @@ const SellerDetails = ({ params }) => {
   };
 
   return (
-    <div className="pt-20 bg-[#fff]">
-      <div className={` h-full pb-10 p-10`}>
-        <div className="w-11/12 mx-auto lg:block hidden mb-10">
-          <button
+    <div className="py-32">
+      <div className="flex lg:flex-row flex-col lg:w-11/12 justify-between max-w-[1920px] gap-14 mx-auto rounded-[20px] relative">
+        <div className="flex gap-7 xl:w-[40%] w-full items-start xl:sticky inset-y-0">
+          {/* <button
+            type="button"
             onClick={() => router.back()}
-            className="bg-blue-50 text-blue-600 p-2 flex justify-center items-center gap-2 rounded"
+            className="px-[17.57px] py-[10.54px] bg-neutral-900 rounded-md border-2 border-violet-50 justify-center items-center gap-[7.03px] hidden lg:inline-flex"
           >
-            {" "}
-            <IoArrowBackCircleOutline className="w-5 h-5" />
-            Back
-          </button>
-        </div>
-
-        <div className="space-y-10 h-full">
-          <div className="flex lg:flex-row flex-col lg:w-5/6 gap-5 mx-auto shrink-0 rounded-[20px]">
-            <div className="lg:w-1/3 w-full space-y-5 ">
-              <div className="w-full overflow-hidden px-5 p-4 bg-white  shadow-md shadow-gray-500 gap-8 rounded-[25.636px] items-center">
-                <div className=" p-4 bg-white flex gap-8 rounded-[25.636px] items-center">
-                  <Image
-                    src={Profile}
-                    onClick={() => openImageModal(Profile)}
-                    className="flex cursor-pointer object-cover 3xl:w-[9.17rem] 2xl:w-[7rem] xl:w-[5rem] w-[5rem] aspect-square justify-center items-center shrink-0 rounded-full"
+            <FaAngleLeft className="text-white" />
+          </button> */}
+          <div className="space-y-5 w-full">
+            <div className="w-full flex flex-col overflow-hidden gap-8 rounded-lg justify-center bg-white p-7 items-center">
+              <div className="w-full h-full items-start shrink-0 gap-[22.29px] flex">
+                <div className="w-1/3 aspect-square rounded-2xl shrink-0 overflow-hidden relative bg-stone-300">
+                  <img
+                    src="https://s3-alpha-sig.figma.com/img/e5f1/c231/96d9c17181e09c0c069fb92abf5dcd9b?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=d0tt1M-~cJJK5yeNSqhOosCaOy0Cr5gHFeI2Nqgy8P8LnRCBajnfpgTR2o9gsaOw5GbVA6wgGhKUYRswddZNLDuuEKvMBpe5t3P69887rWQby6X0nwE0-6Vjc0ic7d452O80U9xtm7cs2vmXQ8gcZLN7G0tDoW6jFrc-B2jP46Bm52KaJYlVHzs1dkcqIrbxT-Lg-L8sHd8DMlfRydGIUI2s~nKxvnpzOS3LzoC5LNO23gbPEnpFJ50FqyT1XuT-uqPGrnPpyTpiTIB~P15wJU3II3-OweUGqaG~PuHYvEuE41Hl860e9AM3QyccNhe-V4otdMoUIebKRjfsi3gQRQ__"
                     alt=""
+                    className="size-full object-cover shrink-0"
                   />
-
-                  <div className="xl:space-y-2">
-                    <p className="text-black  whitespace-pre-wrap break-words 3xl:text-[20px] 2xl:text-xl xl:text-base lg:text-medium not-italic font-bold leading-[normal] capitalize">
-                      Ri*****
-                    </p>
-
-                    <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-normal">
-                      {params?.username}
-                    </p>
-                    <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-normal">
-                      FrontEnd Developer
-                    </p>
-
-                    <p className="flex text-green-500 bg-gray-200 max-w-[100px] text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-full">
-                      Available
-                    </p>
-                  </div>
                 </div>
-
-                <div className=" px-5 space-y-9">
-                  <div className=" flex justify-center text-gray-600 items-center  text-sm max-w-[250px]  bg-gray-200 gap-[4.866px] pl-[12.164px] pr-[9.732px] py-[4.082px] rounded-full">
-                    Faridabad, Haryana <CiLocationOn />
+                <div className="flex-col w-2/3 justify-between h-full items-start 3xl:gap-2 gap-1 inline-flex">
+                  <div className="text-black 3xl:text-2xl 2xl:text-xl lg:text-lg text-lg font-bold whitespace-nowrap">
+                    {showDetails ? "Rajesh Ramayana" : "Ra***"}
                   </div>
-                  <div className="self-stretch relative space-y-8 text-[#696969] text-xl not-italic font-bold leading-[27px] p-3">
-                    {!showDetails ? (
-                      <div className=" absolute inset-0 backdrop-blur-[3.799999952316284px] "></div>
-                    ) : null}
-                    <div className="space-y-2 ">
-                      <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                        Phone Number
-                      </p>
-                      <p className="self-stretch text-[#696969] text-lg not-italic font-normal leading-[27px]">
-                        8709360543
-                      </p>
+                  <div className="flex-col justify-start items-start gap-[4.68px] flex">
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                      {params?.username ? params?.username : "Username"}
                     </div>
-                    <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                      <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                        Email Address
-                      </p>
-                      <p className="self-stretch text-[#696969] text-lg not-italic font-normal leading-[27px]">
-                        ritikbhushanmain@gmail.com
-                      </p>
-                    </div>
-                    <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                      <p>Social Media</p>
-                      <div className="flex gap-3">
-                        <div className="bg-gray-100 p-2 rounded-full hover:text-red-500 hover:border-red-500 hover:border ">
-                          <FaInstagram className=" " />
-                        </div>
-                        <div className="bg-gray-100 p-2 rounded-full hover:text-blue-600 hover:border-blue-600 hover:border ">
-                          <CiFacebook className=" " />
-                        </div>
-                        <div className="bg-gray-100 p-2 hover:text-red-700 hover:border-red-700 hover:border  rounded-full">
-                          <FaYoutube className=" " />
-                        </div>
-
-                        <div className="bg-gray-100 p-2 rounded-full hover:text-blue-900 hover:border-blue-900 hover:border ">
-                          <FaLinkedin className=" " />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                      <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                        Rating
-                      </p>
-                      <div className="flex gap-4">
-                        <FaHeart className="text-red-500" />
-                        <FaHeart className="text-red-500" />
-                        <FaHeart className="text-red-500" />
-                        <FaHeart className="text-red-100" />
-                        <FaHeart className="text-red-100" />
-                        <p className=" text-gray-500">3022</p>
-                      </div>
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                      UI/UX Designer{" "}
                     </div>
                   </div>
-                  <div className="w-full relative justify-end items-end py-5 text-end ">
-                    {!showDetails && (
-                      <div
-                        className="relative inline-block"
-                        onMouseEnter={() => setShowTooltip(true)}
-                        onMouseLeave={() => setShowTooltip(false)}
-                      >
-                        <FaInfoCircle className="w-4 h-4 text-blue-600 cursor-pointer" />
-                        {showTooltip && (
-                          <div className="absolute right-6 w-[270px] p-2 space-y-4 bottom-full bg-white  rounded shadow-lg">
-                            <h2 className="font-semibold text-sm text-center ">
-                              How to get contact information?
-                            </h2>
-                            <p className=" text-xs text-center ">
-                              There are a lot of things you can do in space, and
-                              space essentially is unlimited resources.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                  {/* <div className="w-[72.45px] h-[25.03px] pl-[9.82px] pr-[8.63px] pt-[4.91px] pb-[5.12px] bg-gray-200 rounded-xl justify-center items-center inline-flex">
+                    <div className="text-zinc-700 text-[13px] font-normal font-['Work Sans']">
+                      Available
+                    </div>
+                  </div> */}
+                  <div className="px-2 py-1 bg-black rounded-xl justify-center items-center gap-1 inline-flex">
+                    <div className="text-white text-base font-normal whitespace-nowrap">
+                      Faridabad, Haryana
+                    </div>
+                    <IoLocationOutline className="text-white" />
+                  </div>
+                  <div className="justify-start items-start gap-2 inline-flex">
+                    <BsStarFill className="w-[21.14px] h-[20.25px] text-orange-500 relative" />
+                    <div className="w-[81px] text-black text-base leading-normal">
+                      4.2
+                    </div>
                   </div>
                 </div>
               </div>
-              {!showDetails ? (
-                <button
-                  className="bg-blue-500 w-full text-white flex justify-center items-center p-3 rounded-full "
-                  onClick={openModal} // Open modal when button is clicked
-                >
-                  Reveal Contact Information
-                </button>
-              ) : (
-                <button className="bg-blue-500 w-full text-white flex justify-center items-center p-3 rounded-full ">
-                  Message
-                </button>
+              {showDetails && (
+                <div className="w-full flex-col justify-start items-start gap-7 flex">
+                  <div className="flex-col w-full justify-start items-start gap-0.5 flex">
+                    <div className="text-black text-xl font-bold">
+                      Phones Number
+                    </div>
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
+                      {"+918585992535".slice(0, 7) + "..."}
+                      <button
+                        type="button"
+                        className="px-7 py-1 border border-black rounded-xl text-black"
+                      >
+                        Request Contact
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex-col justify-start items-start gap-0.5 flex">
+                    <div className="text-black text-xl font-bold">
+                      Email Address
+                    </div>
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                      randomemail@gmail.com
+                    </div>
+                  </div>
+                  <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
+                    <FaGithub />
+                    <FaLinkedinIn />
+                    <FaBehance />
+                  </div>
+                </div>
               )}
+              {/* <div className=" px-5 space-y-9">
+                <div className="w-full relative justify-end items-end py-5 text-end ">
+                  {!showDetails && (
+                    <div
+                      className="relative inline-block"
+                      onMouseEnter={() => setShowTooltip(true)}
+                      onMouseLeave={() => setShowTooltip(false)}
+                    >
+                      <FaInfoCircle className="w-4 h-4 text-blue-600 cursor-pointer" />
+                      {showTooltip && (
+                        <div className="absolute right-6 w-[270px] p-2 space-y-4 bottom-full bg-white  rounded shadow-lg">
+                          <h2 className="font-semibold text-sm text-center ">
+                            How to get contact information?
+                          </h2>
+                          <p className=" text-xs text-center ">
+                            There are a lot of things you can do in space, and
+                            space essentially is unlimited resources.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div> */}
             </div>
-            {/* {notFound ? (
+            {!showDetails ? (
+              <button
+                className="bg-black w-full text-white flex justify-center items-center p-3 rounded-lg "
+                onClick={openModal}
+              >
+                Reveal Contact Information
+              </button>
+            ) : null}
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <div className="max-w-[295px] text-stone-500 text-base font-normal leading-[27px]">
+                  Service Provided
+                </div>
+                <div className="flex items-center flex-wrap gap-2">
+                  {services?.map((service, index) => (
+                    <div
+                      key={index}
+                      className="px-[12.95px] pt-[4.35px] pb-[3.52px] rounded-[20.03px] border border-stone-950 justify-center items-center inline-flex"
+                    >
+                      <p className="text-stone-950 text-sm leading-normal">
+                        {service}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="max-w-[295px] text-stone-500 text-base font-normal leading-[27px]">
+                  Skills
+                </div>
+                <div className="flex items-center flex-wrap gap-2">
+                  {services?.map((service, index) => (
+                    <div
+                      key={index}
+                      className="px-[12.95px] pt-[4.35px] pb-[3.52px] rounded-[20.03px] border border-stone-950 justify-center items-center inline-flex"
+                    >
+                      <p className="text-stone-950 text-sm leading-normal">
+                        {service}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* {notFound ? (
               <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-hidden justify-center items-center space-x-10 bg-white p-10 rounded-[20px]">
                 404 Not Found
               </div>
             ) : ( */}
-            <div className="flex flex-col lg:w-2/3 w-full space-y-10  space-x-10 bg-white lg:p-10 rounded-[20px]">
-              <div className=" space-y-6">
-                {image && (
-                  <img
-                    src={image[0]?.src}
-                    alt={image[0]?.src}
-                    className="w-full"
-                  />
-                )}
-                <div className="bg-blue-50 rounded-full px-3">
-                  <p className="shrink-0 text-blue-600 text-sm  not-italic font-normal leading-[160%]">
-                    www.randomlinkoftheproject.com/sefhsf12r93rhxm29h47r29
-                    hc29r37h923h293r7s,hm29hrxh
-                  </p>
-                </div>
-                <div className="w-full">
-                  <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
-                    In publishing and graphic design, Lorem ipsum is a
-                    placeholder text commonly used to demonstrate the visual
-                    form of a document or a typeface without relying on
-                    meaningful content. Lorem ipsum may be used as a placeholder
-                    before the final copy is available.
-                  </p>
-                </div>
-                <div className="border w-full"></div>
-                <div className="flex gap-3 w-full">
-                  <p className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                    Illustration
-                  </p>
-                  <p className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                    Illustration
-                  </p>
-                  <p className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                    Illustration
-                  </p>
-                </div>
-                {!showImage ? (
-                  <div className="space-y-10 w-full">
-                    <div className="space-y-6">
-                      <h1 className="text-xl font-bold">Project Title</h1>
-                      <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
-                        In publishing and graphic design, Lorem ipsum is a
-                        placeholder text commonly used to demonstrate the visual
-                        form of a document or a typeface without relying on
-                        meaningful content. Lorem ipsum may be used as a
-                        placeholder before the final copy is available.
-                      </p>
-                      <div className="bg-blue-50 rounded-full px-3">
-                        <p className="shrink-0 text-blue-600 text-sm  not-italic font-normal leading-[160%]">
-                          www.randomlinkoftheproject.com/sefhsf12r93rhxm29h47r29
-                          hc29r37h923h293r7s,hm29hrxh
-                        </p>
-                      </div>
-                    </div>
-                    <div className="space-y-6">
-                      <h1 className="text-xl font-bold">Project Title</h1>
-                      <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
-                        In publishing and graphic design, Lorem ipsum is a
-                        placeholder text commonly used to demonstrate the visual
-                        form of a document or a typeface without relying on
-                        meaningful content. Lorem ipsum may be used as a
-                        placeholder before the final copy is available.
-                      </p>
-                      <div className="bg-blue-50 rounded-full px-3">
-                        <Link
-                          href={"/"}
-                          className="break-words whitespace-pre-wrap shrink-0 text-blue-600 text-sm  not-italic font-normal leading-[160%]"
-                        >
-                          www.randomlinkoftheproject.com/sefhsf12r93rhxm29h47r29
-                          hc29r37h923h293r7s,hm29hrxh
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-
-                {/* <div className="flex gap-8">
-                    <div className="flex gap-1 justify-center items-center ">
-                      <CiHeart />
-                      <p>3,245</p>
-                    </div>
-                    <div>
-                      <p className="text-[color:var(--Davys-Grey,#4D4D4D)] text-[13.211px] not-italic font-bold leading-[160%]">
-                        Sep 12, 2021
-                      </p>
-                    </div>
-                  </div> */}
-              </div>
-              {showImage ? (
-                <div
-                  style={{
-                    margin: 0,
-                  }}
-                  className="grid grid-cols-2 justify-center py-7 items-center w-full gap-2"
-                >
-                  {image?.slice(1, image?.length)?.map((data, i) => (
-                    <div key={i} className={`relative`}>
-                      <Image
-                        loading="lazy"
-                        className="w-[100%] h-[100%] cursor-pointer object-cover"
-                        src={data}
-                        alt=""
-                        onClick={() => openImageModal(data)}
-                      />
-                    </div>
-                  ))}
-
-                  {modalImageUrl && (
-                    <ImageModal
-                      imageUrl={modalImageUrl}
-                      closeModal={closeImageModal}
-                    />
-                  )}
-                </div>
-              ) : null}
-            </div>
-            {/* )} */}
+        <div className="flex flex-col rounded-xl w-full">
+          {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
+          <ImageComponent
+            src={image[0]}
+            alt=""
+            className="object-cover aspect-[2/1] size-full rounded-xl"
+          />
+          {/* <div className="flex relative justify-center items-center px-6 py-7 bg-white mt-[487px] rounded-[60px] w-[76px] max-md:px-5 max-md:mt-10">
+                <ImageComponent
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/b34758469970af54f152102a9eac40ed30f83b12bf512b468331bdb999e271e4?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+                  alt="Profile icon"
+                  className="w-full aspect-[1.05]"
+                />
+              </div> */}
+          {/* </div> */}
+          <div>
+            <h2 className="mt-8 w-full text-3xl font-bold text-neutral-800 max-md:max-w-full">
+              About Me
+            </h2>
+            <p className="mt-2.5 w-full text-lg leading-7 text-neutral-600 max-md:max-w-full">
+              Design a futuristic 3D skeleton model with a dynamic RGB lighting
+              system set against a captivating space-themed background. Craft
+              the skeleton to have a sleek, futuristic aesthetic, incorporating
+              intricate details and streamlined features. Implement an RGB
+              lighting scheme that pulsates or transitions smoothly across the
+              skeleton, creating an engaging visual effect. Ensure compatibility
+              with real-time rendering engines to maximize interactivity. The
+              space-themed background should complement the futuristic theme,
+              with stars, nebulae, or cosmic elements. Prioritize a balance
+              between creativity and functionality, delivering a visually
+              stunning 3D model ready for use in various digital or multimedia
+              applications.
+            </p>
           </div>
-        </div>
-      </div>
+          {/* Experience */}
+          <div className="flex-col justify-start items-start gap-2.5 mt-7 inline-flex">
+            <div className="text-neutral-800 text-[32px] font-bold">
+              Experience
+            </div>
+            <div className="flex-col justify-start items-start gap-5 flex">
+              <div className="px-[30px] py-5 rounded-[10px] border border-zinc-300 flex-col justify-start items-start gap-2.5 flex">
+                <div className="text-indigo-500 text-2xl leading-[27px]">
+                  AERATE (Car Blog Website)
+                </div>
+                <div className="self-stretch text-neutral-600 text-lg font-normal leading-[27px]">
+                  Design a futuristic 3D skeleton model with a dynamic RGB
+                  lighting system set against a captivating space-themed
+                  background. Craft the skeleton to have a sleek, futuristic
+                  aesthetic, incorporating intricate details and streamlined
+                  features.{" "}
+                </div>
+                <button
+                  type="button"
+                  className="px-7 py-2.5 rounded border border-black justify-center items-center gap-2.5 inline-flex"
+                >
+                  <div className="text-black text-lg font-bold font-['Helvetica Neue'] leading-7">
+                    Look At the Project
+                  </div>
+                  <FaAngleRight />
+                </button>
+              </div>
+              <div className="px-[30px] py-5 rounded-[10px] border border-zinc-300 flex-col justify-start items-start gap-2.5 flex">
+                <div className="text-indigo-500 text-2xl leading-[27px]">
+                  AERATE (Car Blog Website)
+                </div>
+                <div className="self-stretch text-neutral-600 text-lg font-normal leading-[27px]">
+                  Design a futuristic 3D skeleton model with a dynamic RGB
+                  lighting system set against a captivating space-themed
+                  background. Craft the skeleton to have a sleek, futuristic
+                  aesthetic, incorporating intricate details and streamlined
+                  features.{" "}
+                </div>
+                <button
+                  type="button"
+                  className="px-7 py-2.5 rounded border border-black justify-center items-center gap-2.5 inline-flex"
+                >
+                  <div className="text-black text-lg font-bold font-['Helvetica Neue'] leading-7">
+                    Look At the Project
+                  </div>
+                  <FaAngleRight />
+                </button>
+              </div>
+            </div>
+          </div>
+          {showImage ? (
+            <div
+              style={{
+                margin: 0,
+              }}
+              className="grid grid-cols-1 justify-center py-7 items-center w-full gap-2"
+            >
+              {image?.slice(1, image?.length)?.map((data, i) => (
+                <div key={i} className={`relative`}>
+                  <ImageComponent
+                    loading="lazy"
+                    className="size-full cursor-pointer object-cover aspect-[2/1] rounded-xl"
+                    src={data}
+                    alt=""
+                    onClick={() => openImageModal(data)}
+                  />
+                </div>
+              ))}
 
+              {modalImageUrl && (
+                <ImageModal
+                  imageUrl={modalImageUrl}
+                  closeModal={closeImageModal}
+                />
+              )}
+            </div>
+          ) : null}
+
+          {/* Feedback Section */}
+          <section className="space-y-8 p-7 bg-white rounded-xl">
+            <header className="text-3xl font-bold text-black max-md:max-w-full">
+              Client Feedback
+            </header>
+            {feedbacksData ? (
+              feedbacksData.map((feedbackData, index) => (
+                <FeedBackCard key={index} {...feedbackData} />
+              ))
+            ) : (
+              <div>No Feedbacks</div>
+            )}
+            {showDetails ? (
+              <button
+                onClick={() => setAddFeedback(!addFeedBack)}
+                className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-white whitespace-nowrap bg-black rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full"
+              >
+                Give Feedback
+              </button>
+            ) : (
+              <button className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-black whitespace-nowrap bg-gray-100 rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full">
+                Load More
+              </button>
+            )}
+          </section>
+        </div>
+        {/* )} */}
+      </div>
+      {addFeedBack && (
+        <FeedBackModal
+          feedbackData={() => {}}
+          close={() => setAddFeedback(!addFeedBack)}
+        />
+      )}
       {showModal && <Modal closeModal={closeModal} />}
     </div>
   );

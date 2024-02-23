@@ -10,8 +10,70 @@ import { LuBellDot } from "react-icons/lu";
 import { FaAngleDown, FaAnglesDown } from "react-icons/fa6";
 import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
-import { IoLocationOutline } from "react-icons/io5";
+import { IoLocationOutline, IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
+
+const UserProfile = ({ name, profilePic }) => {
+  const [options, setOptions] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setOptions(!options)}
+      className="flex gap-2.5 justify-between items-center text-base leading-6 text-white relative"
+    >
+      <div className="grow font-bold  justify-center px-3 py-2.5 italic rounded tracking-wide border border-solid border-black border-opacity-10">
+        {name}
+      </div>
+      {/* <img src={profilePic} alt={name} className="my-auto w-6 aspect-square" /> */}
+      <FaAngleDown
+        className={`${
+          options ? "rotate-180" : "rotate-0"
+        } transition-all duration-300 ease-in-out`}
+      />
+      <div
+        className={`min-h-[175px] bg-white flex flex-col rounded absolute inset-x-0 ${
+          options ? "top-full translate-y-3" : "-top-full scale-y-0"
+        } stroke-black py-3 transition-all duration-300 ease-in-out transform gap-2`}
+      >
+        <div className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-end">
+          <Link
+            href={"/client/settings"}
+            className="text-neutral-700 text-lg font-medium leading-normal"
+          >
+            Account
+          </Link>
+          <Link
+            href={"/client/settings"}
+            className="text-neutral-700 text-lg font-medium leading-normal"
+          >
+            Security
+          </Link>
+          <Link
+            href={"/client/settings"}
+            className="text-neutral-700 text-lg font-medium leading-normal"
+          >
+            Notification
+          </Link>
+          <Link
+            href={"/client/settings"}
+            className="text-neutral-700 text-lg font-medium leading-normal"
+          >
+            Purchase History
+          </Link>
+        </div>
+        <div className="h-[0px] w-11/12 mx-auto border border-black"></div>
+        <button
+          type="button"
+          className="justify-end mt-2 w-11/12 mx-auto text-red-500 text-base font-bold leading-normal items-center gap-[5px] inline-flex"
+        >
+          <p className="">LogOut</p>
+          <IoLogOutOutline className="text-2xl" />
+        </button>
+      </div>
+    </button>
+  );
+};
 
 const Header = ({ isSeller }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
@@ -98,11 +160,11 @@ const Header = ({ isSeller }) => {
             />
           </Link>
           {userLocation !== null && (
-            <div className="max-w-[181.33px] h-8 pl-2 pr-[10.67px] py-[5.33px] text-white text-sm font-normal leading-[14px] rounded-2xl justify-center items-center gap-[2.67px] flex">
+            <div className="max-w-[181.33px] h-8 pl-2 pr-[10.67px] py-[5.33px] text-white 3xl:text-lg md:text-base text-sm font-normal leading-[14px] rounded-2xl justify-center items-center gap-[2.67px] flex">
               <div className="w-6 h-6 justify-center items-center flex">
-                <IoLocationOutline className="text-base" />
+                <IoLocationOutline className="text-lg" />
               </div>
-              <div className="text-white text-sm font-normal leading-[14px]">
+              <div className="text-white 3xl:text-lg md:text-base text-sm font-normal leading-[14px]">
                 New Delhi, India
               </div>
             </div>
@@ -147,7 +209,7 @@ const Header = ({ isSeller }) => {
           )}
         </div>
 
-        <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
+        <div className="flex items-center h-full lg:gap-4 gap-2">
           {!isSeller && (
             <button
               onClick={() =>
@@ -155,31 +217,27 @@ const Header = ({ isSeller }) => {
                   ? router.push("/seller/dashboard")
                   : router.push("/seller")
               }
-              className="text-white text-[19px] font-bold font-['Helvetica Neue'] leading-[12.80px]"
+              className="bg-white rounded p-4 text-[19px] font-bold leading-[12.80px]"
             >
               Become a Seller
             </button>
           )}
           <button></button>
-          {isLogin ? (
+          {!isLogin ? (
             <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
-              <LuBellDot className="lg:text-2xl text-2xl text-white" />
-              <div className="flex items-center justify-center">
-                <button
-                  type="button"
-                  onClick={() =>
-                    isSeller ? "" : router.push("/client/settings")
-                  }
-                  className="w-12 h-12 rounded-full flex justify-center items-center overflow-hidden"
-                >
-                  <img
-                    src={s3Url + userData?.image}
-                    alt={userData?.image}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-                {/* <FaAngleDown /> */}
-              </div>
+              {/* <LuBellDot className="lg:text-2xl text-2xl text-white" /> */}
+              <button
+                type="button"
+                className="w-[111px] h-[42px] pl-4 pr-[17px] py-[9px] rounded border border-white justify-center items-center inline-flex"
+              >
+                <div className="text-white text-base font-bold leading-normal">
+                  50 Credits
+                </div>
+              </button>
+              <UserProfile
+                name="Raunak Pandey"
+                // profilePic="https://cdn.builder.io/api/v1/image/assets/TEMP/b40893da2d2985cab402b6187995d6337f22d16c17fa7b41c35520d134cff622?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+              />
             </div>
           ) : (
             <button
@@ -187,9 +245,7 @@ const Header = ({ isSeller }) => {
               onClick={() => router.push("/client/auth/login")}
               className="w-[94px] h-[48.98px] px-7 pt-[10.49px] pb-[10.48px] rounded border border-white justify-center items-center inline-flex"
             >
-              <p className="text-white text-lg font-bold font-['Helvetica Neue'] leading-7">
-                Join
-              </p>
+              <p className="text-white text-lg font-bold leading-7">Join</p>
             </button>
           )}
         </div>

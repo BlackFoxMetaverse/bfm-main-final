@@ -154,7 +154,7 @@ const Hero = () => {
             <h5 className="text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#562FB9))] w-full text-left text-[32px] not-italic font-bold leading-[normal]">
               {searchResult?.length} Services
             </h5>
-            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start gap-[46px] w-full">
+            <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
               {searchResult?.map((data, index) => (
                 <ServicesCard
                   key={index}

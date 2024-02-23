@@ -4,8 +4,14 @@ import { Inter } from "next/font/google";
 import ReactGA from "react-ga4";
 import "./globals.css";
 import { useEffect } from "react";
+import localFont from "next/font/local";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const helvetica = localFont({
+  src: "../../public/fonts/Helvetica Neue LT 65 Medium.ttf",
+  // variable: "helvetica"
+});
 
 // export const metadata = {
 //   title: "Black Fox Metaverse",
@@ -31,7 +37,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body suppressHydrationWarning className={inter.className}>
+      <body suppressHydrationWarning className={helvetica.className}>
         {children}
       </body>
     </html>

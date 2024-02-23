@@ -12,7 +12,7 @@ const ImageModal = ({ imageUrl, closeModal }) => {
         >
           <IoMdCloseCircleOutline className="w-12 h-12 text-white" />
         </button>
-        <Image
+        <img
           src={imageUrl}
           alt="Preview"
           className="max-w-full max-h-screen"
