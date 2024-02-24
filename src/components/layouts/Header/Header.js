@@ -12,6 +12,7 @@ import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
 import { IoLocationOutline, IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
+import AuthModal from "./auth/AuthModal";
 
 const UserProfile = ({ name, profilePic }) => {
   const [options, setOptions] = useState(false);
@@ -84,6 +85,9 @@ const Header = ({ isSeller }) => {
   const [isBusiness, setisBusiness] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [isLogingin, setIsLogingin] = useState(false);
+  const [isregistering, setIsRegistering] = useState(false);
+
   const router = useRouter();
 
   const handleLocationChange = (location) => {
@@ -224,7 +228,7 @@ const Header = ({ isSeller }) => {
             </button>
           )}
           <button></button>
-          {!isLogin ? (
+          {isLogin ? (
             <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
               {/* <LuBellDot className="lg:text-2xl text-2xl text-white" /> */}
               <button
@@ -243,7 +247,7 @@ const Header = ({ isSeller }) => {
           ) : (
             <button
               type="button"
-              onClick={() => router.push("/client/auth/login")}
+              onClick={() => setIsLogingin(!isLogingin)}
               className="w-[94px] h-[48.98px] px-7 pt-[10.49px] pb-[10.48px] rounded border border-white justify-center items-center inline-flex"
             >
               <p className="text-white text-lg font-bold leading-7">Join</p>
@@ -251,6 +255,12 @@ const Header = ({ isSeller }) => {
           )}
         </div>
       </div>
+      <AuthModal
+        onClose={() => setIsLogingin(!isLogingin)}
+        animation={isLogingin ? "translate-x-0" : "translate-x-full"}
+        register={() => setIsRegistering(!isregistering)}
+        isRegister={isregistering}
+      />
     </main>
   );
 };
