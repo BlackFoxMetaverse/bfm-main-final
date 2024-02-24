@@ -21,6 +21,23 @@ const SellerForm = () => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   const router = useRouter();
 
+  const [inputData, setInputData] = useState({
+    userName: "",
+    city: "",
+    profession: "",
+    gender: "",
+    experience: "",
+    services: [],
+    skills: [],
+    collegeName: "",
+    resume: "",
+    description: "",
+    socialMediaLinks: [],
+    experienceDetails: [],
+    images: [],
+    coordinates: {},
+  });
+
   const [formCount, setCount] = useState(1);
   const [gigsInfo, setGigsInfo] = useState(null);
   const [personalInfo, setPersonalInfo] = useState(null);
@@ -50,7 +67,7 @@ const SellerForm = () => {
   async function checkUser() {
     try {
       const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.get("user/user", {
+      const res = await instance.get("main/user", {
         headers: {
           token: token,
         },
@@ -79,38 +96,28 @@ const SellerForm = () => {
       });
   }, []);
 
-  useEffect(() => {
-    setFormData({ ...personalInfo, ...professionalInfo, ...gigsInfo });
-  }, [personalInfo, professionalInfo, gigsInfo]);
-
-  console.log("formData", formData);
-
   async function dataModifier(data) {
     try {
       let obj = {
-        seller: {
-          userName: data.personalInfo.username,
-          profession: data.personalInfo.profession,
-          coordinates: await getUserPreciseLocation(),
-        },
-        sellerProfile: {
-          experience: data.professionalInfo.experience,
-          collegeName: data.professionalInfo.college_name,
-          tags: data.professionalInfo.skills,
-          certificate: await s3FileUpload(data.professionalInfo.certification),
-          description: data.gigsInfo.description,
-          socialMediaLinks: data.gigsInfo.socialMedia,
-          experienceDetail: data.gigsInfo.experiences,
-          images: await Promise.all(
-            data.gigsInfo.galleryImages.map(async (file, index) => {
-              if (file !== null) {
-                return await s3FileUpload(file);
-              } else {
-                return null;
-              }
-            })
-          ),
-        },
+        userName: data.personalInfo.userName,
+        profession: data.personalInfo.profession,
+        coordinates: await getUserPreciseLocation(),
+        experience: data.professionalInfo.experience,
+        collegeName: data.professionalInfo.college_name,
+        tags: data.professionalInfo.skills,
+        certificate: await s3FileUpload(data.professionalInfo.certification),
+        description: data.gigsInfo.description,
+        socialMediaLinks: data.gigsInfo.socialMedia,
+        experienceDetail: data.gigsInfo.experiences,
+        images: await Promise.all(
+          data.gigsInfo.galleryImages.map(async (file, index) => {
+            if (file !== null) {
+              return await s3FileUpload(file);
+            } else {
+              return null;
+            }
+          })
+        ),
       };
 
       return obj;
@@ -123,17 +130,11 @@ const SellerForm = () => {
     const token = localStorage.getItem("bfm-client-token");
     try {
       const obj = await dataModifier(formData);
-      const sellerRes = await instance.post("/user/seller", obj.seller, {
+      const sellerRes = await instance.post("/main/seller", obj, {
         headers: { token },
       });
-      const sellerProfileRes = await instance.post(
-        "/user/sellerProfile",
-        obj.sellerProfile,
-        {
-          headers: { token },
-        }
-      );
-      return { sellerRes, sellerProfileRes };
+
+      return sellerRes;
     } catch (error) {
       throw error;
     }
@@ -162,6 +163,13 @@ const SellerForm = () => {
   const handleSubmit3 = (e) => {
     e.preventDefault();
     handleFormData();
+    submitServer()
+      .then((res) => {
+        console.log("reg res", res);
+      })
+      .catch((err) => {
+        console.log("reg res error", err);
+      });
     // setCount(formCount+1);
     // router.push("/seller/dashboard");
   };
@@ -345,20 +353,25 @@ const SellerForm = () => {
           <div className="flex flex-col items-end gap-[22.916px] bg-[#FBFBFB] w-3/4 py-7">
             {formCount === 1 && (
               <PersonalInfo
-                setData={setPersonalInfo}
-                userData={userData}
-                handleSubmit={handleSubmit1}
+                inputData={inputData}
+                setInputData={setInputData}
+                setCount={setCount}
               />
             )}
-            {formCount === 2 && (
+            {/* {formCount === 2 && (
               <ProfessionalInfo
-                setData={setProfessionalInfo}
-                handleSubmit={handleSubmit2}
+                inputData={inputData}
+                setInputData={setInputData}
+                setCount={setCount}
               />
             )}
             {formCount === 3 && (
-              <GigsInfo setData={setGigsInfo} handleSubmit={handleSubmit3} />
-            )}
+              <GigsInfo
+                inputData={inputData}
+                setInputData={setInputData}
+                setCount={setCount}
+              />
+            )} */}
           </div>
         </div>
       </div>

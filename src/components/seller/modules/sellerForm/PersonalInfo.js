@@ -8,24 +8,24 @@ import { IoCameraOutline } from "react-icons/io5";
 import { RxCrossCircled } from "react-icons/rx";
 import { TbCaretDownFilled } from "react-icons/tb";
 
-const PersonalInfo = ({ setData, userData, handleSubmit }) => {
+const PersonalInfo = ({ inputData, setInputData, setCount }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   var randomColor = Math.floor(Math.random() * 16777215).toString(16);
 
   const [image, setImage] = useState(null);
   const [showGenderOptions, setShowGenderOptions] = useState(false);
-  const [formData, setFormData] = useState({
-    name: userData?.name ? userData?.name : "",
-    userName: "",
-    email: userData?.email ? userData?.email : "",
-    image: "",
-    phoneNo: userData?.phone_number ? userData?.phone_number : "",
-    city: "",
-    gender: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   name: userData?.name ? userData?.name : "",
+  //   userName: "",
+  //   email: userData?.email ? userData?.email : "",
+  //   image: "",
+  //   phoneNo: userData?.phone_number ? userData?.phone_number : "",
+  //   city: "",
+  //   gender: "",
+  // });
 
   const handleGenderSelect = (selectedGender) => {
-    setFormData({ ...formData, gender: selectedGender });
+    setInputData({ ...inputData, gender: selectedGender });
     setShowGenderOptions(false);
   };
 
@@ -34,10 +34,9 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      //   setImageFile(file);
       const imageUrl = URL.createObjectURL(file);
       setImage(imageUrl);
-      setFormData({ ...formData, profileImage: file });
+      setInputData({ ...inputData, image: file });
     }
   };
 
@@ -49,7 +48,7 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
 
   const onFormDataChange = async (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setInputData({ ...inputData, [name]: value });
     if (name === "userName") {
       if (value === "") return false;
       if (checkUserNameTimeout) {
@@ -84,9 +83,15 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
     }
   };
 
-  useEffect(() => {
-    setData(formData);
-  }, [formData]);
+  // useEffect(() => {
+  //   setData(formData);
+  // }, [formData]);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log("data", inputData);
+    setCount(2);
+  }
 
   return (
     <form
@@ -104,18 +109,10 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
           </p>
         </div>
         <div className="flex max-w-[766.546px] w-full flex-col justify-center items-start gap-[34px]">
-          {/* <div className="flex max-w-[669px] flex-col items-start md:gap-[29px] gap-[17.21px]">
-          <h1 className="text-black md:text-[32px] text-[18.99px]  not-italic font-bold leading-[normal]">
-            Profile Form
-          </h1>
-          <p className="text-black md:text-base text-[12.24px] not-italic font-normal leading-6">
-            Please fill out the following information to create your profile.
-          </p>
-        </div> */}
           <div
             className={`lg:size-[121.962px] size-[93.196px] relative shrink-0 rounded-xl`}
           >
-            {image ? (
+            {/* {image ? (
               <div className="size-full rounded-xl bg-black/20 overflow-hidden">
                 <img
                   src={image}
@@ -145,7 +142,7 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
                   onChange={handleImageChange}
                 />
               </div>
-            )}
+            )} */}
             <label
               htmlFor="imageInput"
               className="flex lg:size-7 size-5 flex-col justify-center items-center shrink-0 bg-black text-white text-base z-10 rounded-full absolute right-0 top-full translate-x-1/4 -translate-y-full"
@@ -173,8 +170,8 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
               type="text"
               name="name"
               id="name"
-              value={formData.name}
-              onChange={onFormDataChange}
+              value={"name"}
+              disabled={true}
               required
               placeholder="Harsh Singh"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
@@ -192,12 +189,14 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
               name="userName"
               id="userName"
               required
-              value={formData.userName}
-              onChange={onFormDataChange}
+              value={inputData?.userName}
+              onChange={(e) => {
+                setInputData({ ...inputData, userName: e.target.value });
+              }}
               placeholder="Harsh_12"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
             />
-            {formData.userName !== "" &&
+            {inputData.userName !== "" &&
               (isUniqueUsername ? (
                 <div className="flex gap-3 items-center text-green-500 text-sm">
                   <BsCheckCircleFill /> Username validated
@@ -223,10 +222,10 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
               >
                 <span
                   className={`flex-grow text-left ${
-                    formData.gender !== "" ? "text-black" : "text-[#9F9F9F]"
+                    inputData.gender !== "" ? "text-black" : "text-[#9F9F9F]"
                   }`}
                 >
-                  {formData.gender || "male"}
+                  {inputData.gender || "male"}
                 </span>
                 <TbCaretDownFilled />
               </button>
@@ -257,8 +256,10 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
               name="email"
               id="email"
               required
-              value={formData.email}
-              onChange={onFormDataChange}
+              value={inputData?.email}
+              onChange={(e) => {
+                setInputData({ ...inputData, email: e.target.value });
+              }}
               placeholder="12345@gmail.com"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
             />
@@ -285,8 +286,7 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
               name="phoneNo"
               id="phoneNo"
               minLength={10}
-              value={formData.phoneNo}
-              onChange={onFormDataChange}
+              value={inputData.phoneNo}
               required
               placeholder="Harsh Singh"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
@@ -303,8 +303,10 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
               type="text"
               name="city"
               id="city"
-              value={formData.city}
-              onChange={onFormDataChange}
+              value={inputData?.city}
+              onChange={(e) => {
+                setInputData({ ...inputData, city: e.target.value });
+              }}
               required
               placeholder="New Delhi"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
