@@ -154,12 +154,14 @@ const Notification = () => {
           </tr>
         </tbody>
       </table>
-      <button
-        type="submit"
-        className="inline-flex justify-center items-center gap-[5px] rounded [background:var(--Foundation-Green-green-300,#73A876)] px-4 py-2 text-[color:var(--White,#FFF)] text-sm font-normal leading-[100%] tracking-[-0.7px]"
-      >
-        Save Changes
-      </button>
+      <div className="flex w-full justify-end">
+        <button
+          type="submit"
+          className="justify-center px-8 py-4 text-xl tracking-tighter leading-5 text-white whitespace-nowrap bg-indigo-500 rounded font-[450]"
+        >
+          Save Changes
+        </button>
+      </div>
     </div>
   );
 };

@@ -32,13 +32,11 @@ function Main() {
     setClicked(!isClicked);
   };
 
-
   const tokenData = [
     { label: "Current tokens", value: "10" },
     { label: "Tokens purchased till now", value: "30" },
   ];
   async function getUserData() {
-
     try {
       const token = localStorage.getItem("bfm-client-token");
       const res = await instance.get("/user/user", {
@@ -66,7 +64,10 @@ function Main() {
   console.log(userData);
 
   return (
-    <main suppressHydrationWarning className="[background:#F7F7F7] w-full max-w-[1920px] mx-auto">
+    <main
+      suppressHydrationWarning
+      className="[background:#F7F7F7] w-full max-w-[1920px] mx-auto"
+    >
       <div className="flex overflow-hidden relative flex-col justify-end w-full items-start px-20 pt-24 pb-5 text-2xl text-white min-h-[346px]">
         <img
           src="https://images.unsplash.com/photo-1633427370898-c40eceefb26c?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -85,7 +86,7 @@ function Main() {
             isClicked ? "-translate-x-full" : "translate-x-0"
           } z-20 lg:z-0 space-y-9`}
         >
-          <div className="w-full py-9 inline-flex flex-col items-start gap-9 min-h-[425px] shrink-0 [background:#FFF] rounded-[20px]">
+          <div className="w-full px-10 py-9 inline-flex flex-col items-start gap-9 min-h-[425px] shrink-0 [background:#FFF] rounded-[20px]">
             <div className="w-11/12 mx-auto h-[91.63px] justify-start items-center gap-3.5 inline-flex lg:hidden">
               <img
                 className="w-[89.31px] h-[89.31px] rounded-full"
@@ -102,7 +103,7 @@ function Main() {
               </div>
             </div>
             <button
-              className="flex items-center gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              className="flex items-center gap-3 hover:bg-blue-200 px-4 py-1 rounded-lg w-full lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
               onClick={() => handleSettingChange("account")}
             >
               {/* {currentSetting === "account" ? (
@@ -114,7 +115,7 @@ function Main() {
               Account
             </button>
             <button
-              className="flex items-center gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              className="flex items-center hover:bg-blue-200 px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
               onClick={() => handleSettingChange("security")}
             >
               {/* {currentSetting === "account" ? (
@@ -126,7 +127,7 @@ function Main() {
               Security
             </button>
             <button
-              className="flex items-center gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              className="flex items-center hover:bg-blue-200 px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
               onClick={() => handleSettingChange("notification")}
             >
               {/* {currentSetting === "notification" ? (
@@ -138,7 +139,7 @@ function Main() {
               Notification
             </button>
             <button
-              className="flex items-center gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              className="flex items-center hover:bg-blue-200 px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
               onClick={() => handleSettingChange("purchase_history")}
             >
               {/* {currentSetting === "purchase_history" ? (
@@ -191,8 +192,8 @@ function renderSetting(setting) {
   switch (setting) {
     case "account":
       return <Accounts />;
-    case "security": 
-      return <Security />
+    case "security":
+      return <Security />;
     case "notification":
       return <Notification />;
     case "purchase_history":

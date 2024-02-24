@@ -1,0 +1,23 @@
+<svg width="167" height="167" viewBox="0 0 167 167" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g filter="url(#filter0_d_2593_18996)">
+<rect x="4" y="0.0195312" width="158.195" height="158.195" rx="11.6387" fill="url(#pattern0)" shape-rendering="crispEdges"/>
+<rect x="4" y="0.0195312" width="158.195" height="158.195" rx="11.6387" fill="#EDEDED" shape-rendering="crispEdges"/>
+<path d="M113.285 51.5853L110.236 48.4922L52.9102 106.649L55.9591 109.742L60.2716 105.367H104.66C105.803 105.365 106.899 104.904 107.708 104.084C108.516 103.264 108.971 102.152 108.973 100.992V55.9603L113.285 51.5853ZM104.66 100.992H64.5841L81.3877 83.945L86.5175 89.1491C87.3262 89.9692 88.4229 90.43 89.5664 90.43C90.7099 90.43 91.8066 89.9692 92.6153 89.1491L96.0352 85.6797L104.66 94.4231V100.992ZM104.66 88.2347L99.0841 82.5778C98.2754 81.7576 97.1787 81.2969 96.0352 81.2969C94.8916 81.2969 93.7949 81.7576 92.9862 82.5778L89.5664 86.0472L84.441 80.8475L104.66 60.3353V88.2347ZM61.5352 92.2422V85.6797L72.3164 74.7488L75.2769 77.7544L78.3302 74.6569L75.3653 71.6491C74.5566 70.8289 73.4599 70.3681 72.3164 70.3681C71.1729 70.3681 70.0762 70.8289 69.2675 71.6491L61.5352 79.4934V57.2422H96.0352V52.8672H61.5352C60.3918 52.8683 59.2955 53.3297 58.487 54.1499C57.6785 54.9701 57.2238 56.0822 57.2227 57.2422V92.2422H61.5352Z" fill="#ACACAC"/>
+</g>
+<defs>
+<filter id="filter0_d_2593_18996" x="0" y="0.0195312" width="166.195" height="166.195" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2593_18996"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2593_18996" result="shape"/>
+</filter>
+<pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_2593_18996" transform="scale(0.015625)"/>
+</pattern>
+<image id="image0_2593_18996" width="64" height="64" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAONJREFUeF7t20EOhEAIRFG4/6F7DvEnYeFzryQIv6pBd2behOu9dPvsbog+k+NLgArQAqmJcw9iAAhSgZKB3IJkkAySQTJ4CiE+gA8oBeg0mH3Ai084P89HhqwEqIA209ICsQdjAeaZIgaAYKxBDMCAYy8fXwAIgiAIcoJpJEYGI4VjB3YrbC9gL2AvkCB43cM5PgZgAAZgQFnNZAhdGykQBEEQBEEQDBmgAm2glM/z+QUYisYUGoldO7kY32IEAzCg6RgIRgjFAsw+AgRBMNYgBmCAT2TCYfoPPz/HCqQCX1eBHzHnv7C7WhBSAAAAAElFTkSuQmCC"/>
+</defs>
+</svg>
