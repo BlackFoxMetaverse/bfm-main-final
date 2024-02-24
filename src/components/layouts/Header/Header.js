@@ -17,14 +17,14 @@ const UserProfile = ({ name, profilePic }) => {
   const [options, setOptions] = useState(false);
 
   return (
-    <button
-      type="button"
+    <div
+      // type="button"
       onClick={() => setOptions(!options)}
       className="flex gap-2.5 justify-between items-center text-base leading-6 text-white relative"
     >
-      <div className="grow font-bold  justify-center px-3 py-2.5 italic rounded tracking-wide border border-solid border-black border-opacity-10">
+      <pattern className="grow font-bold  justify-center px-3 py-2.5 italic rounded tracking-wide border border-solid border-black border-opacity-10">
         {name}
-      </div>
+      </pattern>
       {/* <img src={profilePic} alt={name} className="my-auto w-6 aspect-square" /> */}
       <FaAngleDown
         className={`${
@@ -36,7 +36,7 @@ const UserProfile = ({ name, profilePic }) => {
           options ? "top-full translate-y-3" : "-top-full scale-y-0"
         } stroke-black py-3 transition-all duration-300 ease-in-out transform gap-2`}
       >
-        <div className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-end">
+        <p className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-end">
           <Link
             href={"/client/settings"}
             className="text-neutral-700 text-lg font-medium leading-normal"
@@ -61,7 +61,7 @@ const UserProfile = ({ name, profilePic }) => {
           >
             Purchase History
           </Link>
-        </div>
+        </p>
         <div className="h-[0px] w-11/12 mx-auto border border-black"></div>
         <button
           type="button"
@@ -71,7 +71,7 @@ const UserProfile = ({ name, profilePic }) => {
           <IoLogOutOutline className="text-2xl" />
         </button>
       </div>
-    </button>
+    </div>
   );
 };
 

@@ -86,7 +86,7 @@ const Accounts = () => {
     <div className="w-5/6 h-full mx-auto">
       {/* {isLogin ? ( */}
         <div className="w-full space-y-12">
-          <div className="flex lg:w-3/4 w-full items-center gap-[1.5rem]">
+          <div className="flex flex-col lg:w-3/4 w-full items-center gap-[1.5rem]">
             <div className="flex flex-1 flex-col gap-10">
               <h5 className="text-black 2xl:text-2xl xl:text-xl lg:text-lg text-base font-bold leading-[normal]">
                 Account
