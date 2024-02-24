@@ -31,22 +31,35 @@ const SocialTypes = [
 const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
 
 const GigsInfo = ({ setData, handleSubmit }) => {
-  const [galleryImages, setGalleryImages] = useState(["", "", "", "", "", ""]);
+  const [images, setGalleryImages] = useState(["", "", "", "", "", ""]);
   const [galleryImagesFile, setGalleryImagesFile] = useState([]);
   const [document, setDocument] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
-  const [experiences, setExperiences] = useState([]);
+  const [experienceDetails, setExperiences] = useState([]);
   const [socialType, setSocialType] = useState("");
   const [selectedSocialMedia, setSelectedSocialMedia] = useState([]);
   const [showSocialMediaOptions, setShowSocialMediaOptions] = useState(false);
   const [formData, setFormData] = useState({
-    college_name: "",
-    certification: null,
+    // college_name: "",
+    // certification: null,
     description: "",
-    socialMedia: [],
-    experiences: [],
-    galleryImages: [],
+    socialMediaLinks: [
+      {
+        platformType: "linkedIn",
+        link: "www.linkedIn.com",
+      },
+      {
+        platformType: "twitter",
+        link: "www.twitter/satyam",
+      },
+    ],
+    experienceDetails: [],
+    images: [],
     legalization: false,
+    coordinates: {
+      longitude: 10.1,
+      latitude: 10.11,
+    },
   });
 
   useEffect(() => {
@@ -69,7 +82,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
 
       setFormData((prevFormData) => ({
         ...prevFormData,
-        galleryImages: [...galleryImagesFile],
+        images: [...galleryImagesFile],
       }));
     }
   };
@@ -88,7 +101,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
     if (galleryImagesFile) {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        galleryImages: [...galleryImagesFile],
+        images: [...galleryImagesFile],
       }));
     }
   };
@@ -105,7 +118,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      experiences: [...experiences],
+      experienceDetails: [...experienceDetails],
     }));
   }
 
@@ -127,29 +140,29 @@ const GigsInfo = ({ setData, handleSubmit }) => {
     });
   };
 
-  const handleSocialMediaSelect = (selectedSocialMedia) => {
-    if (formData.socialMedia.includes(selectedSocialMedia)) {
-      // If already selected, remove it
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        socialMedia: prevFormData.socialMedia.filter(
-          (social) => social !== selectedSocialMedia
-        ),
-      }));
-    } else {
-      // If not selected, add it
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        socialMedia: [...prevFormData.socialMedia, selectedSocialMedia],
-      }));
-    }
-  };
+  // const handleSocialMediaSelect = (selectedSocialMedia) => {
+  //   if (formData.socialMediaLinks.includes(selectedSocialMedia)) {
+  //     // If already selected, remove it
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       socialMediaLinks: prevFormData.socialMediaLinks.filter(
+  //         (social) => social !== selectedSocialMedia
+  //       ),
+  //     }));
+  //   } else {
+  //     // If not selected, add it
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       socialMediaLinks: [...prevFormData.socialMediaLinks, selectedSocialMedia],
+  //     }));
+  //   }
+  // };
 
   // const removeSocialMedia = (index) => {
   //   setFormData((prevFormData) => {
-  //     const updatedSocialMedia = [...prevFormData.socialMedia];
+  //     const updatedSocialMedia = [...prevFormData.socialMediaLinks];
   //     updatedSocialMedia.splice(index, 1);
-  //     return { ...prevFormData, socialMedia: updatedSocialMedia };
+  //     return { ...prevFormData, socialMediaLinks: updatedSocialMedia };
   //   });
   // };
 
@@ -162,7 +175,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
 
   useEffect(() => {
     setData(formData);
-  }, [formData, experiences, galleryImagesFile]);
+  }, [formData, experienceDetails, galleryImagesFile]);
 
   return (
     <form
@@ -227,7 +240,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
         </p>
       </div>
       <div className="flex flex-col lg:items-start items-center gap-[30px] self-stretch">
-        <div className="flex flex-col items-start w-full gap-[7px]">
+        {/* <div className="flex flex-col items-start w-full gap-[7px]">
           <label
             htmlFor="social"
             className="col-span-2 text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
@@ -255,7 +268,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
                       key={social.name}
                       onClick={() => handleSocialMediaSelect(social.name)}
                       className={`cursor-pointer px-4 py-2 flex items-center gap-2 hover:bg-gray-200 ${
-                        formData.socialMedia.includes(social.name)
+                        formData.socialMediaLinks.includes(social.name)
                           ? "bg-blue-500 text-white"
                           : ""
                       }`}
@@ -268,24 +281,18 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               )}
             </div>
             <div className="flex gap-2">
-              {formData.socialMedia.map((social, index) => (
+              {formData.socialMediaLinks.map((social, index) => (
                 <div
                   key={index}
                   className="w-14 h-[42px] text-white text-xl bg-indigo-500 rounded-lg justify-center items-center gap-3.5 inline-flex"
                 >
                   {SocialTypes.find((type) => type.name === social).icon}
-                  {/* <button
-                  type="button"
-                  onClick={() => removeSocialMedia(index)}
-                  className="ml-2 text-white"
-                >
-                  <IoCloseCircleSharp />
-                </button> */}
+  
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex flex-col items-start gap-2.5 self-stretch">
           <label
             htmlFor="description"
@@ -307,7 +314,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
             maxLength={1000}
           ></textarea>
         </div>
-        {experiences?.map((_, index) => (
+        {experienceDetails?.map((_, index) => (
           <div
             key={index}
             className="flex flex-col items-start gap-2.5 self-stretch"
@@ -325,7 +332,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               id="title_of_project"
               placeholder="Enter title of project"
               className="text-sm not-italic font-normal focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch p-3.5 rounded-lg"
-              value={experiences[index]["title"]}
+              value={experienceDetails[index]["title"]}
               onChange={(e) => {
                 handleExperinces({
                   index: index,
@@ -344,7 +351,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               id="url_of_project"
               placeholder="Paste link"
               className="text-sm not-italic font-normal focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch p-3.5 rounded-lg"
-              value={experiences[index]["link"]}
+              value={experienceDetails[index]["link"]}
               onChange={(e) => {
                 handleExperinces({
                   index: index,
@@ -362,11 +369,11 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               maxLength={500}
               placeholder="Describe your project and services"
               className="text-sm not-italic font-normal focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch p-3.5 rounded-lg resize-none"
-              value={experiences[index]["description"]}
+              value={experienceDetails[index]["content"]}
               onChange={(e) => {
                 handleExperinces({
                   index: index,
-                  key: "description",
+                  key: "content",
                   value: e.target.value,
                 });
               }}
@@ -377,8 +384,8 @@ const GigsInfo = ({ setData, handleSubmit }) => {
           type="button"
           onClick={() =>
             setExperiences(() => [
-              ...experiences,
-              { title: "", link: "", description: "" },
+              ...experienceDetails,
+              { title: "", link: "", content: "" },
             ])
           }
           className="flex w-full text-[#4461F2] text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize bg-[#ECEFFE] h-[47px] justify-center items-center content-center gap-[9px] flex-wrap p-[4.97px] rounded-[9.111px]"
@@ -396,7 +403,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
             Upload upto 6 Gigs in png, jpeg, jpg
           </p>
           <div className="grid grid-cols-3 gap-2 w-full relativee">
-            {galleryImages?.map((image, index) => (
+            {images?.map((image, index) => (
               <div
                 key={index}
                 className={`${
@@ -435,8 +442,8 @@ const GigsInfo = ({ setData, handleSubmit }) => {
                       name={`imageInput${index}`}
                       className="hidden"
                       required={
-                        formData.galleryImages[0] !== null ||
-                        formData?.galleryImages.length > 0
+                        formData.images[0] !== null ||
+                        formData?.images.length > 0
                           ? false
                           : true
                       }
