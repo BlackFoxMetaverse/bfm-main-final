@@ -14,14 +14,14 @@ import { RxCrossCircled } from "react-icons/rx";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
 import s3FileUpload from "@/utils/imageUploader";
 
-const Register = () => {
+const Register = ({ close }) => {
   const [document, setDocument] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  const [isUniqueUser, setUniqueUser] = useState(true);
+  // const [isUniqueUser, setUniqueUser] = useState(true);
   const [isUniqueEmail, setUniqueEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    imageFile: "",
+    // imageFile: "",
     name: "",
     email: "",
   });
@@ -32,37 +32,37 @@ const Register = () => {
 
   const router = useRouter();
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfileImage(file);
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-      setFormData({ ...formData, imageFile: file });
-    }
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setProfileImage(file);
+  //     const imageUrl = URL.createObjectURL(file);
+  //     setProfileImage(imageUrl);
+  //     setFormData({ ...formData, imageFile: file });
+  //   }
+  // };
 
-  function checkUniqueUserName(e) {
-    const userName = e.target.value;
-    if (userName === "") {
-      return;
-    }
-    setFormData({ ...formData, name: userName });
-    var checkTimeout;
-    if (checkTimeout) {
-      clearTimeout(checkTimeout);
-    }
-    checkTimeout = setTimeout(() => {
-      instance
-        .get(`/check/userName?userName=${userName}`)
-        .then((res) => {
-          setUniqueUser(res.data);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }, 500);
-  }
+  // function checkUniqueUserName(e) {
+  //   const userName = e.target.value;
+  //   if (userName === "") {
+  //     return;
+  //   }
+  //   setFormData({ ...formData, name: userName });
+  //   var checkTimeout;
+  //   if (checkTimeout) {
+  //     clearTimeout(checkTimeout);
+  //   }
+  //   checkTimeout = setTimeout(() => {
+  //     instance
+  //       .get(`/check/userName?userName=${userName}`)
+  //       .then((res) => {
+  //         setUniqueUser(res.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err.message);
+  //       });
+  //   }, 500);
+  // }
 
   function checkUniqueEmail(e) {
     const email = e.target.value;
@@ -92,14 +92,14 @@ const Register = () => {
     e.preventDefault();
 
     instance
-      .post("/user/user", formData, {
+      .post("/main/user", formData, {
         headers: {
           token: token,
         },
       })
       .then((response) => {
         console.log(response);
-        router.replace("/");
+        close();
       })
       .catch((err) => console.error(err.message))
       .finally(() => setSubmitting(true));
@@ -108,24 +108,24 @@ const Register = () => {
   console.log(formData);
 
   return (
-    <div className="flex flex-col h-screen overflow-x-hidden justify py-12 space-y-20 shrink items-center xl:px-[288px] ">
-      <div className="max-w-[206px] w-full flex flex-col items-center space-y-10 justify-center shrink-0">
+    <div className="flex flex-col py-12 w-full space-y-20">
+      {/* <div className="max-w-[206px] w-full flex flex-col items-center space-y-10 justify-center shrink-0">
         <Image src={Logo} alt="" className=" w-full  fill-white" />
-      </div>
-      <div className="flex w-2/3  max-w-[637px] py-[35px] rounded-[40px]  bg-white  items-center justify-center gap-[69px] shrink-0 overflow-hidden">
+      </div> */}
+      <div className="flex py-[35px] rounded-[40px] items-center justify-center gap-[69px] shrink-0 overflow-hidden">
         <form
           onSubmit={handleSubmit}
-          className="flex max-w-[597px] flex-col justify-center items-center gap-[19px] shrink-0 self-stretch lg:pl-[27px] px-5 lg:pr-[26px]"
+          className="flex flex-col gap-[19px] shrink-0 self-stretch"
         >
-          <div className="flex flex-col space-y-4 justify-center items-center">
-            <h1 className="text-black text-[32px] not-italic font-bold leading-[normal]">
+          <div className="flex flex-col space-y-4 justify-center">
+            <h1 className="text-white text-[32px] not-italic font-bold leading-[normal]">
               Almost Done!
             </h1>
-            <p className=" text-[#666] text-center not-italic font-normal leading-[27px]">
+            <p className=" text-white text-center not-italic font-normal leading-[27px]">
               Enter your Details for completion of your account
             </p>
           </div>
-          <div
+          {/* <div
             className={`lg:w-[121.962px] lg:h-[121.962px] w-[93.196px] h-[93.196px] relative shrink-0 rounded-[121.962px]`}
           >
             {profileImage ? (
@@ -162,11 +162,11 @@ const Register = () => {
                 onChange={handleImageChange}
               />
             </label>
-          </div>
-          <div className="flex w-[458px] flex-col justify-center items-start gap-[5px]">
+          </div> */}
+          <div className="flex flex-col w-full justify-center items-start gap-[5px]">
             <label
               htmlFor="Username"
-              className="text-[color:var(--Main-Colors-Gray-4,#292929)] text-base font-normal leading-[100%] tracking-[-0.8px] capitalize"
+              className="text-white text-base font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
               Full Name
             </label>
@@ -174,13 +174,14 @@ const Register = () => {
               type="text"
               name="Username"
               id="Username"
+              value={formData.name}
               placeholder="Enter User Name"
-              onChange={checkUniqueUserName}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
               required
-              className="flex h-11 items-center gap-[5px] self-stretch border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] p-3.5 rounded-lg border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
+              className="flex h-11 items-center gap-[5px] self-stretch bg-white rounded-lg p-3.5 border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />
           </div>
-          {document?.getElementById("Username").value !== "" ? (
+          {/* {document?.getElementById("Username").value !== "" ? (
             isUniqueUser ? (
               <div className="flex gap-1.5 items-center w-full text-green-600 xl:text-sm text-xs capitalize">
                 <BsCheckCircleFill />
@@ -192,11 +193,11 @@ const Register = () => {
                 this username is already taken
               </div>
             )
-          ) : null}
-          <div className="flex w-[458px] flex-col justify-center items-start gap-[5px]">
+          ) : null} */}
+          <div className="flex flex-col w-full justify-center items-start gap-[5px]">
             <label
               htmlFor="email"
-              className="text-[color:var(--Main-Colors-Gray-4,#292929)] text-base font-normal leading-[100%] tracking-[-0.8px] capitalize"
+              className="text-white text-base font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
               Email Address
             </label>
@@ -207,14 +208,14 @@ const Register = () => {
               onChange={checkUniqueEmail}
               placeholder="Enter Email Address"
               required
-              className="flex h-11 items-center gap-[5px] self-stretch border border-[color:var(--main-colors-gray-05,#909090)] [background:var(--White,#FFF)] p-3.5 rounded-lg border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
+              className="flex h-11 items-center gap-[5px] self-stretch bg-white p-3.5 rounded-lg border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />
           </div>
           {document?.getElementById("email").value !== "" ? (
             isUniqueEmail ? (
               <div className="flex gap-1.5 items-center w-full text-green-600 xl:text-sm text-xs capitalize">
                 <BsCheckCircleFill />
-                this email is unique and valid
+                this email is unique
               </div>
             ) : (
               <div className="flex gap-1.5 items-center w-full text-red-600 xl:text-sm text-xs capitalize">
@@ -223,24 +224,24 @@ const Register = () => {
               </div>
             )
           ) : null}
-          <div className="flex items-center gap-1">
-            <div className="flex w-[16.701px] h-[16.701px] justify-center items-center shrink-0">
+          <div className="flex items-start w-full gap-1">
+            <div className="flex w-[16.701px] h-[16.701px] shrink-0">
               <input
                 type="checkbox"
                 name="legalization"
                 id="legalization"
                 required
-                className="border border-[#4461F2] rounded-md appearance-none w-full h-full object-cover checked:bg-[#4461F2] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-white rounded-md appearance-none size-full object-cover checked:bg-white flex justify-center items-center checked:marker:bg-black checked:after:content-['✔'] checked:after:text-black checked:after:text-xs"
               />
             </div>
             <label
               htmlFor="legalization"
-              className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-sm text-[11.628px] not-italic font-normal leading-[100%] tracking-[-0.7px]"
+              className="text-white md:text-sm text-[11.628px] not-italic font-normal leading-[100%] tracking-[-0.7px]"
             >
               I’ve read and accept the{" "}
               <Link
                 href={"/terms-and-conditions"}
-                className="text-[#4461F2] underline underline-offset-2"
+                className="text-white font-bold tracking-wide underline underline-offset-2"
               >
                 terms and conditions*
               </Link>
@@ -251,7 +252,7 @@ const Register = () => {
             type="submit"
             className={`${
               submitting ? "opacity-50 cursor-not-allowed" : "opacity-1"
-            } flex justify-center items-center gap-[5px] rounded [background:var(--Primary-1,#4461F2)] px-8 py-4 text-[color:var(--White,#FFF)] text-xl font-normal leading-[100%] tracking-[-1px]`}
+            } gap-[5px] rounded bg-white py-4 w-2/3 flex items-center justify-center text-black text-xl font-normal leading-[100%] tracking-[-1px]`}
           >
             {submitting ? (
               <PreLoader color={"white"} size={20} />
@@ -261,11 +262,11 @@ const Register = () => {
           </button>
         </form>
       </div>
-      <div className=" w-full flex flex-col items-center space-y-10 justify-center">
+      {/* <div className=" w-full flex flex-col items-center space-y-10 justify-center">
         <p className="self-stretch text-white text-center text-lg not-italic font-bold leading-[normal] uppercase">
           Discover More, Connect Locally
         </p>
-      </div>
+      </div> */}
       <div className="absolute" id="recaptcha"></div>
     </div>
   );
