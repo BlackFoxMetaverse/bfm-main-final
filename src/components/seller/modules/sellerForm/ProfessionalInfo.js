@@ -1,5 +1,6 @@
 "use client";
 
+import s3FileUpload from "@/utils/imageUploader";
 import React, { useEffect, useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import { MdOutlineUploadFile } from "react-icons/md";
@@ -28,8 +29,8 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
     profession: "",
     skills: [],
     services: [],
-    college_name: "",
-    certification: null,
+    collegeName: "",
+    resume: null,
   });
 
   const handleTagInputChange = (e) => {
@@ -87,10 +88,9 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
   };
 
   const handleFileChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      certification: e.target.files[0],
-    }));
+    s3FileUpload(e.target.files[0]).then((key) => {
+      setFormData({ ...formData, resume: key });
+    });
   };
 
   useEffect(() => {
@@ -265,15 +265,15 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
         </div>
         <div className="flex flex-col w-full items-start gap-[5px]">
           <label
-            htmlFor="college_name"
+            htmlFor="collegeName"
             className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
           >
             College name
           </label>
           <select
-            name="college_name"
-            id="college_name"
-            value={formData.college_name}
+            name="collegeName"
+            id="collegeName"
+            value={formData.collegeName}
             onChange={handleInputChange}
             className="flex items-center w-full focus:outline-none p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
           >
@@ -287,27 +287,27 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
         </div>
         <div className="flex h-11 items-center gap-10 justify-between self-stretch-[#909090] mt-7 p-3.5 rounded-lg bg-white relative w-full">
           <label
-            htmlFor="certification"
+            htmlFor="resume"
             className="text-[color:var(--Main-Colors-Gray-4,#292929)] absolute -top-2/3 inset-0 md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
           >
             Resume
           </label>
           <label
-            htmlFor="certification"
+            htmlFor="resume"
             className={`${
-              formData.certification
+              formData.resume
                 ? "text-black"
                 : "text-[color:var(--Main-Colors-Gray-0,#9F9F9F)]"
             } whitespace-break-spaces break-words shrink text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]`}
           >
-            {formData.certification
-              ? formData.certification?.name?.slice(0, 40) + "..."
-              : "Upload your certification here"}
+            {formData.resume
+              ? formData.resume?.name?.slice(0, 40) + "..."
+              : "Upload your resume here"}
           </label>
           <input
             type="file"
-            name="certification"
-            id="certification"
+            name="resume"
+            id="resume"
             onChange={handleFileChange}
             className="hidden"
           />
@@ -321,7 +321,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
           </button> */}
           <button
             type="button"
-            onClick={() => document?.getElementById("certification")?.click()}
+            onClick={() => document?.getElementById("resume")?.click()}
             className="w-[79.95px] h-[25.08px] pl-[6.13px] pr-[8.17px] py-[4.08px] bg-black rounded-xl border justify-center items-center gap-0.5 inline-flex"
           >
             <div className="text-white text-sm font-normal font-['Neue Helvetica'] leading-[14.29px]">

@@ -16,7 +16,7 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
   const [showGenderOptions, setShowGenderOptions] = useState(false);
   const [formData, setFormData] = useState({
     name: userData?.name ? userData?.name : "",
-    username: "",
+    userName: "",
     email: userData?.email ? userData?.email : "",
     image: "",
     phoneNo: userData?.phone_number ? userData?.phone_number : "",
@@ -29,7 +29,7 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
     setShowGenderOptions(false);
   };
 
-  const genderOptions = ["Male", "Female", "Other"];
+  const genderOptions = ["male", "female", "other"];
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -50,7 +50,7 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
   const onFormDataChange = async (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (name === "username") {
+    if (name === "userName") {
       if (value === "") return false;
       if (checkUserNameTimeout) {
         clearTimeout(checkUserNameTimeout);
@@ -182,22 +182,22 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
           </div>
           <div className="flex flex-col items-start gap-[5px]">
             <label
-              htmlFor="username"
+              htmlFor="userName"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
               username
             </label>
             <input
               type="text"
-              name="username"
-              id="username"
+              name="userName"
+              id="userName"
               required
-              value={formData.username}
+              value={formData.userName}
               onChange={onFormDataChange}
               placeholder="Harsh_12"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
             />
-            {formData.username !== "" &&
+            {formData.userName !== "" &&
               (isUniqueUsername ? (
                 <div className="flex gap-3 items-center text-green-500 text-sm">
                   <BsCheckCircleFill /> Username validated
@@ -226,12 +226,12 @@ const PersonalInfo = ({ setData, userData, handleSubmit }) => {
                     formData.gender !== "" ? "text-black" : "text-[#9F9F9F]"
                   }`}
                 >
-                  {formData.gender || "Male"}
+                  {formData.gender || "male"}
                 </span>
                 <TbCaretDownFilled />
               </button>
               {showGenderOptions && (
-                <ul className="absolute z-10 top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2">
+                <ul className="absolute capitalize z-10 top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2">
                   {genderOptions.map((option) => (
                     <li
                       key={option}

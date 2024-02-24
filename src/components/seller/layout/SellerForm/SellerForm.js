@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+// import axios from 'axios';
+
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
@@ -30,6 +32,20 @@ const SellerForm = () => {
     ...gigsInfo,
   });
   const [isClient, setIsClient] = useState(true);
+  const handleFormData = async () => {
+    try {
+      const Token =
+        "eyJhbGciOiJSUzI1NiIsImtpZCI6ImExODE4ZjQ0ODk0MjI1ZjQ2MWQyMmI1NjA4NDcyMDM3MTc2MGY1OWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmZtLWxvY2F0aW9uIiwiYXVkIjoiYmZtLWxvY2F0aW9uIiwiYXV0aF90aW1lIjoxNzA4Nzc5NDEwLCJ1c2VyX2lkIjoiSzN0NWhKTUNZR1Y3dEhuODFYQUo3bzJxaWVCMiIsInN1YiI6IkszdDVoSk1DWUdWN3RIbjgxWEFKN28ycWllQjIiLCJpYXQiOjE3MDg3Nzk0MTAsImV4cCI6MTcwODc4MzAxMCwicGhvbmVfbnVtYmVyIjoiKzkxODcwOTM2MDU0MyIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODcwOTM2MDU0MyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.uhi79limg90BnkADqwZG2zIBn0pMhCzwpsRN8teJxiRl3-jiQMd-dnlxqolEZ08hCZxYUSd17Pw2cMcU3trJ248H3M67sHwHiZtIQ574OgW5ivHZogvlukoJ2bFF9aXP0-_kbgx13D5FEKvUm0I-iSotRr2QyYYy_En-qkjA2bBTxJGum1Okxz2jF8kdEvfECIfZ7I07mEFODzl16kVRMYlmE2dt9Je0xhRNE49FWg02IwkmyqhVc_5Jmi1-M44dc_fKf2z0qHyC6p3vkFkmMcr3w4aWagbfqUTAEB4ZarrRAkCigwxCbaX4DbLsh5_ril6bbZl8JYZ1fd3QMc74tQ";
+      const response = await instance.post("/main/seller", formData, {
+        headers: {
+          token: Token,
+        },
+      });
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   async function checkUser() {
     try {
@@ -135,19 +151,20 @@ const SellerForm = () => {
 
   const handleSubmit1 = (e) => {
     e.preventDefault();
-    setCount(formCount+1);
-  }
+    setCount(formCount + 1);
+  };
 
   const handleSubmit2 = (e) => {
     e.preventDefault();
-    setCount(formCount+1);
-  }
+    setCount(formCount + 1);
+  };
 
   const handleSubmit3 = (e) => {
     e.preventDefault();
+    handleFormData();
     // setCount(formCount+1);
-    router.push("/seller/dashboard");
-  }
+    // router.push("/seller/dashboard");
+  };
 
   return (
     <main className="w-full mx-auto py-20 space-y-10">
@@ -334,9 +351,14 @@ const SellerForm = () => {
               />
             )}
             {formCount === 2 && (
-              <ProfessionalInfo setData={setProfessionalInfo} handleSubmit={handleSubmit2} />
+              <ProfessionalInfo
+                setData={setProfessionalInfo}
+                handleSubmit={handleSubmit2}
+              />
             )}
-            {formCount === 3 && <GigsInfo setData={setGigsInfo} handleSubmit={handleSubmit3} />}
+            {formCount === 3 && (
+              <GigsInfo setData={setGigsInfo} handleSubmit={handleSubmit3} />
+            )}
           </div>
         </div>
       </div>
