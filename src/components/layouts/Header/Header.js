@@ -137,7 +137,8 @@ const Header = ({ isSeller }) => {
     <main
       className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 transition-all duration-500 ease-in-out ${
         pathname.startsWith("/client/username") ||
-        pathname.startsWith("/client/settings")
+        pathname.startsWith("/client/settings") ||
+        pathname.startsWith("/seller")
           ? "bg-black"
           : isScrolling
           ? "bg-black"
@@ -164,7 +165,7 @@ const Header = ({ isSeller }) => {
               <div className="w-6 h-6 justify-center items-center flex">
                 <IoLocationOutline className="text-lg" />
               </div>
-              <div className="text-white 3xl:text-lg md:text-base text-sm font-normal leading-[14px]">
+              <div className="text-white whitespace-nowrap 3xl:text-lg md:text-base text-sm font-normal leading-[14px]">
                 New Delhi, India
               </div>
             </div>
@@ -230,7 +231,7 @@ const Header = ({ isSeller }) => {
                 type="button"
                 className="w-[111px] h-[42px] pl-4 pr-[17px] py-[9px] rounded border border-white justify-center items-center inline-flex"
               >
-                <div className="text-white text-base font-bold leading-normal">
+                <div className="text-white text-base font-bold leading-normal whitespace-nowrap">
                   50 Credits
                 </div>
               </button>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 import PersonalInfo from "../../modules/sellerForm/PersonalInfo";
-import { FaCalendar, FaCamera } from "react-icons/fa6";
+import { FaAngleRight, FaCalendar, FaCamera } from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
 import ProfessionalInfo from "../../modules/sellerForm/ProfessionalInfo";
 import GigsInfo from "../../modules/sellerForm/GigsInfo";
@@ -21,12 +21,12 @@ const SellerForm = () => {
 
   const [formCount, setCount] = useState(1);
   const [gigsInfo, setGigsInfo] = useState(null);
-  const [form1Data, setForm1Data] = useState(null);
+  const [personalInfo, setPersonalInfo] = useState(null);
+  const [professionalInfo, setProfessionalInfo] = useState(null);
   const [userData, setData] = useState(null);
   const [formData, setFormData] = useState({
-    // personalInfo,
-    // professionalInfo,
-    ...form1Data,
+    ...personalInfo,
+    ...professionalInfo,
     ...gigsInfo,
   });
   const [isClient, setIsClient] = useState(true);
@@ -64,8 +64,8 @@ const SellerForm = () => {
   }, []);
 
   useEffect(() => {
-    setFormData({ ...form1Data, ...gigsInfo });
-  }, [form1Data, gigsInfo]);
+    setFormData({ ...personalInfo, ...professionalInfo, ...gigsInfo });
+  }, [personalInfo, professionalInfo, gigsInfo]);
 
   console.log("formData", formData);
 
@@ -133,17 +133,41 @@ const SellerForm = () => {
       });
   }
 
+  const handleSubmit1 = (e) => {
+    e.preventDefault();
+    setCount(formCount+1);
+  }
+
+  const handleSubmit2 = (e) => {
+    e.preventDefault();
+    setCount(formCount+1);
+  }
+
+  const handleSubmit3 = (e) => {
+    e.preventDefault();
+    // setCount(formCount+1);
+    router.push("/seller/dashboard");
+  }
+
   return (
-    <main className="w-full mx-auto py-24 space-y-10">
-      {!isClient && (
-        <Image
-          loading="eager"
-          alt=""
-          src={require("../../../../../public/seller/theme_bg.svg")}
-          className="absolute inset-0 w-full h-screen object-cover -z-10"
+    <main className="w-full mx-auto py-20 space-y-10">
+      <section className="flex overflow-hidden relative flex-col justify-center items-center px-16 py-12 text-white min-h-[346px] max-md:px-5">
+        <img
+          loading="lazy"
+          src="https://images.unsplash.com/photo-1618172193622-ae2d025f4032?q=80&w=1364&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Decorative background"
+          className="object-cover absolute inset-0 w-full h-full"
         />
-      )}
-      <div className="md:block hidden mx-auto w-5/6">
+        <div className="flex relative flex-col mt-7 w-full max-w-1/4">
+          <h2 className="self-center text-2xl font-light whitespace-nowrap">
+            Become a Seller
+          </h2>
+          <p className="mt-8 text-6xl font-bold text-center leading-[67px] max-md:max-w-full max-md:text-4xl max-md:leading-[51px]">
+            Paperwork is our passion. What&apos;s yours?
+          </p>
+        </div>
+      </section>
+      {/* <div className="md:block hidden mx-auto w-5/6">
         <button
           type="button"
           onClick={() => {
@@ -158,9 +182,9 @@ const SellerForm = () => {
           <IoChevronBackCircleOutline />
           Back
         </button>
-      </div>
+      </div> */}
       <div className="w-5/6 mx-auto flex gap-10 justify-between items-start flex-col lg:flex-row">
-        {isClient ? (
+        {/* {isClient ? (
           <div className="w-1/3 min-h-[455px] space-y-7 flex flex-col items-center py-5 bg-white rounded-[20px]">
             <div className="flex w-5/6 justify-between items-center gap-11 py-10 mx-auto">
               <img
@@ -205,10 +229,13 @@ const SellerForm = () => {
               </div>
             </button>
           </div>
-        ) : null}
-        <div className="md:w-2/3 w-full mx-auto flex flex-col items-center gap-[51.561px] relative">
+        ) : null} */}
+        {/* <div className="md:w-2/3 w-full mx-auto flex flex-col items-center gap-[51.561px] relative">
           <div className="flex items-center gap-3 w-11/12 absolute inset-x-0 top-0 -translate-y-full mx-auto pb-10">
-            <div onClick={() => setCount(1)} className="flex-1 border rounded-full bg-blue-700 h-3 w-full"></div>
+            <div
+              onClick={() => setCount(1)}
+              className="flex-1 border rounded-full bg-blue-700 h-3 w-full"
+            ></div>
             <div
               onClick={() => setCount(2)}
               className={`flex-1 border rounded-full ${
@@ -241,16 +268,75 @@ const SellerForm = () => {
                 handleSubmit={(e) => e.preventDefault()}
               />
             )}
-            {/* {formCount === 2 && (
-            <button
-              type="submit"
-              // onClick={handleSubmit}
-              className="flex justify-center items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
-            >
-              Submit
-              <BsCheckCircleFill />
-            </button>
-          )} */}
+          </div>
+        </div> */}
+
+        {/* Form Component */}
+        <div className="flex flex-col items-center justify-center gap-10 w-11/12 mx-auto">
+          {/* Form Names and positions */}
+          <div className="flex items-center gap-10">
+            <div className="flex items-center gap-3">
+              <p className="flex w-[25px] h-[25px] justify-center items-center bg-[#1DBF73] px-0 py-[5.5px] rounded-[12.5px] text-white text-center text-sm font-semibold">
+                1
+              </p>
+              <p className="text-[#222325] text-sm font-semibold leading-6">
+                Personal Information
+              </p>
+              <FaAngleRight />
+            </div>
+            <div className="flex items-center gap-3">
+              <p
+                className={`flex w-[25px] h-[25px] justify-center items-center ${
+                  formCount === 2 || formCount === 3
+                    ? "bg-[#1DBF73]"
+                    : "bg-black/10"
+                } px-0 py-[5.5px] rounded-[12.5px] text-white text-center text-sm font-semibold`}
+              >
+                2
+              </p>
+              <p
+                className={`${
+                  formCount === 2 || formCount === 3
+                    ? "text-[#222325]"
+                    : "text-black/35"
+                } text-sm font-semibold leading-6`}
+              >
+                Professional Information
+              </p>
+              <FaAngleRight />
+            </div>
+            <div className="flex items-center gap-3">
+              <p
+                className={`flex w-[25px] h-[25px] justify-center items-center ${
+                  formCount === 3 ? "bg-[#1DBF73]" : "bg-black/10"
+                } px-0 py-[5.5px] rounded-[12.5px] text-white text-center text-sm font-semibold`}
+              >
+                3
+              </p>
+              <p
+                className={`${
+                  formCount === 3 ? "text-[#222325]" : "text-black/35"
+                } text-sm font-semibold leading-6`}
+              >
+                Show Your Work
+              </p>
+              <FaAngleRight />
+            </div>
+          </div>
+
+          {/* Forms */}
+          <div className="flex flex-col items-end gap-[22.916px] bg-[#FBFBFB] w-3/4 py-7">
+            {formCount === 1 && (
+              <PersonalInfo
+                setData={setPersonalInfo}
+                userData={userData}
+                handleSubmit={handleSubmit1}
+              />
+            )}
+            {formCount === 2 && (
+              <ProfessionalInfo setData={setProfessionalInfo} handleSubmit={handleSubmit2} />
+            )}
+            {formCount === 3 && <GigsInfo setData={setGigsInfo} handleSubmit={handleSubmit3} />}
           </div>
         </div>
       </div>
