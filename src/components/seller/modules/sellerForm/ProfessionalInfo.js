@@ -8,11 +8,10 @@ import { RxCrossCircled } from "react-icons/rx";
 const Experience = ["0-1", "1-3", "3-5", "5+"];
 const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
 
-const ProfessionalInfo = ({ setData }) => {
+const ProfessionalInfo = ({ setData, handleSubmit }) => {
   const [currentTag, setCurrentTag] = useState("");
   const [currentService, setCurrentService] = useState("");
   const [document, setDocument] = useState(null);
-  const [documentFile, setDocumentFile] = useState(null);
   const [profession, setProfession] = useState([
     "Photographer",
     "Designer",
@@ -29,6 +28,8 @@ const ProfessionalInfo = ({ setData }) => {
     profession: "",
     skills: [],
     services: [],
+    college_name: "",
+    certification: null,
   });
 
   const handleTagInputChange = (e) => {
@@ -60,7 +61,7 @@ const ProfessionalInfo = ({ setData }) => {
   const handleServiceInputKeyPress = (e) => {
     if (e.key === " " && currentService.trim() !== "") {
       e.preventDefault();
-      setCurrentService("")
+      setCurrentService("");
       setFormData((prevData) => ({
         ...prevData,
         services: [...prevData.services, currentService.trim()],
@@ -69,12 +70,11 @@ const ProfessionalInfo = ({ setData }) => {
   };
 
   const handleServiceRemove = (ServiceToRemove) => {
-    ((prevServices) =>
-      prevServices.filter((Service) => Service !== ServiceToRemove)
-    );
     setFormData((prevData) => ({
       ...prevData,
-      services: prevData.services.filter((service) => service !== ServiceToRemove),
+      services: prevData.services.filter(
+        (service) => service !== ServiceToRemove
+      ),
     }));
   };
 
@@ -98,10 +98,10 @@ const ProfessionalInfo = ({ setData }) => {
   }, [formData]);
 
   return (
-    <div
-      // action=""
-      //   onChange={() => setData(formData)}
-      className="flex w-5/6 mx-auto flex-col items-center gap-[45px] md:pt-10 rounded-[40px]"
+    <form
+      action=""
+      onSubmit={handleSubmit}
+      className="flex w-5/6 mx-auto flex-col items-end gap-10 md:pt-10 rounded-[40px]"
     >
       <div className="flex flex-col items-start gap-5 w-full">
         <div className="flex flex-col items-start text-left gap-[7px]">
@@ -126,7 +126,7 @@ const ProfessionalInfo = ({ setData }) => {
               required
               value={formData.experience}
               onChange={handleInputChange}
-              className="flex items-center border selection:bg-gray-800 w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+              className="flex items-center selection:bg-gray-800 w-full p-3.5 focus:outline-none rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
             >
               {/* <option value="">0-1 years</option> */}
               {Experience?.map((experience, index) => (
@@ -153,7 +153,7 @@ const ProfessionalInfo = ({ setData }) => {
               value={formData.profession}
               onChange={handleInputChange}
               required
-              className="flex items-center border focus:outline-none w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+              className="flex items-center focus:outline-none w-full p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
             >
               <option value="" className="text-[#9F9F9F]">
                 Select Profession
@@ -177,7 +177,7 @@ const ProfessionalInfo = ({ setData }) => {
               id="college_name"
               value={formData.college_name}
               onChange={handleInputChange}
-              className="flex items-center border w-full border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+              className="flex items-center w-full p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
             >
               <option value="">Select your college</option>
               {CollegeName?.map((college, index) => (
@@ -194,11 +194,11 @@ const ProfessionalInfo = ({ setData }) => {
             >
               services
             </label>
-            <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
-              {formData?.services.map((service) => (
+            <div className="flex items-center content-center bg-white rounded-lg gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-[5.781px]-[1.445px]">
+              {formData?.services.map((service, index) => (
                 <div
-                  key={service}
-                  className="flex h-6 justify-center items-center gap-0.5 border bg-[#E9DFFC] border-[#BE9FF6] pl-1.5 pr-2 py-1 rounded-xl text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                  key={index}
+                  className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
                 >
                   <button
                     type="button"
@@ -217,14 +217,14 @@ const ProfessionalInfo = ({ setData }) => {
                 value={currentService}
                 onChange={handleServiceInputChange}
                 onKeyPress={handleServiceInputKeyPress}
-                className={`text-sm not-italic font-normal leading-[100%] w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
+                className={`text-sm not-italic font-normal leading-[100%] bg-transparent w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
                   formData?.services.length === 7 ? "hidden" : "block"
                 }`}
               />
             </div>
-            {/* <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
-              Maximum 4 services
-            </p> */}
+            <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
+              Maximum 4-7 services
+            </p>
           </div>
           <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
             <label
@@ -233,11 +233,11 @@ const ProfessionalInfo = ({ setData }) => {
             >
               skills
             </label>
-            <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap border-[solid_var(--main-colors-gray-05,#909090)] px-[10.116px] py-[7.226px] rounded-[5.781px] border-[1.445px]">
-              {formData?.skills.map((tag) => (
+            <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-lg bg-white">
+              {formData?.skills.map((tag, index) => (
                 <div
-                  key={tag}
-                  className="flex h-6 justify-center items-center gap-0.5 border bg-[#E9DFFC] border-[#BE9FF6] pl-1.5 pr-2 py-1 rounded-xl text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                  key={index}
+                  className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
                 >
                   <button type="button" onClick={() => handleTagRemove(tag)}>
                     <RxCrossCircled />
@@ -263,7 +263,35 @@ const ProfessionalInfo = ({ setData }) => {
             </p>
           </div>
         </div>
-        {/* <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
+        <div className="flex flex-col w-full items-start gap-[5px]">
+          <label
+            htmlFor="college_name"
+            className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+          >
+            College name
+          </label>
+          <select
+            name="college_name"
+            id="college_name"
+            value={formData.college_name}
+            onChange={handleInputChange}
+            className="flex items-center w-full focus:outline-none p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+          >
+            <option value="">Select your college</option>
+            {CollegeName?.map((college, index) => (
+              <option value={college} key={index}>
+                {college}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex h-11 items-center gap-10 justify-between self-stretch-[#909090] mt-7 p-3.5 rounded-lg bg-white relative w-full">
+          <label
+            htmlFor="certification"
+            className="text-[color:var(--Main-Colors-Gray-4,#292929)] absolute -top-2/3 inset-0 md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+          >
+            Resume
+          </label>
           <label
             htmlFor="certification"
             className={`${
@@ -283,17 +311,34 @@ const ProfessionalInfo = ({ setData }) => {
             onChange={handleFileChange}
             className="hidden"
           />
-          <button
+          {/* <button
             type="button"
             onClick={() => document?.getElementById("certification")?.click()}
             className="flex h-[31.259px] justify-center items-center gap-[2.605px] pl-[7.815px] pr-[10.42px] py-[5.21px] rounded-[15.63px] bg-[#E9DFFC] text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-[18.235px] not-italic font-normal leading-[100%] tracking-[-0.912px]"
           >
             <MdOutlineUploadFile />
             Upload
+          </button> */}
+          <button
+            type="button"
+            onClick={() => document?.getElementById("certification")?.click()}
+            className="w-[79.95px] h-[25.08px] pl-[6.13px] pr-[8.17px] py-[4.08px] bg-black rounded-xl border justify-center items-center gap-0.5 inline-flex"
+          >
+            <div className="text-white text-sm font-normal font-['Neue Helvetica'] leading-[14.29px]">
+              Upload
+            </div>
           </button>
-        </div> */}
+        </div>
       </div>
-    </div>
+      <button
+        type="submit"
+        className="px-8 py-4 bg-indigo-500 rounded-lg border-2 justify-center items-center gap-2 inline-flex"
+      >
+        <p className="text-white text-xl font-['Neue Helvetica'] leading-tight">
+          Save & Continue
+        </p>
+      </button>
+    </form>
   );
 };
 

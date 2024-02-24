@@ -7,6 +7,7 @@ import { IoAdd, IoCloseCircleSharp } from "react-icons/io5";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
+import { TbCaretDownFilled } from "react-icons/tb";
 
 const SocialTypes = [
   {
@@ -36,6 +37,8 @@ const GigsInfo = ({ setData, handleSubmit }) => {
   const [documentFile, setDocumentFile] = useState(null);
   const [experiences, setExperiences] = useState([]);
   const [socialType, setSocialType] = useState("");
+  const [selectedSocialMedia, setSelectedSocialMedia] = useState([]);
+  const [showSocialMediaOptions, setShowSocialMediaOptions] = useState(false);
   const [formData, setFormData] = useState({
     college_name: "",
     certification: null,
@@ -113,18 +116,49 @@ const GigsInfo = ({ setData, handleSubmit }) => {
 
   const handleSocialChange = (e) => {
     const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      socialMedia: value,
-    }));
+    setSelectedSocialMedia((prevSelected) => {
+      if (prevSelected.includes(value)) {
+        // Deselect the social media if it's already selected
+        return prevSelected.filter((item) => item !== value);
+      } else {
+        // Select the social media if it's not selected
+        return [...prevSelected, value];
+      }
+    });
   };
 
-  const handleFileChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      certification: e.target.files[0],
-    }));
+  const handleSocialMediaSelect = (selectedSocialMedia) => {
+    if (formData.socialMedia.includes(selectedSocialMedia)) {
+      // If already selected, remove it
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        socialMedia: prevFormData.socialMedia.filter(
+          (social) => social !== selectedSocialMedia
+        ),
+      }));
+    } else {
+      // If not selected, add it
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        socialMedia: [...prevFormData.socialMedia, selectedSocialMedia],
+      }));
+    }
   };
+
+  // const removeSocialMedia = (index) => {
+  //   setFormData((prevFormData) => {
+  //     const updatedSocialMedia = [...prevFormData.socialMedia];
+  //     updatedSocialMedia.splice(index, 1);
+  //     return { ...prevFormData, socialMedia: updatedSocialMedia };
+  //   });
+  // };
+
+  // const handleFileChange = (e) => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     certification: e.target.files[0],
+  //   }));
+  // };
 
   useEffect(() => {
     setData(formData);
@@ -133,9 +167,9 @@ const GigsInfo = ({ setData, handleSubmit }) => {
   return (
     <form
       action=""
-      className="flex flex-col items-start gap-[22.77px] self-stretch w-5/6 mx-auto"
+      className="flex flex-col items-end gap-10 self-stretch w-5/6 mx-auto"
     >
-      <div className="flex flex-col w-full items-start gap-[5px]">
+      {/* <div className="flex flex-col w-full items-start gap-[5px]">
         <label
           htmlFor="college_name"
           className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
@@ -156,8 +190,8 @@ const GigsInfo = ({ setData, handleSubmit }) => {
             </option>
           ))}
         </select>
-      </div>
-      <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
+      </div> */}
+      {/* <div className="flex h-11 items-center gap-10 justify-between self-stretch border border-[#909090] p-3.5 rounded-lg">
         <label
           htmlFor="certification"
           className={`${
@@ -182,82 +216,96 @@ const GigsInfo = ({ setData, handleSubmit }) => {
         >
           <MdOutlineUploadFile />
           Upload
-        </button>
-      </div>
-      <div className="flex flex-col items-start gap-2.5 self-stretch">
-        <label
-          htmlFor="description"
-          className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-xs not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-        >
-          tell us about yourself
-        </label>
-        <textarea
-          name="description"
-          id="description"
-          required
-          value={formData.description}
-          onChange={onFormChange}
-          className="w-full resize-none focus:outline-none h-full text-black text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] flex flex-col items-start gap-[var(--numberLength,0px)] self-stretch border-[color:var(--Main-Colors-Purple-3,#BE9FF6)] pl-5 pr-2.5 pt-3.5 pb-2.5 rounded-lg border-[1.2px] border-solid"
-          placeholder="Describe your Gig"
-          cols="30"
-          rows="10"
-          minLength={100}
-          maxLength={1000}
-        ></textarea>
-      </div>
-      <div className="flex flex-col items-start gap-[7px]">
+          </button>
+        </div> */}
+      <div className="flex flex-col w-full items-start gap-[7px]">
         <h5 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
-          Show Your Gigs
+          Show Your Work
         </h5>
         <p className="text-black md:text-base text-xs not-italic font-normal leading-6">
-          Describe your gigs that you have worked on.{" "}
+          Describe your project that you have worked on.
         </p>
       </div>
       <div className="flex flex-col lg:items-start items-center gap-[30px] self-stretch">
-        <div className="flex flex-col gap-2 self-stretch">
+        <div className="flex flex-col items-start w-full gap-[7px]">
           <label
             htmlFor="social"
             className="col-span-2 text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[10.24px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
           >
             Social Media
           </label>
-          <div className="flex gap-2 items-center">
-            <div
-              className={`flex max-w-[155px] justify-between items-center border sm:text-sm text-xs border-[solid_var(--main-colors-gray-05,#909090)] xl:p-3.5 lg:p-2.5 p-1.5 rounded-lg`}
-            >
-              <select
-                name="socialType"
-                id="socialType"
-                value={socialType}
-                onChange={(e) => setSocialType(e.target.value)}
-                className="focus:outline-none"
+          <div className="flex items-start w-full gap-[7px]">
+            <div className="relative w-full flex-grow">
+              <button
+                type="button"
+                onClick={() =>
+                  setShowSocialMediaOptions(!showSocialMediaOptions)
+                }
+                className="flex gap-2 items-center bg-white w-full pr-3.5 text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none"
               >
-                <option
-                  value=""
-                  className=" sm:text-sm text-[10px] not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                >
-                  Select
-                </option>
-                {SocialTypes?.map((type, index) => (
-                  <option
-                    key={index}
-                    value={type.name}
-                    className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] sm:text-sm text-[10px] not-italic font-normal leading-[100%] tracking-[-0.7px] hover:bg-gray-200 px-3 py-2"
-                  >
-                    {type.name}
-                  </option>
-                ))}
-              </select>
+                <span className="flex-grow text-left">
+                  {"Select Social Media"}
+                </span>
+                <TbCaretDownFilled />
+              </button>
+              {showSocialMediaOptions && (
+                <ul className="absolute z-10 top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2">
+                  {SocialTypes.map((social) => (
+                    <li
+                      key={social.name}
+                      onClick={() => handleSocialMediaSelect(social.name)}
+                      className={`cursor-pointer px-4 py-2 flex items-center gap-2 hover:bg-gray-200 ${
+                        formData.socialMedia.includes(social.name)
+                          ? "bg-blue-500 text-white"
+                          : ""
+                      }`}
+                    >
+                      {social.icon}
+                      {social.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            <input
-              type="url"
-              name={socialType}
-              id={socialType}
-              onChange={handleSocialChange}
-              className="flex items-center gap-[5px] self-stretch border focus:outline-none w-full sm:text-sm text-[10px] not-italic font-normal leading-[100%] tracking-[-0.7px] border-[solid_var(--main-colors-gray-05,#909090)] xl:p-3.5 lg:p-2.5 p-1.5 rounded-lg"
-              placeholder="Behance or linkedin"
-            />
+            <div className="flex gap-2">
+              {formData.socialMedia.map((social, index) => (
+                <div
+                  key={index}
+                  className="w-14 h-[42px] text-white text-xl bg-indigo-500 rounded-lg justify-center items-center gap-3.5 inline-flex"
+                >
+                  {SocialTypes.find((type) => type.name === social).icon}
+                  {/* <button
+                  type="button"
+                  onClick={() => removeSocialMedia(index)}
+                  className="ml-2 text-white"
+                >
+                  <IoCloseCircleSharp />
+                </button> */}
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <label
+            htmlFor="description"
+            className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-xs not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+          >
+            tell us about yourself
+          </label>
+          <textarea
+            name="description"
+            id="description"
+            required
+            value={formData.description}
+            onChange={onFormChange}
+            className="w-full resize-none focus:outline-none h-full text-black text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] flex flex-col items-start gap-[var(--numberLength,0px)] self-stretch  pl-5 pr-2.5 pt-3.5 pb-2.5 rounded-lg"
+            placeholder="Describe your Gig"
+            cols="30"
+            rows="10"
+            minLength={100}
+            maxLength={1000}
+          ></textarea>
         </div>
         {experiences?.map((_, index) => (
           <div
@@ -276,7 +324,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               name="title_of_project"
               id="title_of_project"
               placeholder="Enter title of project"
-              className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+              className="text-sm not-italic font-normal focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch p-3.5 rounded-lg"
               value={experiences[index]["title"]}
               onChange={(e) => {
                 handleExperinces({
@@ -295,7 +343,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               name="url_of_project"
               id="url_of_project"
               placeholder="Paste link"
-              className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg"
+              className="text-sm not-italic font-normal focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch p-3.5 rounded-lg"
               value={experiences[index]["link"]}
               onChange={(e) => {
                 handleExperinces({
@@ -313,7 +361,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               minLength={69}
               maxLength={500}
               placeholder="Describe your project and services"
-              className="text-sm not-italic font-normal border focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch border-[solid_var(--main-colors-gray-05,#909090)] p-3.5 rounded-lg resize-none"
+              className="text-sm not-italic font-normal focus:outline-none w-full leading-[100%] tracking-[-0.7px] flex items-center gap-[5px] self-stretch p-3.5 rounded-lg resize-none"
               value={experiences[index]["description"]}
               onChange={(e) => {
                 handleExperinces({
@@ -333,7 +381,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               { title: "", link: "", description: "" },
             ])
           }
-          className="flex w-full text-[#9870FFFC] text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize bg-[#F8F8F8] h-[47px] justify-center items-center content-center gap-[9px] flex-wrap p-[4.97px] rounded-[9.111px]"
+          className="flex w-full text-[#4461F2] text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize bg-[#ECEFFE] h-[47px] justify-center items-center content-center gap-[9px] flex-wrap p-[4.97px] rounded-[9.111px]"
         >
           <IoAdd /> Add Experience
         </button>
@@ -378,7 +426,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
                 ) : (
                   <label
                     htmlFor={`imageInput${index}`}
-                    className={`max-w-[100%]  self-stretch aspect-square object-cover bg-[#E1CAFF] text-[#9747FF] shrink-0 flex justify-center items-center rounded`}
+                    className={`max-w-[100%]  self-stretch aspect-square object-cover bg-[#ECEFFE] text-[#4461F2] shrink-0 flex justify-center items-center rounded`}
                   >
                     <IoAdd className="lg:text-6xl sm:text-5xl text-3xl" />
                     <input
@@ -410,7 +458,7 @@ const GigsInfo = ({ setData, handleSubmit }) => {
               name="legalization"
               id="legalization"
               required
-              className="border border-[#925ff0] rounded appearance-none w-full h-full object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+              className="border border-[#4461F2] rounded appearance-none w-full h-full object-cover checked:bg-[#4461F2] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
             />
           </div>
           <label
@@ -424,10 +472,9 @@ const GigsInfo = ({ setData, handleSubmit }) => {
       <button
         type="submit"
         onClick={handleSubmit}
-        className="flex justify-center mx-auto items-center gap-[6.073px] pl-[24.292px] pr-[18.219px] py-[12.146px] rounded-[3.036px] bg-[#925FF0] text-[color:var(--White,var(--Primary-blue,#FFF))] text-[12.85px] not-italic font-normal leading-[100%] tracking-[-0.643px]"
+        className="px-8 py-4 bg-indigo-500 rounded-md border-2 justify-center items-center gap-2 inline-flex"
       >
-        Submit
-        <BsCheckCircleFill />
+        <p className="text-white text-xl leading-tight">Finish</p>
       </button>
     </form>
   );
