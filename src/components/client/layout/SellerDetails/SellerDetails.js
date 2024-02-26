@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import {
   FaAngleRight,
@@ -13,6 +14,7 @@ import Link from "next/link";
 import { BsStarFill } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import FeedBackCard from "../../modules/FeedBackSection/FeedBackCard";
+import ProposalModal from "../../modules/proposalSection/ProposalModal";
 
 const ImageComponent = ({ src, alt, className, onClick }) => (
   <img
@@ -101,11 +103,19 @@ const FeedBackModal = ({ feedbackData, close }) => {
 const SellerDetails = ({ params }) => {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
+  const [userData, setUserData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showImage, setShowImage] = useState(true);
   const [addFeedBack, setAddFeedback] = useState(false);
   const [showDetails, setShowDetails] = useState(true);
   const [modalImageUrl, setModalImageUrl] = useState(null);
+  const [showProposalModal, setShowProposalModal] = useState(false);
+  const [proposalInput, setProposal] = useState({
+    subject: "",
+    feedback: "",
+  });
+  const [proposalSent, setProposalSent] = useState(false);
+
   const services = [
     "SEO",
     "Freelancing",
@@ -153,6 +163,8 @@ const SellerDetails = ({ params }) => {
   const closeImageModal = () => {
     setModalImageUrl(null);
   };
+
+  console.log(proposalInput);
 
   return (
     <div className="flex lg:flex-row flex-col lg:w-11/12 justify-between max-w-[1920px] gap-14 py-32 mx-auto relative">
@@ -212,13 +224,32 @@ const SellerDetails = ({ params }) => {
                     Phones Number
                   </div>
                   <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
-                    {"+918585992535".slice(0, 7) + "..."}
-                    <button
-                      type="button"
-                      className="px-7 py-1 border border-black rounded-xl text-black"
-                    >
-                      Request Contact
-                    </button>
+                    {userData?.gender === "male" ? (
+                      "+918585992535"
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={proposalSent ? true : false}
+                        onClick={() => setShowProposalModal(true)}
+                        className={`px-7 py-1 border ${proposalSent ? "bg-green-500" : "bg-black"} rounded text-white flex items-center justify-center gap-2`}
+                        >
+                        { !proposalSent ? "Request Contact" : "Request Sent"}
+                      </button>
+                    )}
+                    {showProposalModal && (
+                      <ProposalModal
+                        handleSubmit={(e) => {
+                          e.preventDefault();
+                          setProposalSent(true);
+                          setTimeout(() => {
+                            setShowProposalModal(false);
+                          }, 2000);
+                        }}
+                        inputData={proposalInput}
+                        setInputData={setProposal}
+                        sent={proposalSent}
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="flex-col justify-start items-start gap-0.5 flex">

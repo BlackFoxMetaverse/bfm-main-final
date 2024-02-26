@@ -8,7 +8,7 @@ import { RxCross1 } from "react-icons/rx";
 const AuthModal = ({ onClose, animation, register, isRegister }) => {
   return (
     <main
-      className={`flex bg-black fixed right-0 inset-y-0 w-1/3 z-40 ${animation} transition-all duration-700 ease-in-out`}
+      className={`flex bg-black fixed right-0 inset-y-0 3xl:w-1/4 xl:w-1/3 lg:w-1/2 md:w-2/3 w-full z-40 ${animation} transition-all duration-700 ease-in-out`}
     >
       <button
         type="button"

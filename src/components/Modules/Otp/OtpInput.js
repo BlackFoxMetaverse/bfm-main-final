@@ -73,6 +73,7 @@ const OtpInput = ({ numberOfInputs, onChange, value, handleSubmit }) => {
           value={digit}
           onChange={(e) => handleInputChange(e, index)}
           required
+          placeholder="0"
           className="flex w-12 px-[18px] aspect-square justify-center items-center gap-[10.792px] border rounded-[12.951px] border-[solid_rgba(102,102,102,0.35)] focus:outline-none"
         />
       ))}

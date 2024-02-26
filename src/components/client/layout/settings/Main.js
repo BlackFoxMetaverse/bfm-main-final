@@ -10,12 +10,13 @@ import { LuWallet } from "react-icons/lu";
 import { FaAngleLeft } from "react-icons/fa6";
 import instance from "@/utils/axios";
 import Security from "../../modules/settings/Security";
+import Toast from "@/components/Modules/Toast/Toast";
 
 function TokenInfoCard({ label, value }) {
   return (
-    <div className="flex flex-col px-5 py-3 mt-6 rounded-xl bg-black bg-opacity-60 z-10">
-      <div className="font-medium">{label}</div>
-      <div className="mt-2.5 font-bold">{value}</div>
+    <div className="flex flex-col px-5 py-3 mt-6 w-fit rounded-xl bg-black/60 z-10">
+      <div className="font-medium text-sm md:text-base">{label}</div>
+      <div className="mt-2.5 font-bold text-sm md:text-base">{value}</div>
     </div>
   );
 }
@@ -33,13 +34,17 @@ function Main() {
   };
 
   const tokenData = [
-    { label: "Current tokens", value: "10" },
-    { label: "Tokens purchased till now", value: "30" },
+    { label: "Current tokens", value: userData?.token ? userData?.token : 0 },
+    {
+      label: "Tokens purchased till now",
+      value: userData?.purchased ? userData?.purchased : 0,
+    },
   ];
+
   async function getUserData() {
     try {
       const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.get("/user/user", {
+      const res = await instance.get("/main/user", {
         headers: {
           token: token,
         },
@@ -68,30 +73,32 @@ function Main() {
       suppressHydrationWarning
       className="[background:#F7F7F7] w-full max-w-[1920px] mx-auto"
     >
-      <div className="flex overflow-hidden relative flex-col justify-end w-full items-start px-20 pt-24 pb-5 text-2xl text-white min-h-[346px]">
+      <div className="flex overflow-hidden relative flex-col justify-end w-full items-start pt-24 pb-5 text-2xl text-white min-h-[346px]">
         <img
           src="https://images.unsplash.com/photo-1633427370898-c40eceefb26c?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Settings background"
           className="object-cover absolute inset-0 size-full"
           loading="eager"
         />
-        <section className="relative mt-5 text-3xl font-bold">Settings</section>
-        {tokenData.map((data, index) => (
-          <TokenInfoCard key={index} label={data.label} value={data.value} />
-        ))}
+        <section className="relative mt-5 text-3xl font-bold w-11/12 mx-auto">Settings</section>
+        <div className="flex lg:flex-col w-11/12 mx-auto gap-4">
+          {tokenData.map((data, index) => (
+            <TokenInfoCard key={index} label={data.label} value={data.value} />
+          ))}
+        </div>
       </div>
-      <div className="md:w-11/12 w-full mx-auto lg:py-24 py-20 flex relative justify-between items-start gap-12">
-        <div
-          className={`lg:w-1/3 w-full lg:static absolute inset-x-0 bottom-0 top-24 lg:bg-transparent bg-white lg:translate-x-0 lg:translate-y-0 transition-all duration-500 ease-in-out ${
-            isClicked ? "-translate-x-full" : "translate-x-0"
-          } z-20 lg:z-0 space-y-9`}
-        >
-          <div className="w-full px-10 py-9 inline-flex flex-col items-start gap-9 min-h-[425px] shrink-0 [background:#FFF] rounded-[20px]">
-            <div className="w-11/12 mx-auto h-[91.63px] justify-start items-center gap-3.5 inline-flex lg:hidden">
+      <div className="lg:w-11/12 w-full mx-auto lg:py-24 py-20 flex lg:flex-row flex-col relative justify-between items-start gap-12">
+        <div className={`lg:w-1/3 w-full flex justify-between items-center`}>
+          <div className="w-11/12  mx-auto flex lg:flex-col items-start lg:justify-normal justify-between lg:gap-4 lg:min-h-fit shrink-0 lg:bg-white lg:rounded-[20px]">
+            {/* <div className="w-11/12 mx-auto h-[91.63px] justify-start items-center gap-3.5 inline-flex lg:hidden">
               <img
                 className="w-[89.31px] h-[89.31px] rounded-full"
-                src={s3Url + userData?.image}
-                alt={s3Url + userData?.image}
+                src={
+                  userData?.image
+                    ? s3Url + userData?.image
+                    : "https://cdn-icons-png.freepik.com/512/1077/1077114.png"
+                }
+                alt=""
               />
               <div className="flex-col justify-center items-start inline-flex">
                 <div className="text-indigo-500 text-3xl font-semibold font-['DM Sans'] leading-[55.78px] tracking-tight">
@@ -101,9 +108,14 @@ function Main() {
                   {userData?.email}
                 </div>
               </div>
-            </div>
+            </div> */}
             <button
-              className="flex items-center gap-3 hover:bg-blue-200 px-4 py-1 rounded-lg w-full lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              style={{
+                color: `${
+                  currentSetting === "account" ? "rgb(99, 102, 241)" : "black"
+                }`,
+              }}
+              className="flex items-center gap-3 hover:text-indigo-500 lg:px-4 py-1 rounded-lg w-full lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("account")}
             >
               {/* {currentSetting === "account" ? (
@@ -115,7 +127,12 @@ function Main() {
               Account
             </button>
             <button
-              className="flex items-center hover:bg-blue-200 px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              style={{
+                color: `${
+                  currentSetting === "security" ? "rgb(99, 102, 241)" : "black"
+                }`,
+              }}
+              className="flex items-center hover:text-indigo-500 lg:px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("security")}
             >
               {/* {currentSetting === "account" ? (
@@ -127,7 +144,14 @@ function Main() {
               Security
             </button>
             <button
-              className="flex items-center hover:bg-blue-200 px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              style={{
+                color: `${
+                  currentSetting === "notification"
+                    ? "rgb(99, 102, 241)"
+                    : "black"
+                }`,
+              }}
+              className="flex items-center hover:text-indigo-500 lg:px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("notification")}
             >
               {/* {currentSetting === "notification" ? (
@@ -139,7 +163,14 @@ function Main() {
               Notification
             </button>
             <button
-              className="flex items-center hover:bg-blue-200 px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg text-base font-medium leading-[normal]"
+              style={{
+                color: `${
+                  currentSetting === "purchase_history"
+                    ? "rgb(99, 102, 241)"
+                    : "black"
+                }`,
+              }}
+              className="flex items-center hover:text-indigo-500 lg:px-4 py-1 whitespace-nowrap rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("purchase_history")}
             >
               {/* {currentSetting === "purchase_history" ? (
@@ -171,8 +202,8 @@ function Main() {
           </div> */}
         </div>
 
-        <div className="lg:w-2/3 w-full py-6 min-h-[800px] shrink-0 [background:#FFF] rounded-[20px]">
-          <div className="block lg:hidden w-5/6 mx-auto mb-10">
+        <div className="lg:w-2/3 w-full py-6 shrink-0 min-h-full bg-white/50 rounded-[20px]">
+          {/* <div className="block lg:hidden w-5/6 mx-auto mb-10">
             <button
               type="button"
               className=""
@@ -180,18 +211,18 @@ function Main() {
             >
               <FaAngleLeft />
             </button>
-          </div>
-          {renderSetting(currentSetting)}
+          </div> */}
+          {renderSetting(currentSetting, userData)}
         </div>
       </div>
     </main>
   );
 }
 
-function renderSetting(setting) {
+function renderSetting(setting, userData) {
   switch (setting) {
     case "account":
-      return <Accounts />;
+      return <Accounts userData={userData} />;
     case "security":
       return <Security />;
     case "notification":

@@ -21,7 +21,7 @@ const UserProfile = ({ name, profilePic }) => {
     <div
       // type="button"
       onClick={() => setOptions(!options)}
-      className="flex gap-2.5 justify-between items-center text-base leading-6 text-white relative"
+      className="flex gap-2.5 cursor-pointer justify-between items-center text-base leading-6 text-white relative"
     >
       <pattern className="grow font-bold  justify-center px-3 py-2.5 italic rounded tracking-wide border border-solid border-black border-opacity-10">
         {name}
@@ -37,12 +37,12 @@ const UserProfile = ({ name, profilePic }) => {
           options ? "top-full translate-y-3" : "-top-full scale-y-0"
         } stroke-black py-3 transition-all duration-300 ease-in-out transform gap-2`}
       >
-        <p className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-end">
+        <p className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-start">
           <Link
             href={"/client/settings"}
             className="text-neutral-700 text-lg font-medium leading-normal"
           >
-            Account
+            My Account
           </Link>
           <Link
             href={"/client/settings"}
@@ -66,7 +66,11 @@ const UserProfile = ({ name, profilePic }) => {
         <div className="h-[0px] w-11/12 mx-auto border border-black"></div>
         <button
           type="button"
-          className="justify-end mt-2 w-11/12 mx-auto text-red-500 text-base font-bold leading-normal items-center gap-[5px] inline-flex"
+          onClick={() => {
+            localStorage.removeItem("bfm-client-token");
+            window.location.reload();
+          }}
+          className="mt-2 w-11/12 mx-auto text-red-500 text-base font-bold leading-normal items-center gap-[5px] inline-flex"
         >
           <p className="">LogOut</p>
           <IoLogOutOutline className="text-2xl" />
@@ -97,7 +101,7 @@ const Header = ({ isSeller }) => {
   async function fetchUserData() {
     try {
       const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.get("/user/user", {
+      const res = await instance.get("/main/user", {
         headers: {
           token: token,
         },
@@ -236,11 +240,11 @@ const Header = ({ isSeller }) => {
                 className="w-[111px] h-[42px] pl-4 pr-[17px] py-[9px] rounded border border-white justify-center items-center inline-flex"
               >
                 <div className="text-white text-base font-bold leading-normal whitespace-nowrap">
-                  50 Credits
+                  {userData?.token ? userData?.token : 0} Credits
                 </div>
               </button>
               <UserProfile
-                name="Raunak Pandey"
+                name={userData?.name}
                 // profilePic="https://cdn.builder.io/api/v1/image/assets/TEMP/b40893da2d2985cab402b6187995d6337f22d16c17fa7b41c35520d134cff622?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
               />
             </div>

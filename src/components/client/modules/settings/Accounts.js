@@ -7,19 +7,31 @@ import { BsCameraFill } from "react-icons/bs";
 import preview from "../../../../../public/clients_images/services/preview.svg";
 import Image from "next/image";
 import { FaCaretDown } from "react-icons/fa6";
-const Accounts = () => {
+import Toast from "@/components/Modules/Toast/Toast";
+const Accounts = ({ userData }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
 
   const [isLogin, setIsLogin] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [showModal, setShowModal] = useState("");
   const [image, setImage] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null);
   const [newUserData, setNewUserData] = useState({
-    name: null,
+    name: "",
     image: null,
+    gender: "",
+    email: "",
   });
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
   const options = ["male", "female", "prefer not to say"];
+
+  useEffect(() => {
+    setNewUserData({
+      name: userData?.name,
+      email: userData?.email,
+      image: userData?.profileImage ? userData?.profileImage : null,
+      gender: userData?.gender ? userData?.gender : selectedOption,
+    });
+  }, [userData]);
 
   console.log(newUserData);
   const toggleDropdown = () => {
@@ -48,59 +60,48 @@ const Accounts = () => {
       .catch((error) => console.error(error));
   };
 
-  async function fetchUserData() {
-    try {
-      const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.get("/user/user", {
-        headers: {
-          token: token,
-        },
-      });
-      if (res?.status === 200) {
-        console.log(res.data?.data);
-        setIsLogin(true);
-        setUserData(res.data.data);
-      } else if (res?.status === 401) {
-        setIsLogin(false);
-      } else {
-        setIsLogin(false);
-        throw new Error("Something went wrong!!");
-      }
-    } catch (error) {
-      return error?.message;
-    }
-  }
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
   async function handleSubmit(e) {
     e.preventDefault();
     try {
       const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.put("/user/user", newUserData, {
+      const res = await instance.put("/main/user", newUserData, {
         headers: {
           token: token,
         },
       });
       console.log(res);
       if (res.status === 200) {
-        alert(res.data?.message);
+        setShowModal("success");
       }
     } catch (error) {
       console.log(error);
+      console.log("error");
     }
   }
 
   console.log(userData);
+  console.log(showModal);
 
   return (
     <div className="w-5/6 h-full mx-auto">
-      {/* {isLogin ? ( */}
+      {showModal === "success" && (
+        <Toast
+          type={showModal}
+          message={"Profile Updated Sucessfully"}
+          onClose={() => setShowModal("")}
+        />
+      )}
+      {showModal === "error" && (
+        <Toast
+          type={showModal}
+          message={"Something went wrong"}
+          onClose={() => setShowModal("")}
+        />
+      )}
+
       <div className="w-full space-y-12">
         <div className="flex flex-col lg:w-3/4 w-full items- gap-[1.5rem]">
-          <div className="flex flex-col self-stretch text-black whitespace-nowrap">
+          <div className="flex flex-col self-stretch text-black lg:whitespace-nowrap">
             <div className="w-full text-4xl font-bold max-md:max-w-full">
               Account
             </div>
@@ -158,9 +159,9 @@ const Accounts = () => {
               </div>
               <label
                 htmlFor="imageUpdate"
-                className="2xl:text-2xl xl:text-xl lg:text-lg text-base cursor-pointer absolute right-0.5 bottom-0.5 z-10 p-1.5 rounded-full bg-white/80 w-fit aspect-square"
+                className="2xl:text-2xl xl:text-xl lg:text-lg text-base cursor-pointer absolute right-0 translate-x-1/3 bottom-0 z-10 p-1.5 rounded-full bg-black/80 w-fit aspect-square"
               >
-                <BsCameraFill />
+                <BsCameraFill className="text-white" />
                 <input
                   type="file"
                   name="imageUpdate"
@@ -174,6 +175,7 @@ const Accounts = () => {
         </div>
         <form
           action=""
+          method="post"
           onSubmit={handleSubmit}
           className="flex flex-col gap-7 w-full justify-between items-center"
         >
@@ -181,7 +183,7 @@ const Accounts = () => {
             <div className="flex flex-col w-full">
               <label
                 htmlFor="name"
-                className="text-gray-700 lg:w-full lg:flex-1 w-1/3 2xl:text-xl xl:text-md lg:text-lg text-base  leading-[normal]"
+                className="text-gray-700 lg:w-full lg:flex-1 mb-2 2xl:text-xl xl:text-md lg:text-lg text-base  leading-[normal]"
               >
                 Full name
               </label>
@@ -189,10 +191,8 @@ const Accounts = () => {
                 type="text"
                 name="name"
                 id="name"
-                className="lg:w-full  w-2/3 flex flex-col justify-center items-start gap-1.5  [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
-                value={
-                  newUserData?.name === null ? userData?.name : newUserData.name
-                }
+                className="w-full flex flex-col justify-center items-start gap-1.5  [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
+                value={newUserData.name}
                 onChange={handleFormChange}
                 placeholder="Ritik Bhushan"
               />
@@ -200,30 +200,30 @@ const Accounts = () => {
             <div className="flex flex-col w-full">
               <label
                 htmlFor="name"
-                className="text-gray-700 lg:w-full lg:flex-1 w-1/3 2xl:text-xl xl:text-md lg:text-lg text-base  leading-[normal] font-light"
+                className="text-gray-700 lg:w-full lg:flex-1 mb-2 2xl:text-xl xl:text-md lg:text-lg text-base  leading-[normal] font-light"
               >
                 Gender
               </label>
-              <div className=" flex relative ">
+              <div className="bg-white flex relative items-center pr-2">
                 <input
                   type="select"
-                  value={selectedOption}
+                  value={selectedOption ? selectedOption : userData?.gender}
                   readOnly
                   onClick={toggleDropdown}
                   placeholder="Male"
-                  className="bg-white cursor-pointer focus:outline-none focus:shadow-outline  w-full rounded-md py-2 px-4 block appearance-none leading-normal"
+                  className="cursor-pointer capitalize focus:outline-none focus:shadow-outline  w-full rounded-md py-2 px-4 block appearance-none leading-normal"
                 />
                 <FaCaretDown
                   className=" cursor-pointer"
                   onClick={toggleDropdown}
                 />
                 {isOpen && (
-                  <ul className="absolute right-0 mt-6 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <ul className="absolute mt-6 inset-x-0 top-1/2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     {options.map((option) => (
                       <li key={option}>
                         <button
                           onClick={() => handleOptionClick(option)}
-                          className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none"
+                          className="block w-full px-4 py-2 text-left capitalize text-gray-700 hover:bg-gray-100 focus:outline-none"
                         >
                           {option}
                         </button>
@@ -238,7 +238,7 @@ const Accounts = () => {
             <div className="flex flex-col w-full">
               <label
                 htmlFor="name"
-                className="text-gray-700 lg:w-full lg:flex-1 w-1/3 2xl:text-xl xl:text-md lg:text-lg text-base  leading-[normal]"
+                className="text-gray-700 lg:w-full lg:flex-1 mb-1/2 2xl:text-xl xl:text-md lg:text-lg text-base  leading-[normal]"
               >
                 Email
               </label>
@@ -246,10 +246,8 @@ const Accounts = () => {
                 type="email"
                 name="email"
                 id="email"
-                className="lg:w-full  w-2/3 flex flex-col justify-center items-start gap-1.5  [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
-                value={
-                  newUserData?.name === null ? userData?.name : newUserData.name
-                }
+                className="w-full flex flex-col justify-center items-start gap-1.5  [background:var(--White,#FFF)] focus:outline-none p-2.5 rounded-lg border-solid"
+                value={newUserData.email}
                 onChange={handleFormChange}
                 placeholder="Email"
               />
@@ -272,7 +270,7 @@ const Accounts = () => {
           </div>
           <div className="w-full">
             <br />
-            Your profile and won't be shown on BFM anymore.
+            Your profile and won&apos;t be shown on BFM anymore.
           </div>
           <div className="w-full tracking-tighter">
             <br />
@@ -280,7 +278,7 @@ const Accounts = () => {
           </div>
           <div className="w-full tracking-tighter">
             <br />
-            You won't be able to re-activate your Gigs.
+            You won&apos;t be able to re-activate your Gigs.
           </div>
         </div>
         <form
@@ -313,11 +311,6 @@ const Accounts = () => {
           </div>
         </form>
       </div>
-      {/* ) : (
-        <div className="w-full h-full flex items-center justify-center text-black">
-          You Need To login first
-        </div>
-      )} */}
     </div>
   );
 };

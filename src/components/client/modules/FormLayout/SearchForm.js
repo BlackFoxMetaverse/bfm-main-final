@@ -92,7 +92,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
         if (pathname === "/") {
           window.scrollTo({
             behavior: "smooth",
-            top: 560,
+            top: 660,
           });
           setSearchData(searchData);
           setSearchResult(res.data?.data);
@@ -145,7 +145,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               placeholder="Search by profession..."
             />
           </div>
-          <div className="flex items-center gap-5 lg:static absolute top-full lg:translate-y-0 translate-y-1/2 right-0 py-1.5 px-3 lg:px-0 lg:py-0 rounded-lg bg-white justify-end">
+          <div className="flex items-center gap-5 lg:static absolute top-full lg:translate-y-0 translate-y-1/2 left-0 py-1.5 px-3 lg:px-0 lg:py-0 rounded-lg bg-white justify-end">
             <div className="h-10 w-px lg:static hidden shrink-0 bg-black/50"></div>
             <div className="flex justify-end items-center gap-[21px]">
               <label
@@ -172,7 +172,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               {rangeSection && (
                 <div
                   onBlur={() => setRangeSection(false)}
-                  className={`w-full h-32 space-y-5 bg-white rounded-lg absolute inset-x-0 top-full translate-y-8 px-10 py-16`}
+                  className={`2xl:w-[165%] w-full h-32 space-y-5 bg-white rounded-lg absolute inset-x-0 top-full translate-y-2 lg:translate-y-7 px-10 py-16`}
                 >
                   <div className="relative flex justify-center items-center">
                     <input
@@ -232,7 +232,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               {isLocation && (
                 <div
                   // onBlur={() => setIsLocation(false)}
-                  className="min-h-[17rem] min-w-[28rem] w-full translate-y-8 px-[22px] py-10 absolute left-full -translate-x-1/2 top-full rounded bg-white flex-col items-start gap-[46px] flex"
+                  className="min-h-[17rem] 2xl:w-[163%] w-full translate-y-2 lg:translate-y-7 px-[22px] py-10 absolute inset-x-0 top-full rounded bg-white flex-col items-start gap-[46px] flex"
                 >
                   <label
                     htmlFor="search-city"
@@ -249,7 +249,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                       placeholder="search"
                     />
                   </label>
-                  <div className="justify-center w-full items-start gap-x-4 gap-y-1.5 grid grid-cols-2">
+                  <div className="justify-between w-full items-start gap-x-4 gap-y-1.5 grid grid-cols-2">
                     {cityTerm === "" ? (
                       cities.map((city, index) => (
                         <button
@@ -257,7 +257,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                           type="button"
                           // disabled={isCitySelected === null ? false : true}
                           onClick={() => handleCitySelect(index)}
-                          className={`text-xl font-normal px-4 py-1.5 rounded-full border-2 ${
+                          className={`text-xl font-normal px-4 py-1.5 whitespace-nowrap capitalize rounded-full border-2 ${
                             isCitySelected === index
                               ? "border-black text-black"
                               : "border-transparent text-neutral-500"
@@ -267,7 +267,9 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                         </button>
                       ))
                     ) : filteredCities.length === 0 ? (
-                      <div className="w-full col-span-2 text-center">Your city is not available here</div>
+                      <div className="w-full col-span-2 text-center">
+                        Your city is not available here
+                      </div>
                     ) : (
                       filteredCities.map((city, index) => (
                         <button
@@ -275,7 +277,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                           type="button"
                           // disabled={isCitySelected === null ? false : true}
                           onClick={() => handleCitySelect(index)}
-                          className={`text-xl font-normal px-4 py-1.5 rounded-full border-2 ${
+                          className={`text-xl font-normal px-4 py-1.5 rounded-full border-2 whitespace-nowrap capitalize ${
                             isCitySelected === index
                               ? "border-black text-black"
                               : "border-transparent text-neutral-500"

@@ -37,7 +37,7 @@ const ServicesCard = ({ username, id, img, distance, profession }) => {
           <p className="text-white text-sm">3022</p>
         </div> */}
       </div>
-      <div className="flex flex-col w-full items-start gap-2 [background:#FFF] pt-3 rounded-[0px_0px_18px_18px]">
+      <div className="flex flex-col w-full items-start gap-2 [background:#FFF] pt-3">
         <div className="flex w-11/12 mx-auto justify-between items-center">
           <div className="flex items-center gap-[7px] shrink-0">
             <img

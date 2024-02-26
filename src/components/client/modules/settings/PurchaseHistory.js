@@ -9,7 +9,7 @@ const PurchaseHistory = () => {
 
   return (
     <div>
-      <div className="w-5/6 mx-auto space-y-7">
+      <div className="w-5/6 mx-auto space-y-7 min-h-svh">
         <h1 className="text-black 3xl:text-3xl 2xl:text-2xl xl:text-xl lg:text-lg not-italic font-bold leading-[normal]">
           PURCHASE HISTORY
         </h1>

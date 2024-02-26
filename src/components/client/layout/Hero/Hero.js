@@ -17,6 +17,7 @@ import { AiFillRightSquare } from "react-icons/ai";
 import SearchForm from "../../modules/FormLayout/SearchForm";
 import instance from "@/utils/axios";
 import SearchCard from "@/components/Modules/SearchedCard/SearchCard";
+import Toast from "@/components/Modules/Toast/Toast";
 
 const services = [
   {
@@ -143,7 +144,7 @@ const Hero = () => {
                 <FaAngleRight className="text-white" />
               </button>
             </div>
-            <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
+            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
               {services?.map((_, index) => (
                 <ServicesCard key={index} />
               ))}

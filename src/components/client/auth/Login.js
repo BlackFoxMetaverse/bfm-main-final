@@ -17,7 +17,6 @@ const Login = ({ close, register }) => {
   const [number, setNumber] = useState("");
   const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
-  const [isExistingUser, setExistingUser] = useState();
   const [otp, setOtp] = useState("");
 
   const router = useRouter();
@@ -103,27 +102,31 @@ const Login = ({ close, register }) => {
 
         // loginUser(token);
 
-        instance
-          .get("/user/login", {
+        try {
+          const response = await instance.get("/main/user", {
             headers: {
               token: token,
             },
-          })
-          .then((res) => {
-            console.log(res?.data?.check?.isUser);
-            setExistingUser(res?.data?.check?.isUser);
-          })
-          .catch((err) => {
-            console.error(err?.message);
-            setExistingUser(false);
-          })
-          .then(() => {
-            if (isExistingUser) {
-              close();
-            } else {
-              register();
-            }
           });
+
+          const userExists = response.data?.message !== "User not found !!!";
+
+          if (userExists) {
+            window.location.reload();
+          } else {
+            register();
+          }
+        } catch (error) {
+          console.error("Error checking existing user:", error);
+          const userExists = response.data?.message !== "User not found !!!";
+
+          if (userExists) {
+            window.location.reload();
+          } else {
+            register();
+          }
+          // Handle error (e.g., show an error message to the user)
+        }
 
         return () => clearTimeout(timer);
       })
@@ -132,6 +135,8 @@ const Login = ({ close, register }) => {
         console.log("user login error:", error);
       });
   };
+
+  // console.log(isExistingUser);
 
   return (
     <div className="w-full mt-20">
@@ -209,7 +214,9 @@ const Login = ({ close, register }) => {
         <form
           onSubmit={handleOTPSubmit}
           className={`flex ${
-            isFilled ? "scale-y-100 top-0" : "scale-y-0 -top-full"
+            isFilled
+              ? "translate-y-0"
+              : "scale-y-0 -translate-y-1/2"
           } transform transition-all relative inset-x-0 duration-500 ease-in-out flex-col gap-[19px] shrink-0 self-stretch`}
         >
           <div className="flex flex-col gap-8 self-stretch">
