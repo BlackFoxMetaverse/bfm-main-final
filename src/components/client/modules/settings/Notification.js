@@ -56,7 +56,7 @@ const Notification = () => {
                 value={inboxMobile}
                 onChange={(e) => setInboxMobile(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
             <td className="px-5">
@@ -67,7 +67,7 @@ const Notification = () => {
                 value={inboxEmail}
                 onChange={(e) => setInboxEmail(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
           </tr>
@@ -83,7 +83,7 @@ const Notification = () => {
                 value={interestMobile}
                 onChange={(e) => setInterestMobile(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
             <td className="px-5">
@@ -94,7 +94,7 @@ const Notification = () => {
                 value={interestEmail}
                 onChange={(e) => setInterestEmail(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
           </tr>
@@ -110,7 +110,7 @@ const Notification = () => {
                 value={ratingMobile}
                 onChange={(e) => setRatingMobile(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
             <td className="px-5">
@@ -121,7 +121,7 @@ const Notification = () => {
                 value={ratingEmail}
                 onChange={(e) => setRatingEmail(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
           </tr>
@@ -137,7 +137,7 @@ const Notification = () => {
                 value={accountMobile}
                 onChange={(e) => setAccountMobile(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
             <td className="px-5">
@@ -148,7 +148,7 @@ const Notification = () => {
                 value={accountEmail}
                 onChange={(e) => setAccountEmail(e.target.checked)}
                 required
-                className="border border-[#925ff0] rounded appearance-none w-4 aspect-square object-cover checked:bg-[#925ff0] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+                className="border border-[#925ff0] appearance-none size-6 object-cover checked:bg-[#925ff0] flex justify-center items-center rounded-lg checked:after:content-['\2713'] checked:after:text-white checked:after:text-base"
               />
             </td>
           </tr>

@@ -95,7 +95,7 @@ const Hero = () => {
   return (
     <main className="flex w-full flex-col items-center gap-[120px]">
       {/* Hero */}
-      <section className="relative flex w-full lg:py-40 py-32 min-h-screen flex-col justify-center items-center gap-2.5 bg-[#331d71]/50">
+      <section className="relative flex w-full lg:py-40 py-32 min-h-screen flex-col justify-center items-center gap-2.5">
         <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
           <img
             loading="eager"
@@ -118,7 +118,7 @@ const Hero = () => {
             // handleSubmit={handleSearch}
             data={setSearchResult}
             isShown
-            searchInputData={setSearchInputData}
+            // searchInputData={setSearchInputData}
           />
         </div>
       </section>
@@ -129,12 +129,10 @@ const Hero = () => {
           <div className="flex flex-col items-start gap-10 w-11/12 m-auto">
             <div className="flex justify-between items-center w-full">
               <p>
-                <span className="text-neutral-900 text-[32px] font-bold font-['Neue Helvetica']">
+                <span className="text-neutral-900 text-[32px] font-bold">
                   Professionals{" "}
                 </span>
-                <span className="text-neutral-900 text-xl font-['Neue Helvetica']">
-                  Near You
-                </span>
+                <span className="text-neutral-900 text-xl">Near You</span>
               </p>
               <button
                 type="button"
@@ -152,9 +150,12 @@ const Hero = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center gap-10 w-5/6 m-auto">
-            <h5 className="text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#562FB9))] w-full text-left text-[32px] not-italic font-bold leading-[normal]">
-              {searchResult?.length} Services
-            </h5>
+            <p>
+              <span className="text-neutral-900 text-[32px] font-bold capitalize">
+                {searchInput?.term ? searchInput.term : "Professionals"}
+              </span>
+              <span className="text-neutral-900 text-xl">Near You</span>
+            </p>
             <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
               {searchResult?.map((data, index) => (
                 <ServicesCard
@@ -229,10 +230,10 @@ const Hero = () => {
       {/* Selection Section */}
       <section className="flex flex-col items-start gap-10 w-5/6">
         <div>
-          <span className="text-neutral-900 text-[32px] font-normal font-['Neue Helvetica']">
+          <span className="text-neutral-900 text-[32px] font-normal">
             What you Need?
           </span>
-          <span className="text-neutral-900 text-[32px] font-extrabold font-['Neue Helvetica']">
+          <span className="text-neutral-900 text-[32px] font-extrabold">
             {" "}
             We Got it!
           </span>
@@ -248,7 +249,7 @@ const Hero = () => {
               <Image
                 src={service.src}
                 alt=""
-                className="w-[57.749px] h-[57.749px] shrink-0"
+                className="w-[57.749px] h-[57.749px] object-cover shrink-0"
               />
               <p className="text-[#222325] text-center text-[18.436px] font-normal leading-[27.653px]">
                 {service.name}
@@ -335,10 +336,11 @@ const Hero = () => {
         </div>
         <div className="w-11/12 mx-auto">
           <button
+            onClick={() => router.push("/seller")}
             type="button"
             className="px-8 py-4 bg-white rounded border-2 justify-center items-center gap-2 inline-flex"
           >
-            <div className="text-indigo-500 text-xl font-['Neue Helvetica'] leading-tight">
+            <div className="text-indigo-500 text-xl leading-tight">
               Become a Seller
             </div>
           </button>

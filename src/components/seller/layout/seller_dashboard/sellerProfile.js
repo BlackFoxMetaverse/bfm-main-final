@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaAngleRight,
   FaBehance,
@@ -13,8 +13,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BsStarFill } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
-import FeedBackCard from "../../modules/FeedBackSection/FeedBackCard";
-import ProposalModal from "../../modules/proposalSection/ProposalModal";
+import FeedBackCard from "@/components/client/modules/FeedBackSection/FeedBackCard";
+import instance from "@/utils/axios";
+import Toast from "@/components/Modules/Toast/Toast";
+import fetchUserData from "@/utils/userData";
+// import FeedBackCard from "../../modules/FeedBackSection/FeedBackCard";
+// import ProposalModal from "../../modules/proposalSection/ProposalModal";
 
 const ImageComponent = ({ src, alt, className, onClick }) => (
   <img
@@ -27,14 +31,6 @@ const ImageComponent = ({ src, alt, className, onClick }) => (
 );
 
 const FeedBackModal = ({ feedbackData, close }) => {
-  const myRef = useRef(null);
-
-  const handleClose = (e) => {
-    if (myRef.current && !myRef.current.contains(e.target)) {
-      close();
-    }
-  }
-
   const stars = [1, 2, 3, 4, 5];
   const [feedback, setFeedback] = useState({
     rating: 0,
@@ -53,15 +49,15 @@ const FeedBackModal = ({ feedbackData, close }) => {
   console.log(feedback);
 
   return (
-    <div onClick={handleClose} className="w-full h-screen flex items-center justify-center bg-black/50 fixed inset-0 z-50">
-      <div ref={myRef} onClick={(e) => e.stopPropagation()} className="bg-white flex flex-col max-w-[1920px] aspect-video 2xl:w-1/2 xl:w-2/3 lg:w-5/6 w-full rounded-2xl lg:px-5 py-5">
-        <h2 className="3xl:text-5xl 2xl:text-3xl w-11/12 mx-auto text-2xl font-bold">
+    <div className="w-full h-screen flex items-center justify-center bg-black/50 fixed inset-0 z-50">
+      <div className="bg-white flex flex-col max-w-[1920px] aspect-video 2xl:w-1/2 xl:w-2/3 lg:w-5/6 w-full rounded-2xl p-10">
+        <h2 className="3xl:text-5xl 2xl:text-3xl text-2xl font-bold">
           Give a Feedback
         </h2>
-        <p className="text-black/70 mt-3 3xl:text-lg w-11/12 mx-auto">
+        <p className="text-black/70 mt-3 3xl:text-lg">
           Please rate your experience below
         </p>
-        <div className="flex gap-10 items-center mt-7 w-11/12 mx-auto">
+        <div className="flex gap-10 items-center mt-7">
           <div className="flex items-center gap-5">
             {stars?.map((_, index) => (
               <BsStarFill
@@ -70,9 +66,9 @@ const FeedBackModal = ({ feedbackData, close }) => {
                 }}
                 className={`${
                   index + 1 <= feedback.rating
-                    ? "text-orange-400"
+                    ? "text-yellow-400"
                     : "text-stone-300"
-                } lg:text-5xl text-3xl cursor-pointer`}
+                } text-5xl cursor-pointer`}
                 key={index}
               />
             ))}
@@ -81,7 +77,7 @@ const FeedBackModal = ({ feedbackData, close }) => {
             {feedback.rating}/5
           </p>
         </div>
-        <h5 className="mt-5 px-5 3xl:text-xl 2xl:text-lg w-11/12 mx-auto">
+        <h5 className="mt-5 px-5 3xl:text-xl 2xl:text-lg">
           Additional Feedback
         </h5>
         <textarea
@@ -94,12 +90,12 @@ const FeedBackModal = ({ feedbackData, close }) => {
           }
           cols="30"
           rows=""
-          className="flex-grow w-11/12 mx-auto border 3xl:text-xl 2xl:text-lg border-stone-500 focus:outline-none rounded-xl mt-4 p-5"
+          className="flex-grow border 3xl:text-xl 2xl:text-lg border-stone-500 focus:outline-none rounded-xl mt-4 p-5"
         ></textarea>
         <button
           type="submit"
           onClick={handleSubmit}
-          className="w-11/12 mx-auto py-3 items-center mt-6 rounded-lg justify-center flex bg-black text-white 3xl:text-xl 2xl:text-lg"
+          className="w-full py-3 items-center mt-6 rounded-lg justify-center flex bg-black text-white 3xl:text-xl 2xl:text-lg"
         >
           Submit Feedback
         </button>
@@ -108,21 +104,21 @@ const FeedBackModal = ({ feedbackData, close }) => {
   );
 };
 
-const SellerDataDetails = ({ params }) => {
+const SellerPortfolio = ({ params }) => {
   const router = useRouter();
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [sellerData, setSellerData] = useState(null);
+  // const [showTooltip, setShowTooltip] = useState(false);
+  const [userData, setUserData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showImage, setShowImage] = useState(true);
-  const [addFeedBack, setAddFeedback] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  // const [addFeedBack, setAddFeedback] = useState(false);
+  // const [showDetails, setShowDetails] = useState(true);
   const [modalImageUrl, setModalImageUrl] = useState(null);
-  const [showProposalModal, setShowProposalModal] = useState(false);
-  const [proposalInput, setProposal] = useState({
-    subject: "",
-    feedback: "",
-  });
-  const [proposalSent, setProposalSent] = useState(false);
+  // const [showProposalModal, setShowProposalModal] = useState(false);
+  // const [proposalInput, setProposal] = useState({
+  //   subject: "",
+  //   feedback: "",
+  // });
+  // const [proposalSent, setProposalSent] = useState(false);
 
   const services = [
     "SEO",
@@ -172,9 +168,17 @@ const SellerDataDetails = ({ params }) => {
     setModalImageUrl(null);
   };
 
+  useEffect(() => {
+    fetchUserData()
+      .then((data) => setUserData(data))
+      .catch((error) => <Toast type={"error"} message={error} />);
+  }, []);
+
+  console.log(userData);
+
   return (
-    <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-32 py-24 mx-auto">
-      <div className="flex gap-7 xl:w-[40%] w-full items-start lg:sticky static inset-y-28 h-full">
+    <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 py-32 mx-auto">
+      <div className="flex gap-7 xl:w-[40%] w-full items-start xl:sticky static inset-y-24 h-full">
         {/* <button
             type="button"
             onClick={() => router.back()}
@@ -194,11 +198,13 @@ const SellerDataDetails = ({ params }) => {
               </div>
               <div className="flex-col w-2/3 justify-between h-full items-start 3xl:gap-2 gap-1 inline-flex">
                 <div className="text-black 3xl:text-2xl 2xl:text-xl lg:text-lg text-lg font-bold whitespace-nowrap">
-                  {showDetails ? "Rajesh Ramayana" : "Ra***"}
+                  {decodeURIComponent(params.username)}
                 </div>
                 <div className="flex-col justify-start items-start gap-[4.68px] flex">
                   <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
-                    {params?.username ? decodeURIComponent(params?.username) : "Username"}
+                    {params?.username
+                      ? decodeURIComponent(params?.username)
+                      : "Username"}
                   </div>
                   <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
                     UI/UX Designer{" "}
@@ -223,92 +229,44 @@ const SellerDataDetails = ({ params }) => {
                 </div>
               </div>
             </div>
-            {showDetails && (
-              <div className="w-full flex-col justify-start items-start gap-7 flex">
-                <div className="flex-col w-full justify-start items-start gap-0.5 flex">
-                  <div className="text-black text-xl font-bold">
-                    Phones Number
-                  </div>
-                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
-                    {sellerData?.gender === "male" ? (
-                      sellerData?.phone_number
-                    ) : (
-                      <button
-                        type="button"
-                        disabled={proposalSent ? true : false}
-                        onClick={() => setShowProposalModal(true)}
-                        className={`px-7 py-1 border ${
-                          proposalSent ? "bg-green-500" : "bg-black"
-                        } rounded text-white flex items-center justify-center gap-2`}
-                      >
-                        {!proposalSent ? "Request Contact" : "Request Sent"}
-                      </button>
-                    )}
-                    {showProposalModal && (
-                      <ProposalModal
-                        close={() => setShowProposalModal(false)}
-                        handleSubmit={(e) => {
-                          e.preventDefault();
-                          setProposalSent(true);
-                          setTimeout(() => {
-                            setShowProposalModal(false);
-                          }, 2000);
-                        }}
-                        inputData={proposalInput}
-                        setInputData={setProposal}
-                        sent={proposalSent}
-                      />
-                    )}
-                  </div>
+            {/* {showDetails && ( */}
+            <div className="w-full flex-col justify-start items-start gap-7 flex">
+              <div className="flex-col w-full justify-start items-start gap-0.5 flex">
+                <div className="text-black text-xl font-bold">
+                  Phones Number
                 </div>
-                <div className="flex-col justify-start items-start gap-0.5 flex">
-                  <div className="text-black text-xl font-bold">
-                    Email Address
-                  </div>
-                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
-                    randomemail@gmail.com
-                  </div>
-                </div>
-                <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
-                  <FaGithub />
-                  <FaLinkedinIn />
-                  <FaBehance />
+                <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
+                  {userData?.phone_number}
                 </div>
               </div>
-            )}
-            {/* <div className=" px-5 space-y-9">
-                <div className="w-full relative justify-end items-end py-5 text-end ">
-                  {!showDetails && (
-                    <div
-                      className="relative inline-block"
-                      onMouseEnter={() => setShowTooltip(true)}
-                      onMouseLeave={() => setShowTooltip(false)}
-                    >
-                      <FaInfoCircle className="w-4 h-4 text-blue-600 cursor-pointer" />
-                      {showTooltip && (
-                        <div className="absolute right-6 w-[270px] p-2 space-y-4 bottom-full bg-white  rounded shadow-lg">
-                          <h2 className="font-semibold text-sm text-center ">
-                            How to get contact information?
-                          </h2>
-                          <p className=" text-xs text-center ">
-                            There are a lot of things you can do in space, and
-                            space essentially is unlimited resources.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+              <div className="flex-col justify-start items-start gap-0.5 flex">
+                <div className="text-black text-xl font-bold">
+                  Email Address
                 </div>
-              </div> */}
+                <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                  {userData?.email}
+                </div>
+              </div>
+              <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
+                <FaGithub className="curson-pointer" type="button" />
+                <FaLinkedinIn className="curson-pointer" type="button" />
+                <FaBehance className="curson-pointer" type="button" />
+              </div>
+            </div>
+            {/* )} */}
           </div>
-          {!showDetails ? (
-            <button
-              className="bg-black w-full text-white flex justify-center items-center p-3 rounded-lg "
-              onClick={openModal}
-            >
-              Reveal Contact Information
-            </button>
-          ) : null}
+          {/* {!showDetails ? ( */}
+          <button
+            className="bg-black w-full text-white flex justify-center items-center p-3 rounded-lg "
+            onClick={() =>
+              router.push(
+                `/seller/dashboard/${params?.username}/${params?.id}/edit`
+              )
+            }
+          >
+            Edit Profile
+          </button>
+          {/* ) : null} */}
           <div className="space-y-5">
             <div className="space-y-2">
               <div className="max-w-[295px] text-stone-500 text-base font-normal leading-[27px]">
@@ -347,31 +305,17 @@ const SellerDataDetails = ({ params }) => {
           </div>
         </div>
       </div>
-      {/* {notFound ? (
-              <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-hidden justify-center items-center space-x-10 bg-white p-10 rounded-[20px]">
-                404 Not Found
-              </div>
-            ) : ( */}
-      <div className="flex flex-col rounded w-full">
-        {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
+      <div className="flex flex-col rounded-xl w-full">
         <ImageComponent
           src={image[0]}
           alt=""
-          className="object-cover size-full rounded"
+          className="object-cover lg:aspect-[2/1] size-full rounded-xl"
         />
-        {/* <div className="flex relative justify-center items-center px-6 py-7 bg-white mt-[487px] rounded-[60px] w-[76px] max-md:px-5 max-md:mt-10">
-                <ImageComponent
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/b34758469970af54f152102a9eac40ed30f83b12bf512b468331bdb999e271e4?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
-                  alt="Profile icon"
-                  className="w-full aspect-[1.05]"
-                />
-              </div> */}
-        {/* </div> */}
         <div>
           <h2 className="mt-8 w-full text-3xl font-bold text-neutral-800 max-md:max-w-full">
             About Me
           </h2>
-          <p className="mt-2.5 w-full text-lg leading-7 text-neutral-600 text-justify max-md:max-w-full">
+          <p className="mt-2.5 w-full text-lg leading-7 text-neutral-600 max-md:max-w-full">
             Design a futuristic 3D skeleton model with a dynamic RGB lighting
             system set against a captivating space-themed background. Craft the
             skeleton to have a sleek, futuristic aesthetic, incorporating
@@ -446,7 +390,7 @@ const SellerDataDetails = ({ params }) => {
               <div key={i} className={`relative`}>
                 <ImageComponent
                   loading="lazy"
-                  className="size-full cursor-pointer object-cover rounded"
+                  className="size-full cursor-pointer object-cover lg:aspect-[2/1] rounded-xl"
                   src={data}
                   alt=""
                   onClick={() => openImageModal(data)}
@@ -475,30 +419,36 @@ const SellerDataDetails = ({ params }) => {
           ) : (
             <div>No Feedbacks</div>
           )}
-          {showDetails ? (
+          {/* {showDetails ? (
             <button
               onClick={() => setAddFeedback(!addFeedBack)}
               className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-white whitespace-nowrap bg-black rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full"
             >
               Give Feedback
             </button>
-          ) : (
-            <button className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-black whitespace-nowrap bg-gray-100 rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full">
-              Load More
-            </button>
-          )}
+          ) : ( */}
+          <button className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-black whitespace-nowrap bg-gray-100 rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full">
+            Load More
+          </button>
+          {/* )} */}
         </section>
       </div>
       {/* )} */}
-      {addFeedBack && (
+      {/* {addFeedBack && (
         <FeedBackModal
           feedbackData={() => {}}
           close={() => setAddFeedback(!addFeedBack)}
         />
+      )} */}
+      {userData === "You Need to Login Click Here 👆" && (
+        <Toast type={"warning"} message={userData} />
+      )}
+      {userData === "Something went wrong" && (
+        <Toast type={"error"} message={userData} />
       )}
       {showModal && <Modal closeModal={closeModal} />}
     </div>
   );
 };
 
-export default SellerDataDetails;
+export default SellerPortfolio;

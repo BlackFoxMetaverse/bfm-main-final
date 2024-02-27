@@ -11,6 +11,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import instance from "@/utils/axios";
 import Security from "../../modules/settings/Security";
 import Toast from "@/components/Modules/Toast/Toast";
+import fetchUserData from "@/utils/userData";
 
 function TokenInfoCard({ label, value }) {
   return (
@@ -63,7 +64,9 @@ function Main() {
   }
 
   useEffect(() => {
-    getUserData();
+    fetchUserData()
+      .then((data) => setuserData(data))
+      .catch((error) => <Toast message={error} type={"error"} />);
   }, []);
 
   console.log(userData);
@@ -80,7 +83,9 @@ function Main() {
           className="object-cover absolute inset-0 size-full"
           loading="eager"
         />
-        <section className="relative mt-5 text-3xl font-bold w-11/12 mx-auto">Settings</section>
+        <section className="relative mt-5 text-3xl font-bold w-11/12 mx-auto">
+          Settings
+        </section>
         <div className="flex lg:flex-col w-11/12 mx-auto gap-4">
           {tokenData.map((data, index) => (
             <TokenInfoCard key={index} label={data.label} value={data.value} />

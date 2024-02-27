@@ -14,7 +14,7 @@ import { IoLocationOutline, IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
 import AuthModal from "./auth/AuthModal";
 
-const UserProfile = ({ name, profilePic }) => {
+const UserProfile = ({ name, profession, username, id, isSeller }) => {
   const [options, setOptions] = useState(false);
 
   return (
@@ -23,10 +23,10 @@ const UserProfile = ({ name, profilePic }) => {
       onClick={() => setOptions(!options)}
       className="flex gap-2.5 cursor-pointer justify-between items-center text-base leading-6 text-white relative"
     >
-      <pattern className="grow font-bold  justify-center px-3 py-2.5 italic rounded tracking-wide border border-solid border-black border-opacity-10">
+      <pattern className="grow font-bold justify-end px-3 py-2.5 italic rounded whitespace-nowrap tracking-wide border border-solid border-black border-opacity-10">
         {name}
+        <p className="font-light">{profession}</p>
       </pattern>
-      {/* <img src={profilePic} alt={name} className="my-auto w-6 aspect-square" /> */}
       <FaAngleDown
         className={`${
           options ? "rotate-180" : "rotate-0"
@@ -34,10 +34,20 @@ const UserProfile = ({ name, profilePic }) => {
       />
       <div
         className={`min-h-[175px] bg-white flex flex-col rounded absolute inset-x-0 ${
-          options ? "top-full translate-y-3" : "-top-full scale-y-0"
+          options
+            ? "top-full translate-y-3"
+            : "-top-full scale-y-0 -translate-y-3"
         } stroke-black py-3 transition-all duration-300 ease-in-out transform gap-2`}
       >
         <p className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-start">
+          {isSeller && (
+            <Link
+              href={`/seller/dashboard/${username ? username : name}/${id}`}
+              className="text-neutral-700 text-lg font-medium leading-normal"
+            >
+              View Profile
+            </Link>
+          )}
           <Link
             href={"/client/settings"}
             className="text-neutral-700 text-lg font-medium leading-normal"
@@ -86,7 +96,6 @@ const Header = ({ isSeller }) => {
   const pathname = usePathname();
   const [isScrolling, setScrolling] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
-  const [isBusiness, setisBusiness] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [isLogingin, setIsLogingin] = useState(false);
@@ -157,7 +166,7 @@ const Header = ({ isSeller }) => {
       <div
         className={`mx-auto w-11/12 max-w-[1920px] h-[5rem] flex items-center justify-between rounded-b-xl`}
       >
-        <div className="flex items-center lg:gap-[3.6rem] gap-0.5">
+        <div className="flex items-center gap-2.5">
           <Link
             href={"/"}
             className="w-[99px] h-[30px] relative flex-col justify-start items-start inline-flex"
@@ -169,7 +178,7 @@ const Header = ({ isSeller }) => {
             />
           </Link>
           {userLocation !== null && (
-            <div className="max-w-[181.33px] h-8 pl-2 pr-[10.67px] py-[5.33px] text-white 3xl:text-lg md:text-base text-sm font-normal leading-[14px] rounded-2xl justify-center items-center gap-[2.67px] flex">
+            <div className="max-w-[181.33px] h-8 pl-2 pr-[10.67px] py-[5.33px] text-white 3xl:text-lg md:text-base text-sm font-normal leading-[14px] rounded-2xl justify-center items-center gap-[2.67px] lg:flex hidden">
               <div className="w-6 h-6 justify-center items-center flex">
                 <IoLocationOutline className="text-lg" />
               </div>
@@ -178,55 +187,13 @@ const Header = ({ isSeller }) => {
               </div>
             </div>
           )}
-          {isSeller && isLogin && userData?.isSeller && (
-            <div className="pr-[32px] justify-start items-center gap-[4.5rem] inline-flex">
-              <button
-                type="button"
-                className="text-neutral-600 text-xl font-bold"
-              >
-                Dashboard
-              </button>
-              <button
-                type="button"
-                onClick={() => setisBusiness(!isBusiness)}
-                className="pr-[21px] py-[2.50px] justify-start items-start gap-3 inline-flex relative"
-              >
-                <div className="text-neutral-600 text-xl font-bold">
-                  My Business
-                </div>
-                <div
-                  className={`w-6 ${
-                    isBusiness ? "rotate-180" : "rotate-0"
-                  } transition-all ease-in-out duration-500 self-stretch justify-center items-center inline-flex`}
-                >
-                  <FaAngleDown className="w-6 h-6" />
-                </div>
-                <div
-                  className={`absolute inset-x-0 top-full bg-gray-800/95 p-5 rounded-2xl space-y-4 ${
-                    isBusiness ? "translate-y-0 z-0" : "-translate-y-full -z-30"
-                  } transition-all duration-150`}
-                >
-                  <p className="text-white text-2xl font-bold font-['Neue Helvetica']">
-                    Orders
-                  </p>
-                  <p className="text-white text-2xl font-bold font-['Neue Helvetica']">
-                    Earnings
-                  </p>
-                </div>
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="flex items-center h-full lg:gap-4 gap-2">
-          {!isSeller && (
+          {!userData?.isSeller && !isSeller && (
             <button
-              onClick={() =>
-                userData?.isSeller
-                  ? router.push("/seller/dashboard")
-                  : router.push("/seller")
-              }
-              className="bg-white rounded p-4 text-[19px] font-bold leading-[12.80px]"
+              onClick={() => router.push("/seller")}
+              className="bg-white rounded md:p-4 p-2 text-[19px] font-bold leading-[12.80px]"
             >
               Become a Seller
             </button>
@@ -237,15 +204,53 @@ const Header = ({ isSeller }) => {
               {/* <LuBellDot className="lg:text-2xl text-2xl text-white" /> */}
               <button
                 type="button"
-                className="w-[111px] h-[42px] pl-4 pr-[17px] py-[9px] rounded border border-white justify-center items-center inline-flex"
+                className="size-fit px-7 py-2 rounded border border-white flex items-center gap-2.5 justify-center"
               >
-                <div className="text-white text-base font-bold leading-normal whitespace-nowrap">
-                  {userData?.token ? userData?.token : 0} Credits
-                </div>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 27 27"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g clip-path="url(#clip0_2843_22566)">
+                    <path
+                      d="M10.6389 17.4594H16.283M11.9174 13.0939H6.27332M15.0044 13.0939H20.6486M10.6389 8.72831H16.283"
+                      stroke="white"
+                      stroke-width="1.54346"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M14.5523 5.45581C14.2629 5.74526 13.8703 5.90788 13.4609 5.90788C13.0516 5.90788 12.659 5.74526 12.3695 5.45581C12.0801 5.16635 11.9175 4.77377 11.9175 4.36442C11.9175 3.95507 12.0801 3.56248 12.3695 3.27303C12.659 2.98358 13.0516 2.82096 13.4609 2.82096C13.8703 2.82096 14.2629 2.98358 14.5523 3.27303C14.8418 3.56248 15.0044 3.95507 15.0044 4.36442C15.0044 4.77377 14.8418 5.16635 14.5523 5.45581ZM18.9179 9.82136C18.6284 10.1108 18.2358 10.2734 17.8265 10.2734C17.4171 10.2734 17.0246 10.1108 16.7351 9.82136C16.4456 9.53191 16.283 9.13932 16.283 8.72997C16.283 8.32062 16.4456 7.92804 16.7351 7.63859C17.0246 7.34913 17.4171 7.18652 17.8265 7.18652C18.2358 7.18652 18.6284 7.34913 18.9179 7.63859C19.2073 7.92804 19.37 8.32062 19.37 8.72997C19.37 9.13932 19.2073 9.53191 18.9179 9.82136ZM23.2834 14.1869C22.994 14.4764 22.6014 14.639 22.192 14.639C21.7827 14.639 21.3901 14.4764 21.1007 14.1869C20.8112 13.8975 20.6486 13.5049 20.6486 13.0955C20.6486 12.6862 20.8112 12.2936 21.1007 12.0041C21.3901 11.7147 21.7827 11.5521 22.192 11.5521C22.6014 11.5521 22.994 11.7147 23.2834 12.0041C23.5729 12.2936 23.7355 12.6862 23.7355 13.0955C23.7355 13.5049 23.5729 13.8975 23.2834 14.1869ZM18.9179 18.5525C18.6284 18.8419 18.2358 19.0045 17.8265 19.0045C17.4171 19.0045 17.0246 18.8419 16.7351 18.5525C16.4456 18.263 16.283 17.8704 16.283 17.4611C16.283 17.0517 16.4456 16.6592 16.7351 16.3697C17.0246 16.0802 17.4171 15.9176 17.8265 15.9176C18.2358 15.9176 18.6284 16.0802 18.9179 16.3697C19.2073 16.6592 19.3699 17.0517 19.3699 17.4611C19.3699 17.8704 19.2073 18.263 18.9179 18.5525ZM14.5523 22.918C14.2629 23.2075 13.8703 23.3701 13.4609 23.3701C13.0516 23.3701 12.659 23.2075 12.3695 22.918C12.0801 22.6286 11.9175 22.236 11.9175 21.8266C11.9175 21.4173 12.0801 21.0247 12.3695 20.7353C12.659 20.4458 13.0516 20.2832 13.4609 20.2832C13.8703 20.2832 14.2629 20.4458 14.5523 20.7353C14.8418 21.0247 15.0044 21.4173 15.0044 21.8266C15.0044 22.236 14.8418 22.6286 14.5523 22.918ZM10.1868 18.5525C9.89732 18.8419 9.50473 19.0045 9.09538 19.0045C8.68603 19.0045 8.29345 18.8419 8.00399 18.5525C7.71454 18.263 7.55193 17.8704 7.55193 17.4611C7.55193 17.0517 7.71454 16.6592 8.00399 16.3697C8.29345 16.0802 8.68603 15.9176 9.09538 15.9176C9.50473 15.9176 9.89732 16.0802 10.1868 16.3697C10.4762 16.6592 10.6388 17.0517 10.6388 17.4611C10.6388 17.8704 10.4762 18.263 10.1868 18.5525ZM5.82122 14.1869C5.53176 14.4764 5.13918 14.639 4.72983 14.639C4.32048 14.639 3.92789 14.4764 3.63844 14.1869C3.34898 13.8975 3.18637 13.5049 3.18637 13.0955C3.18637 12.6862 3.34898 12.2936 3.63844 12.0041C3.92789 11.7147 4.32048 11.5521 4.72983 11.5521C5.13918 11.5521 5.53176 11.7147 5.82122 12.0041C6.11067 12.2936 6.27328 12.6862 6.27328 13.0955C6.27328 13.5049 6.11067 13.8975 5.82122 14.1869ZM10.1868 9.82136C9.89732 10.1108 9.50473 10.2734 9.09538 10.2734C8.68603 10.2734 8.29345 10.1108 8.00399 9.82136C7.71454 9.53191 7.55192 9.13932 7.55192 8.72997C7.55192 8.32062 7.71454 7.92804 8.00399 7.63859C8.29345 7.34913 8.68603 7.18652 9.09538 7.18652C9.50473 7.18652 9.89732 7.34913 10.1868 7.63859C10.4762 7.92804 10.6388 8.32062 10.6388 8.72997C10.6388 9.13932 10.4762 9.53191 10.1868 9.82136ZM14.5523 14.1869C14.2629 14.4764 13.8703 14.639 13.4609 14.639C13.0516 14.639 12.659 14.4764 12.3695 14.1869C12.0801 13.8975 11.9175 13.5049 11.9175 13.0955C11.9175 12.6862 12.0801 12.2936 12.3695 12.0041C12.659 11.7147 13.0516 11.5521 13.4609 11.5521C13.8703 11.5521 14.2629 11.7147 14.5523 12.0041C14.8418 12.2936 15.0044 12.6862 15.0044 13.0955C15.0044 13.5049 14.8418 13.8975 14.5523 14.1869Z"
+                      fill="white"
+                      stroke="white"
+                      stroke-width="1.54346"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_2843_22566">
+                      <rect
+                        width="18.5215"
+                        height="18.5215"
+                        fill="white"
+                        transform="translate(13.4609) rotate(45)"
+                      />
+                    </clipPath>
+                  </defs>
+                </svg>
+                <p className="text-white text-base font-bold leading-normal whitespace-nowrap">
+                  {userData?.token ? userData?.token : 0}
+                </p>
               </button>
               <UserProfile
+                isSeller={userData?.isSeller}
                 name={userData?.name}
-                // profilePic="https://cdn.builder.io/api/v1/image/assets/TEMP/b40893da2d2985cab402b6187995d6337f22d16c17fa7b41c35520d134cff622?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+                username={userData?.userName}
+                id={userData?.uid}
+                profession={userData?.profession}
               />
             </div>
           ) : (

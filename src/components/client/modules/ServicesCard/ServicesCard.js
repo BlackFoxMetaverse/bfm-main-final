@@ -64,9 +64,9 @@ const ServicesCard = ({ username, id, img, distance, profession }) => {
           I will design UI UX for mobile app with figma for ios or android
         </p>
         <div className="flex items-center gap-2 w-11/12 mx-auto">
-          <BsStarFill className="text-orange-300" />
+          <BsStarFill className="text-orange-500" />
           <div>
-            <span className="text-orange-300 text-xs font-bold leading-snug">
+            <span className="text-orange-500 text-xs font-bold leading-snug">
               5.0{" "}
             </span>
             <span className="text-zinc-400 text-xs font-normal leading-snug">

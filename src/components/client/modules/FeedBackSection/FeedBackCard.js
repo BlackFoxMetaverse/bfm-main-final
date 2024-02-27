@@ -10,17 +10,17 @@ const FeedBackCard = ({
   ratingText,
 }) => {
   return (
-    <article className="flex flex-col bg-white rounded-lg max-md:px-5 p-8">
+    <article className="flex flex-col bg-white rounded-lg w-11/12 mx-auto">
       <section className="flex gap-2 self-start mt-7 text-lg font-bold text-black whitespace-nowrap">
         <img
-          loading="lazy"
+          loading="eager"
           src={imageSrc}
           alt={`${authorName}'s profile picture`}
           className="w-10 rounded-full aspect-square"
         />
         <p className="grow my-auto">{authorName}</p>
       </section>
-      <p className="mt-4 text-base leading-7 text-black text-opacity-60 max-md:max-w-full">
+      <p className="mt-4 text-base leading-7 text-black/60 max-md:max-w-full">
         {feedback}
       </p>
       <div className="flex gap-2.5 self-start px-3 py-2.5 mt-4 rounded-md bg-zinc-50">

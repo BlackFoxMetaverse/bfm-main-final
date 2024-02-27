@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import SearchForm from "../../modules/FormLayout/SearchForm";
 import ServicesCard from "../../modules/ServicesCard/ServicesCard";
+import NoResultsFound from "@/components/layouts/Errors/NoResults";
 
-const RecommendedData = [1, 2, 3, 4, 5, 6, 7, 8];
 const RecentData = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 ];
@@ -14,16 +14,23 @@ const SellerLists = ({ params }) => {
 
   console.log(searchResult);
 
+  function handleSearchAgain() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
+  };
+
   return (
     <main className="w-full">
       {/* Search section */}
       <section className=" min-h-[343px] flex justify-center items-center shrink-0 relative">
-        <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
+        <div className="absolute inset-0 -z-10 size-full flex justify-center items-center overflow-hidden">
           <img
             loading="eager"
             src="https://4kwallpapers.com/images/walls/thumbs_3t/6789.jpg"
             alt=""
-            className="w-full h-full object-cover"
+            className="size-full object-cover"
           />
         </div>
         <div className="flex max-w-[1920px] flex-wrap w-11/12 h-32 mx-auto items-center">
@@ -41,7 +48,7 @@ const SellerLists = ({ params }) => {
             <div className="flex items-end justify-between w-full">
               <div>
                 <span className="text-neutral-900 text-[32.46px] font-bold">
-                  Professionals{" "}
+                 {params === "more" ? "Professionals" : decodeURIComponent(params)}{" "}
                 </span>
                 <span className="text-neutral-900 text-xl">Near You</span>
               </div>
@@ -100,9 +107,7 @@ const SellerLists = ({ params }) => {
           </section>
         )
       ) : (
-        <div className="h-40 w-full flex justify-center items-center">
-          <p>No Result found</p>
-        </div>
+        <NoResultsFound onClick={handleSearchAgain} />
       )}
     </main>
   );

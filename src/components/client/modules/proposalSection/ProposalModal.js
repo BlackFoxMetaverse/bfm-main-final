@@ -1,16 +1,26 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { BsCheck } from "react-icons/bs";
 
-const ProposalModal = ({ inputData, handleSubmit, setInputData, sent }) => {
+const ProposalModal = ({ inputData, handleSubmit, setInputData, sent, close }) => {
+  const modalRef = useRef(null);
+
+  const handleCloseModal = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      close();
+    }
+  }
+
   return (
-    <div className="w-full h-screen fixed inset-0 z-50 flex justify-center items-center bg-black/50">
+    <div onClick={handleCloseModal} className="w-full h-screen fixed inset-0 z-50 flex justify-center items-center bg-black/50">
       <form
         action=""
         method="post"
+        onClick={(e) => e.stopPropagation()}
+        ref={modalRef}
         onSubmit={handleSubmit}
-        className="flex flex-col p-6 bg-white rounded-xl border border-gray-300 w-1/2 mx-auto"
+        className="flex flex-col p-6 bg-white rounded-xl border border-gray-300 2xl:w-1/2 xl:w-2/3 lg:w-5/6 w-full mx-auto"
       >
         <header className="">
           <h1 className="text-3xl font-semibold leading-9 text-gray-800">
@@ -56,7 +66,9 @@ const ProposalModal = ({ inputData, handleSubmit, setInputData, sent }) => {
         </div>
         <button
           type="submit"
-          className={`justify-center items-center flex px-10 py-2 mt-6 text-xl rounded ${sent ? "bg-green-400" : "bg-black"} text-white font-semibold leading-6 shadow-sm`}
+          className={`justify-center items-center flex px-10 py-2 mt-6 text-xl rounded ${
+            sent ? "bg-green-400" : "bg-black"
+          } text-white font-semibold leading-6 shadow-sm`}
           tabIndex="0"
         >
           {sent ? (

@@ -3,8 +3,9 @@
 import { Inter } from "next/font/google";
 import ReactGA from "react-ga4";
 import "./globals.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import localFont from "next/font/local";
+import OffLine from "@/components/layouts/Errors/OffLine";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,8 @@ const helvetica = localFont({
 // };
 
 export default function RootLayout({ children }) {
+  const [isOffline, setIsOffline] = useState(false);
+
   useEffect(() => {
     console.log("Initializing Google Analytics...");
 
@@ -35,10 +38,20 @@ export default function RootLayout({ children }) {
     console.log("Google Analytics initialized. Tracking initial pageview.");
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("online", () => {
+      setIsOffline(false);
+    });
+
+    window.addEventListener("offline", () => {
+      setIsOffline(true);
+    });
+  }, [isOffline]);
+
   return (
     <html lang="en">
       <body suppressHydrationWarning className={helvetica.className}>
-        {children}
+        {isOffline ? <OffLine /> : children}
       </body>
     </html>
   );
