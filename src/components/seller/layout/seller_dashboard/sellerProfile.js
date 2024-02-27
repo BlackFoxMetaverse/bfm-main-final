@@ -309,7 +309,7 @@ const SellerPortfolio = ({ params }) => {
         <ImageComponent
           src={image[0]}
           alt=""
-          className="object-cover lg:aspect-[2/1] size-full rounded-xl"
+          className="object-cover size-full rounded-xl"
         />
         <div>
           <h2 className="mt-8 w-full text-3xl font-bold text-neutral-800 max-md:max-w-full">
@@ -390,7 +390,7 @@ const SellerPortfolio = ({ params }) => {
               <div key={i} className={`relative`}>
                 <ImageComponent
                   loading="lazy"
-                  className="size-full cursor-pointer object-cover lg:aspect-[2/1] rounded-xl"
+                  className="size-full cursor-pointer object-cover rounded-xl"
                   src={data}
                   alt=""
                   onClick={() => openImageModal(data)}
