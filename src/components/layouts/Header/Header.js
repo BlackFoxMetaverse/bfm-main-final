@@ -191,7 +191,7 @@ const Header = ({ isSeller }) => {
           {!userData?.isSeller && !pathname.startsWith("/seller") && (
             <button
               onClick={() => router.push("/seller")}
-              className="bg-white rounded xl:w-48 w-40 aspect-[4/1] text-[19px] font-bold leading-[12.80px]"
+              className="bg-white rounded 2xl:w-48 w-40 aspect-[5/1] 2xl:text-[19px] text-base font-medium leading-[12.80px]"
             >
               Become a Seller
             </button>
@@ -200,7 +200,7 @@ const Header = ({ isSeller }) => {
             <div className="flex justify-center items-center">
               <button
                 type="button"
-                className={`xl:w-24 sm:w-20 aspect-[2/1] rounded sm:border border-white flex items-center gap-4 justify-center`}
+                className={`2xl:w-24 sm:w-16 aspect-[2/1] rounded sm:border border-white flex items-center gap-3 justify-center`}
               >
                 <svg
                   width="20"
@@ -282,7 +282,7 @@ const Header = ({ isSeller }) => {
             <button
               type="button"
               onClick={() => setIsLogingin(!isLogingin)}
-              className="xl:w-24 md:w-20 sm:w-16 w-20 aspect-[2/1] rounded border border-white justify-center items-center inline-flex"
+              className="2xl:w-28 w-16 2xl:aspect-[2/1] h-8 rounded border border-white justify-center items-center inline-flex"
             >
               <p className="text-white lg:text-lg font-bold leading-7">Join</p>
             </button>
