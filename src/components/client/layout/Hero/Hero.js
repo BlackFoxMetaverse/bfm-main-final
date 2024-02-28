@@ -106,7 +106,7 @@ const Hero = () => {
         </div>
         <div className="w-11/12 max-w-[1920px] space-y-7 flex justify-center flex-col items-start">
           <div className="max-w-[769.44px]">
-            <span className="text-white 2xl:text-[54.39px] xl:text-[48px] text-[35px] font-medium leading-[57.66px]">
+            <span className="text-white 2xl:text-[54.39px] italic xl:text-[48px] text-[35px] font-medium leading-[57.66px]">
               Automate
             </span>
             <span className="text-white 2xl:text-[54.39px] xl:text-[48px] text-[35px] font-bold leading-[57.66px]">
