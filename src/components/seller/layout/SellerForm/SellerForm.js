@@ -16,13 +16,19 @@ import instance from "@/utils/axios";
 import s3FileUpload from "@/utils/imageUploader";
 import { getUserPreciseLocation } from "@/utils/location";
 import Form1 from "../../modules/sellerForm/Form1";
+import checkToken from "@/utils/api/checkToken";
 
 const SellerForm = () => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   const router = useRouter();
 
+  const [res, setRes] = useState();
   const [inputData, setInputData] = useState({
+    image: "",
+    name: "",
     userName: "",
+    email: "",
+    phone_number: "",
     city: "",
     profession: "",
     gender: "",
@@ -34,145 +40,211 @@ const SellerForm = () => {
     description: "",
     socialMediaLinks: [],
     experienceDetails: [],
-    images: [],
+    images: [null, null, null, null, null, null],
     coordinates: {},
   });
 
   const [formCount, setCount] = useState(1);
-  const [gigsInfo, setGigsInfo] = useState(null);
-  const [personalInfo, setPersonalInfo] = useState(null);
-  const [professionalInfo, setProfessionalInfo] = useState(null);
-  const [userData, setData] = useState(null);
-  const [formData, setFormData] = useState({
-    ...personalInfo,
-    ...professionalInfo,
-    ...gigsInfo,
-  });
-  const [isClient, setIsClient] = useState(true);
-  const handleFormData = async () => {
-    try {
-      const Token =
-        "eyJhbGciOiJSUzI1NiIsImtpZCI6ImExODE4ZjQ0ODk0MjI1ZjQ2MWQyMmI1NjA4NDcyMDM3MTc2MGY1OWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYmZtLWxvY2F0aW9uIiwiYXVkIjoiYmZtLWxvY2F0aW9uIiwiYXV0aF90aW1lIjoxNzA4Nzc5NDEwLCJ1c2VyX2lkIjoiSzN0NWhKTUNZR1Y3dEhuODFYQUo3bzJxaWVCMiIsInN1YiI6IkszdDVoSk1DWUdWN3RIbjgxWEFKN28ycWllQjIiLCJpYXQiOjE3MDg3Nzk0MTAsImV4cCI6MTcwODc4MzAxMCwicGhvbmVfbnVtYmVyIjoiKzkxODcwOTM2MDU0MyIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsicGhvbmUiOlsiKzkxODcwOTM2MDU0MyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.uhi79limg90BnkADqwZG2zIBn0pMhCzwpsRN8teJxiRl3-jiQMd-dnlxqolEZ08hCZxYUSd17Pw2cMcU3trJ248H3M67sHwHiZtIQ574OgW5ivHZogvlukoJ2bFF9aXP0-_kbgx13D5FEKvUm0I-iSotRr2QyYYy_En-qkjA2bBTxJGum1Okxz2jF8kdEvfECIfZ7I07mEFODzl16kVRMYlmE2dt9Je0xhRNE49FWg02IwkmyqhVc_5Jmi1-M44dc_fKf2z0qHyC6p3vkFkmMcr3w4aWagbfqUTAEB4ZarrRAkCigwxCbaX4DbLsh5_ril6bbZl8JYZ1fd3QMc74tQ";
-      const response = await instance.post("/main/seller", formData, {
-        headers: {
-          token: Token,
-        },
-      });
-      console.log("Response:", response);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  const [userNameValid, setUserNameValid] = useState(true);
+  const [emailValid, setEmailValid] = useState(true);
 
-  async function checkUser() {
+  useEffect(() => {
+    const token = localStorage.getItem("bfm-client-token");
+    if (!token) console.warn("No token found");
+    checkToken(token)
+      .then((data) => {
+        setRes(data);
+        if (data.isSeller) {
+          setInputData({
+            ...data.seller,
+            coordinates: {
+              longitude: data.seller.location.coordinates[0],
+              latitude: data.seller.location.coordinates[1],
+            },
+          });
+        } else {
+          setInputData({ ...inputData, phone_number: data.phone_number });
+        }
+      })
+      .catch((err) => {
+        console.error("error", err);
+      });
+  }, []);
+
+  async function filterUpdates(obj1, obj2) {
+    const result = {};
+
+    const normalKeys = [
+      "name",
+      "userName",
+      "email",
+      "phone_number",
+      "city",
+      "profession",
+      "gender",
+      "experience",
+      "services",
+      "skills",
+      "collegeName",
+      "description",
+      "socialMediaLinks",
+      "experienceDetails",
+    ];
+    const specialKeys = ["image", "resume", "images", "coordinates"];
+
+    if (obj2.resume && typeof obj2.resume === "object") {
+      result.resume = await s3FileUpload(obj2.resume);
+    }
+
+    if (obj2.image && typeof obj2.image === "object") {
+      result.image = await s3FileUpload(obj2.image);
+    }
+
+    if (obj2.images) {
+      result.images = await Promise.all(
+        obj2.images.map(async (img) => {
+          if (!img) return null;
+          if (typeof img === "string") return img;
+          if (typeof img === "object") return await s3FileUpload(img);
+        })
+      );
+    }
+
+    if (obj2.coordinates) {
+      obj2.coordinates = await getUserPreciseLocation();
+    }
+
+    for (const key of normalKeys) {
+      if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
+        if (obj1[key] !== obj2[key]) {
+          result[key] = obj2[key];
+        }
+      }
+    }
+
+    for (const key of specialKeys) {
+      if (obj2.hasOwnProperty(key) && !obj1.hasOwnProperty(key)) {
+        result[key] = obj2[key];
+      }
+    }
+
+    return result;
+  }
+
+  async function transform(obj) {
+    let result = { ...obj };
+
+    if (typeof result.image === "object") {
+      if (!result.image) return;
+      const key = await s3FileUpload(result.image);
+      result = { ...result, image: key };
+    } else {
+      result.image = null;
+    }
+
+    result.images = await Promise.all(
+      result.images.map(async (img) => {
+        if (!img) return null;
+        if (typeof img === "object") {
+          return await s3FileUpload(img);
+        }
+      })
+    );
+
+    if (typeof result.resume === "object") {
+      if (!result.resume) return;
+      const key = await s3FileUpload(result.resume);
+      result = { ...result, resume: key };
+    } else {
+      result.resume = null;
+    }
+
+    const value = await getUserPreciseLocation();
+
+    result.coordinates = value;
+
+    return result;
+  }
+
+  async function submitSeller() {
     try {
       const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.get("main/user", {
-        headers: {
-          token: token,
-        },
-      });
-      console.log(res.data);
-      return Promise.resolve(res.data);
+      if (!token) {
+        console.warn("No token available");
+        return Promise.reject(false);
+      }
+      if (res.isSeller) {
+        const bodyObj = await filterUpdates(res.seller, inputData);
+
+        const response = await instance.put("/main/seller", bodyObj, {
+          headers: {
+            token: token,
+          },
+        });
+        return Promise.resolve(response.data);
+      } else {
+        const bodyObj = await transform(inputData);
+        const response = await instance.post("/main/seller", bodyObj, {
+          headers: {
+            token: token,
+          },
+        });
+        return Promise.resolve(response.data);
+      }
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
-  useEffect(() => {
-    checkUser()
+  function handleSubmitGigs() {
+    submitSeller()
       .then((data) => {
-        if (typeof data?.data === "object" && data?.data.isSeller === false) {
-          setData(data?.data);
-          setIsClient(true);
-        } else {
-          setData(data?.data);
-          setIsClient(false);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsClient(false);
-      });
-  }, []);
-
-  async function dataModifier(data) {
-    try {
-      let obj = {
-        userName: data.personalInfo.userName,
-        profession: data.personalInfo.profession,
-        coordinates: await getUserPreciseLocation(),
-        experience: data.professionalInfo.experience,
-        collegeName: data.professionalInfo.college_name,
-        tags: data.professionalInfo.skills,
-        certificate: await s3FileUpload(data.professionalInfo.certification),
-        description: data.gigsInfo.description,
-        socialMediaLinks: data.gigsInfo.socialMedia,
-        experienceDetail: data.gigsInfo.experiences,
-        images: await Promise.all(
-          data.gigsInfo.galleryImages.map(async (file, index) => {
-            if (file !== null) {
-              return await s3FileUpload(file);
-            } else {
-              return null;
-            }
-          })
-        ),
-      };
-
-      return obj;
-    } catch (error) {
-      throw error; // Rethrow the error to propagate it
-    }
-  }
-
-  async function submitServer() {
-    const token = localStorage.getItem("bfm-client-token");
-    try {
-      const obj = await dataModifier(formData);
-      const sellerRes = await instance.post("/main/seller", obj, {
-        headers: { token },
-      });
-
-      return sellerRes;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  function handleSubmit() {
-    submitServer()
-      .then((res) => {
-        console.log("reg res", res);
+        console.log("seller done!", data);
       })
       .catch((err) => {
-        console.log("reg res error", err);
+        console.error("seller not done!", err);
       });
   }
 
-  const handleSubmit1 = (e) => {
-    e.preventDefault();
-    setCount(formCount + 1);
-  };
+  let userNameTimeout;
+  let emailTimeout;
 
-  const handleSubmit2 = (e) => {
-    e.preventDefault();
-    setCount(formCount + 1);
-  };
+  function checkEmail(email) {
+    if (emailTimeout) {
+      clearTimeout(emailTimeout);
+    }
 
-  const handleSubmit3 = (e) => {
-    e.preventDefault();
-    handleFormData();
-    submitServer()
-      .then((res) => {
-        console.log("reg res", res);
-      })
-      .catch((err) => {
-        console.log("reg res error", err);
-      });
-    // setCount(formCount+1);
-    // router.push("/seller/dashboard");
-  };
+    emailTimeout = setTimeout(() => {
+      instance
+        .get(`check/email?uid=${res?.uid}&email=${email}`)
+        .then((response) => {
+          setEmailValid(response.data);
+        })
+        .catch((error) => {
+          console.error("Error checking email:", error);
+        })
+        .finally(() => {
+          emailTimeout = null;
+        });
+    }, 450);
+  }
+  function checkUserName(email) {
+    if (userNameTimeout) {
+      clearTimeout(userNameTimeout);
+    }
+
+    userNameTimeout = setTimeout(() => {
+      instance
+        .get(`check/email?uid=${res?.uid}&userName=${userName}`)
+        .then((Res) => setUserNameValid(Res.data))
+        .catch((error) => {
+          console.error("Error checking email:", error);
+        })
+        .finally(() => {
+          userNameTimeout = null;
+        });
+    }, 450);
+  }
 
   return (
     <main className="w-full mx-auto py-20 space-y-10">
@@ -192,110 +264,8 @@ const SellerForm = () => {
           </p>
         </div>
       </section>
-      {/* <div className="md:block hidden mx-auto w-5/6">
-        <button
-          type="button"
-          onClick={() => {
-            if (formCount === 2) {
-              setCount(1);
-            } else {
-              router.back();
-            }
-          }}
-          className="inline-flex px-6 py-4 justify-center items-center gap-[8px] rounded-[4px] [background:var(--Foundation-Blue-blue-50,#ECEFFE)] pl-[24px)] pr-[16px text-[color:var(--Primary-1,#4461F2)] text-xl font-normal leading-[100%] tracking-[-1px]"
-        >
-          <IoChevronBackCircleOutline />
-          Back
-        </button>
-      </div> */}
-      <div className="w-5/6 mx-auto flex gap-10 justify-between items-start flex-col lg:flex-row">
-        {/* {isClient ? (
-          <div className="w-1/3 min-h-[455px] space-y-7 flex flex-col items-center py-5 bg-white rounded-[20px]">
-            <div className="flex w-5/6 justify-between items-center gap-11 py-10 mx-auto">
-              <img
-                src={s3Url + userData?.image}
-                alt=""
-                className="w-1/3 h-full aspect-square bg-black/20 object-cover rounded-full"
-              />
-              <div className="w-2/3 pr-1 flex-col justify-between items-start gap-[23px] inline-flex">
-                <div className="text-neutral-600 text-2xl font-medium leading-normal">
-                  {userData?.name}
-                </div>
-                <div className="text-neutral-600 text-2xl font-normal leading-normal">
-                  {userData?.phone_number}
-                </div>
-              </div>
-            </div>
-            <div className="flex w-5/6 mx-auto gap-2 items-center text-stone-500 text-xl font-medium leading-normal">
-              <FaCalendar />
-              <p className="">Unavailable</p>
-            </div>
-            <div className="w-5/6 mx-auto h-[0px] border border-black"></div>
-            <button
-              type="button"
-              className="flex w-5/6 mx-auto gap-2 items-center text-stone-500 text-xl font-medium leading-normal"
-            >
-              <BsGear />
-              <p className="">Settings</p>
-            </button>
-            <button
-              type="button"
-              className="flex w-5/6 mx-auto gap-2 items-center text-stone-500 text-xl font-medium leading-normal"
-            >
-              <BsPhone />
-              <p className="">Contact and FAQs</p>
-            </button>
-            <button
-              type="button"
-              className="w-5/6 mx-auto h-[47px] px-[38px] py-2 bg-[#4461F2] rounded-[20px] justify-center items-center gap-[5px] inline-flex"
-            >
-              <div className="text-white text-2xl font-bold font-['Neue Helvetica']">
-                Save
-              </div>
-            </button>
-          </div>
-        ) : null} */}
-        {/* <div className="md:w-2/3 w-full mx-auto flex flex-col items-center gap-[51.561px] relative">
-          <div className="flex items-center gap-3 w-11/12 absolute inset-x-0 top-0 -translate-y-full mx-auto pb-10">
-            <div
-              onClick={() => setCount(1)}
-              className="flex-1 border rounded-full bg-blue-700 h-3 w-full"
-            ></div>
-            <div
-              onClick={() => setCount(2)}
-              className={`flex-1 border rounded-full ${
-                formCount === 2 ? "bg-blue-700" : "bg-transparent"
-              } w-full h-3`}
-            ></div>
-          </div>
-          <div className="w-full bg-white mx-auto flex flex-col items-center gap-[51.561px] [background:#FFF] shadow-[0px_4.583px_9.166px_0px_rgba(41,41,41,0.08)] py-[45.832px] rounded-[45.832px]">
-            <div className="flex flex-col w-5/6 mx-auto items-start md:gap-[29px] gap-[17.21px]">
-              <h1 className="text-black md:text-[32px] text-[18.99px]  not-italic font-bold leading-[normal]">
-                Profile Form
-              </h1>
-              <p className="text-black md:text-base text-[12.24px] not-italic font-normal leading-6">
-                Please fill out the following information to create your
-                profile.
-              </p>
-            </div>
-            {formCount === 1 && (
-              <Form1
-                setData={setForm1Data}
-                handleSubmit={(e) => {
-                  e.preventDefault();
-                  setCount(formCount + 1);
-                }}
-              />
-            )}
-            {formCount === 2 && (
-              <GigsInfo
-                setData={setGigsInfo}
-                handleSubmit={(e) => e.preventDefault()}
-              />
-            )}
-          </div>
-        </div> */}
 
+      <div className="w-5/6 mx-auto flex gap-10 justify-between items-start flex-col lg:flex-row">
         {/* Form Component */}
         <div className="flex flex-col items-center justify-center gap-10 w-11/12 mx-auto">
           {/* Form Names and positions */}
@@ -356,9 +326,13 @@ const SellerForm = () => {
                 inputData={inputData}
                 setInputData={setInputData}
                 setCount={setCount}
+                userNameValid={userNameValid}
+                emailValid={emailValid}
+                checkUserName={checkUserName}
+                checkEmail={checkEmail}
               />
             )}
-            {/* {formCount === 2 && (
+            {formCount === 2 && (
               <ProfessionalInfo
                 inputData={inputData}
                 setInputData={setInputData}
@@ -370,8 +344,9 @@ const SellerForm = () => {
                 inputData={inputData}
                 setInputData={setInputData}
                 setCount={setCount}
+                sellerSubmit={handleSubmitGigs}
               />
-            )} */}
+            )}
           </div>
         </div>
       </div>

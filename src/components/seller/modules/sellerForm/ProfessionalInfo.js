@@ -8,30 +8,21 @@ import { RxCrossCircled } from "react-icons/rx";
 
 const Experience = ["0-1", "1-3", "3-5", "5+"];
 const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
+const profession = [
+  "Photographer",
+  "Designer",
+  "Developer",
+  "Software Developer",
+];
 
-const ProfessionalInfo = ({ setData, handleSubmit }) => {
+const ProfessionalInfo = ({ inputData, setInputData, setCount }) => {
   const [currentTag, setCurrentTag] = useState("");
   const [currentService, setCurrentService] = useState("");
   const [document, setDocument] = useState(null);
-  const [profession, setProfession] = useState([
-    "Photographer",
-    "Designer",
-    "Developer",
-    "Software Developer",
-  ]);
 
   useEffect(() => {
     setDocument(window.document);
   }, []);
-
-  const [formData, setFormData] = useState({
-    experience: "",
-    profession: "",
-    skills: [],
-    services: [],
-    collegeName: "",
-    resume: null,
-  });
 
   const handleTagInputChange = (e) => {
     setCurrentTag(e.target.value);
@@ -41,7 +32,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
     if (e.key === " " && currentTag.trim() !== "") {
       e.preventDefault();
       setCurrentTag("");
-      setFormData((prevData) => ({
+      setInputData((prevData) => ({
         ...prevData,
         skills: [...prevData.skills, currentTag.trim()],
       }));
@@ -49,7 +40,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
   };
 
   const handleTagRemove = (tagToRemove) => {
-    setFormData((prevData) => ({
+    setInputData((prevData) => ({
       ...prevData,
       skills: prevData.skills.filter((skill) => skill !== tagToRemove),
     }));
@@ -63,7 +54,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
     if (e.key === " " && currentService.trim() !== "") {
       e.preventDefault();
       setCurrentService("");
-      setFormData((prevData) => ({
+      setInputData((prevData) => ({
         ...prevData,
         services: [...prevData.services, currentService.trim()],
       }));
@@ -71,7 +62,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
   };
 
   const handleServiceRemove = (ServiceToRemove) => {
-    setFormData((prevData) => ({
+    setInputData((prevData) => ({
       ...prevData,
       services: prevData.services.filter(
         (service) => service !== ServiceToRemove
@@ -79,23 +70,14 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
     }));
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!inputData?.services.length && !inputData?.skills.length) {
+      return false;
+    }
 
-  const handleFileChange = (e) => {
-    s3FileUpload(e.target.files[0]).then((key) => {
-      setFormData({ ...formData, resume: key });
-    });
-  };
-
-  useEffect(() => {
-    setData(formData);
-  }, [formData]);
+    setCount(3);
+  }
 
   return (
     <form
@@ -124,8 +106,10 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
               name="experience"
               id="experience"
               required
-              value={formData.experience}
-              onChange={handleInputChange}
+              value={inputData?.experience}
+              onChange={(e) =>
+                setInputData({ ...inputData, experience: e.target.value })
+              }
               className="flex items-center selection:bg-gray-800 w-full p-3.5 focus:outline-none rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
             >
               {/* <option value="">0-1 years</option> */}
@@ -150,8 +134,10 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
             <select
               name="profession"
               id="profession"
-              value={formData.profession}
-              onChange={handleInputChange}
+              value={inputData?.profession}
+              onChange={(e) =>
+                setInputData({ ...inputData, profession: e.target.value })
+              }
               required
               className="flex items-center focus:outline-none w-full p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
             >
@@ -165,28 +151,6 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
               ))}
             </select>
           </div>
-          {/* <div className="flex flex-col items-start gap-[5px]">
-            <label
-              htmlFor="college_name"
-              className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
-            >
-              College name
-            </label>
-            <select
-              name="college_name"
-              id="college_name"
-              value={formData.college_name}
-              onChange={handleInputChange}
-              className="flex items-center w-full p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-            >
-              <option value="">Select your college</option>
-              {CollegeName?.map((college, index) => (
-                <option value={college} key={index}>
-                  {college}
-                </option>
-              ))}
-            </select>
-          </div> */}
           <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
             <label
               htmlFor="services"
@@ -195,7 +159,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
               services
             </label>
             <div className="flex items-center content-center bg-white rounded-lg gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-[5.781px]-[1.445px]">
-              {formData?.services.map((service, index) => (
+              {inputData?.services.map((service, index) => (
                 <div
                   key={index}
                   className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
@@ -218,7 +182,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
                 onChange={handleServiceInputChange}
                 onKeyPress={handleServiceInputKeyPress}
                 className={`text-sm not-italic font-normal leading-[100%] bg-transparent w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
-                  formData?.services.length === 7 ? "hidden" : "block"
+                  inputData?.services.length === 7 ? "hidden" : "block"
                 }`}
               />
             </div>
@@ -234,7 +198,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
               skills
             </label>
             <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-lg bg-white">
-              {formData?.skills.map((tag, index) => (
+              {inputData?.skills.map((tag, index) => (
                 <div
                   key={index}
                   className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
@@ -254,7 +218,7 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
                 onChange={handleTagInputChange}
                 onKeyPress={handleTagInputKeyPress}
                 className={`text-sm not-italic font-normal leading-[100%] w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
-                  formData?.skills.length === 7 ? "hidden" : "block"
+                  inputData?.skills.length === 7 ? "hidden" : "block"
                 }`}
               />
             </div>
@@ -273,8 +237,10 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
           <select
             name="collegeName"
             id="collegeName"
-            value={formData.collegeName}
-            onChange={handleInputChange}
+            value={inputData?.collegeName}
+            onChange={(e) =>
+              setInputData({ ...inputData, collegeName: e.target.value })
+            }
             className="flex items-center w-full focus:outline-none p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
           >
             <option value="">Select your college</option>
@@ -295,20 +261,22 @@ const ProfessionalInfo = ({ setData, handleSubmit }) => {
           <label
             htmlFor="resume"
             className={`${
-              formData.resume
+              inputData?.resume
                 ? "text-black"
                 : "text-[color:var(--Main-Colors-Gray-0,#9F9F9F)]"
             } whitespace-break-spaces break-words shrink text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]`}
           >
-            {formData.resume
-              ? formData.resume?.name?.slice(0, 40) + "..."
+            {inputData?.resume
+              ? inputData?.resume?.name?.slice(0, 40) + "..."
               : "Upload your resume here"}
           </label>
           <input
             type="file"
             name="resume"
             id="resume"
-            onChange={handleFileChange}
+            onChange={(e) =>
+              setInputData({ ...inputData, resume: e.target.files[0] })
+            }
             className="hidden"
           />
           {/* <button

@@ -8,21 +8,19 @@ import { IoCameraOutline } from "react-icons/io5";
 import { RxCrossCircled } from "react-icons/rx";
 import { TbCaretDownFilled } from "react-icons/tb";
 
-const PersonalInfo = ({ inputData, setInputData, setCount }) => {
+const PersonalInfo = ({
+  inputData,
+  setInputData,
+  setCount,
+  userNameValid,
+  emailValid,
+  checkUserName,
+  checkEmail,
+}) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   var randomColor = Math.floor(Math.random() * 16777215).toString(16);
 
-  const [image, setImage] = useState(null);
   const [showGenderOptions, setShowGenderOptions] = useState(false);
-  // const [formData, setFormData] = useState({
-  //   name: userData?.name ? userData?.name : "",
-  //   userName: "",
-  //   email: userData?.email ? userData?.email : "",
-  //   image: "",
-  //   phoneNo: userData?.phone_number ? userData?.phone_number : "",
-  //   city: "",
-  //   gender: "",
-  // });
 
   const handleGenderSelect = (selectedGender) => {
     setInputData({ ...inputData, gender: selectedGender });
@@ -31,65 +29,9 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
 
   const genderOptions = ["male", "female", "other"];
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl);
-      setInputData({ ...inputData, image: file });
-    }
-  };
-
-  const [isUniqueUsername, setIsUniqueUserName] = useState(false);
-  const [isUniqueEmail, setIsUniqueEmail] = useState(false);
-
-  let checkUserNameTimeout;
-  let checkEmailTimeout;
-
-  const onFormDataChange = async (e) => {
-    const { name, value } = e.target;
-    setInputData({ ...inputData, [name]: value });
-    if (name === "userName") {
-      if (value === "") return false;
-      if (checkUserNameTimeout) {
-        clearTimeout(checkUserNameTimeout);
-      }
-      checkUserNameTimeout = setTimeout(() => {
-        instance
-          .get(`/check/userName?userName=${value}`)
-          .then((res) => {
-            setIsUniqueUserName(res.data);
-          })
-          .catch((err) => {
-            console.log("checkUserName err", err);
-          });
-      }, 300);
-    }
-    if (name === "email") {
-      if (value === "") return false;
-      if (checkEmailTimeout) {
-        clearTimeout(checkEmailTimeout);
-      }
-      checkEmailTimeout = setTimeout(() => {
-        instance
-          .get(`/check/userName?userName=${value}`)
-          .then((res) => {
-            setIsUniqueEmail(res.data);
-          })
-          .catch((err) => {
-            console.log("checkUserName err", err);
-          });
-      }, 300);
-    }
-  };
-
-  // useEffect(() => {
-  //   setData(formData);
-  // }, [formData]);
-
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("data", inputData);
+    if (inputData?.gender.length < 4) return false;
     setCount(2);
   }
 
@@ -112,10 +54,14 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
           <div
             className={`lg:size-[121.962px] size-[93.196px] relative shrink-0 rounded-xl`}
           >
-            {/* {image ? (
+            {inputData?.image ? (
               <div className="size-full rounded-xl bg-black/20 overflow-hidden">
                 <img
-                  src={image}
+                  src={
+                    typeof inputData?.image === "string"
+                      ? `${s3Url}${inputData?.image}`
+                      : URL.createObjectURL(inputData?.image)
+                  }
                   alt=""
                   className="flex size-full items-start"
                 />
@@ -123,14 +69,9 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
             ) : (
               <div className="size-full bg-black/20 rounded-xl flex overflow-hidden justify-center items-center">
                 <img
-                  src={
-                    userData?.image
-                      ? s3Url + userData?.image
-                      : "https://s3-alpha-sig.figma.com/img/5ca6/41d6/d9d3087f77befa738f3b738374c70659?Expires=1708905600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Qe2O1YLXcn-DWw8XmPl38AAjMrhqvJIEbjCvA1Vk5eNRkHB7L0DTkb-bl2j1tpsBCUp8qOpJV9AYr2pi6-rI~jqBRnGMht4LyV51BBdgyWPDJCc0HTAXkvN5jx3Wk61k6rIPQMpLbLu53anjEO0j63UOAXmJ7H1BBgA4lxf8fvCAvynlVOxryh0hQLxRZs9bnryjPHeMXfwMnqecPy0gFgt0MnoTVsYvVEPNasb7lxrDMS~JxqeWJz2TypQSIPFB9MFTml9lhqdc0Ea-hKoL15bZYciVudIhDsi3cL9VD~Rj537isdZKj-IZEob-C~K8rhP53whfF-W6RwPyyPPgRg__"
-                  }
                   alt=""
                   className={`${
-                    userData?.image ? "size-full" : "size-1/2"
+                    true ? "size-full" : "size-1/2"
                   } flex items-start`}
                 />
                 <input
@@ -139,10 +80,13 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
                   name="imageInput"
                   className="hidden"
                   required={false}
-                  onChange={handleImageChange}
+                  value={inputData?.image}
+                  onChange={(e) =>
+                    setInputData({ ...inputData, image: e.target.files[0] })
+                  }
                 />
               </div>
-            )} */}
+            )}
             <label
               htmlFor="imageInput"
               className="flex lg:size-7 size-5 flex-col justify-center items-center shrink-0 bg-black text-white text-base z-10 rounded-full absolute right-0 top-full translate-x-1/4 -translate-y-full"
@@ -153,7 +97,9 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
                 id="imageInput"
                 name="imageInput"
                 className="hidden"
-                onChange={handleImageChange}
+                onChange={(e) =>
+                  setInputData({ ...inputData, image: e.target.files[0] })
+                }
               />
             </label>
           </div>
@@ -170,11 +116,13 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
               type="text"
               name="name"
               id="name"
-              value={"name"}
-              disabled={true}
               required
-              placeholder="Harsh Singh"
+              placeholder="Enter your name"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
+              value={inputData?.name}
+              onChange={(e) =>
+                setInputData({ ...inputData, name: e.target.value })
+              }
             />
           </div>
           <div className="flex flex-col items-start gap-[5px]">
@@ -192,12 +140,13 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
               value={inputData?.userName}
               onChange={(e) => {
                 setInputData({ ...inputData, userName: e.target.value });
+                checkUserName(e.target.value);
               }}
               placeholder="Harsh_12"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
             />
-            {inputData.userName !== "" &&
-              (isUniqueUsername ? (
+            {inputData?.userName !== "" &&
+              (userNameValid ? (
                 <div className="flex gap-3 items-center text-green-500 text-sm">
                   <BsCheckCircleFill /> Username validated
                 </div>
@@ -259,12 +208,13 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
               value={inputData?.email}
               onChange={(e) => {
                 setInputData({ ...inputData, email: e.target.value });
+                checkEmail(e.target.value);
               }}
               placeholder="12345@gmail.com"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
             />
-            {/* {formData.email !== "" &&
-              (isUniqueEmail ? (
+            {inputData?.email !== "" &&
+              (emailValid ? (
                 <div className="flex gap-3 items-center text-green-500 text-sm">
                   <BsCheckCircleFill /> Email validated
                 </div>
@@ -272,7 +222,7 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
                 <div className="flex gap-3 items-center text-red-500 text-sm">
                   <RxCrossCircled /> Email already taken
                 </div>
-              ))} */}
+              ))}
           </div>
           <div className="flex flex-col items-start gap-[5px]">
             <label
@@ -282,13 +232,12 @@ const PersonalInfo = ({ inputData, setInputData, setCount }) => {
               phone No
             </label>
             <input
-              type="number"
+              type="string"
               name="phoneNo"
               id="phoneNo"
-              minLength={10}
-              value={inputData.phoneNo}
+              value={inputData?.phone_number}
+              disabled={true}
               required
-              placeholder="Harsh Singh"
               className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
             />
           </div>
