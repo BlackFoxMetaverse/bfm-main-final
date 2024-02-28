@@ -188,7 +188,7 @@ const Header = ({ isSeller }) => {
         </div>
 
         <div className="flex items-center h-full gap-4">
-          {!userData?.isSeller && !pathname.startsWith("/seller") && (
+          {userData?.isSeller && !pathname.startsWith("/seller") && (
             <button
               onClick={() => router.push("/seller")}
               className="bg-white rounded xl:w-48 w-40 aspect-[4/1] text-[19px] font-bold leading-[12.80px]"
@@ -200,7 +200,7 @@ const Header = ({ isSeller }) => {
             <div className="flex justify-center items-center">
               <button
                 type="button"
-                className={`xl:w-24 w-20 aspect-[2/1] rounded sm:border border-white flex items-center gap-4 justify-center`}
+                className={`xl:w-24 sm:w-20 aspect-[2/1] rounded sm:border border-white flex items-center gap-4 justify-center`}
               >
                 <svg
                   width="20"
