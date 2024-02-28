@@ -109,7 +109,7 @@ const Hero = () => {
             <span className="text-white 2xl:text-[54.39px] italic xl:text-[48px] text-[35px] font-medium leading-[57.66px]">
               Automate
             </span>
-            <span className="text-white 2xl:text-[54.39px] xl:text-[48px] text-[35px] font-bold leading-[57.66px]">
+            <span className="text-white 2xl:text-[54.39px] xl:text-[48px] text-[35px] font-semibold leading-[57.66px]">
               {" "}
               your business&apos;s back office with Freelancers
             </span>
