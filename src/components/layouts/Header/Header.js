@@ -282,7 +282,7 @@ const Header = ({ isSeller }) => {
             <button
               type="button"
               onClick={() => setIsLogingin(!isLogingin)}
-              className="2xl:w-28 w-16 2xl:aspect-[2/1] h-8 rounded border border-white justify-center items-center inline-flex"
+              className="2xl:w-20 w-16 2xl:aspect-[2/1] 2xl:h-auto h-8 rounded border border-white justify-center items-center inline-flex"
             >
               <p className="text-white lg:text-lg font-bold leading-7">Join</p>
             </button>
