@@ -188,7 +188,7 @@ const Header = ({ isSeller }) => {
         </div>
 
         <div className="flex items-center h-full gap-4">
-          {userData?.isSeller && !pathname.startsWith("/seller") && (
+          {!userData?.isSeller && !pathname.startsWith("/seller") && (
             <button
               onClick={() => router.push("/seller")}
               className="bg-white rounded xl:w-48 w-40 aspect-[4/1] text-[19px] font-bold leading-[12.80px]"
