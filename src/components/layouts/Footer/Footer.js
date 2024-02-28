@@ -22,10 +22,10 @@ const ItemList = ({ title, items }) => (
 
 const FooterLink = ({ src, altText }) => (
   <img
-    loading="lazy"
+    loading="eager"
     src={src}
     alt={altText}
-    className="aspect-square w-[35px]"
+    className="size-12 object-contain"
   />
 );
 

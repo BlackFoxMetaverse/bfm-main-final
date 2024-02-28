@@ -14,61 +14,62 @@ import { IoLocationOutline, IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
 import AuthModal from "./auth/AuthModal";
 
-const UserProfile = ({ name, profession, username, id, isSeller }) => {
+const UserProfile = ({ name, profession, username, id, isSeller, onClick }) => {
   const [options, setOptions] = useState(false);
 
   return (
     <div
       // type="button"
-      onClick={() => setOptions(!options)}
-      className="flex gap-2.5 cursor-pointer justify-between items-center text-base leading-6 text-white relative"
+      onClick={() => { setOptions(!options); onClick()}}
+      className="flex gap-2.5 cursor-pointer justify-between items-center w-full text-base leading-6 sm:p-0 py-32 text-white relative"
     >
-      <pattern className="grow font-bold justify-end px-3 py-2.5 italic rounded whitespace-nowrap tracking-wide border border-solid border-black border-opacity-10">
-        {name}
-        <p className="font-light">{profession}</p>
-      </pattern>
+      <p className="grow font-bold justify-end px-3 py-2.5 italic rounded whitespace-nowrap tracking-wide border border-solid border-black border-opacity-10">
+        <span>{name ? name : "Raunak Pandey"}</span>
+        <span className="font-light">{profession}</span>
+      </p>
       <FaAngleDown
         className={`${
           options ? "rotate-180" : "rotate-0"
-        } transition-all duration-300 ease-in-out`}
+        } transition-all duration-300 sm:block hidden ease-in-out`}
       />
       <div
-        className={`min-h-[175px] bg-white flex flex-col rounded absolute inset-x-0 ${
+        className={`min-h-[175px] sm:bg-white flex flex-col rounded absolute w-full inset-x-0 ${
           options
-            ? "top-full translate-y-3"
-            : "-top-full scale-y-0 -translate-y-3"
+            ? "sm:top-full top-2/3 sm:translate-y-3"
+            : "sm:-top-full top-2/3 sm:scale-y-0 sm:-translate-y-3"
         } stroke-black py-3 transition-all duration-300 ease-in-out transform gap-2`}
       >
         <p className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-start">
-          {isSeller && (
+          {isSeller ? (
             <Link
               href={`/seller/dashboard/${username ? username : name}/${id}`}
-              className="text-neutral-700 text-lg font-medium leading-normal"
+              className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
             >
               View Profile
+            </Link>
+          ) : (
+            <Link
+              href={"/client/settings"}
+              className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
+            >
+              My Account
             </Link>
           )}
           <Link
             href={"/client/settings"}
-            className="text-neutral-700 text-lg font-medium leading-normal"
-          >
-            My Account
-          </Link>
-          <Link
-            href={"/client/settings"}
-            className="text-neutral-700 text-lg font-medium leading-normal"
+            className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
           >
             Security
           </Link>
           <Link
             href={"/client/settings"}
-            className="text-neutral-700 text-lg font-medium leading-normal"
+            className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
           >
             Notification
           </Link>
           <Link
             href={"/client/settings"}
-            className="text-neutral-700 text-lg font-medium leading-normal"
+            className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
           >
             Purchase History
           </Link>
@@ -100,6 +101,7 @@ const Header = ({ isSeller }) => {
   const [userData, setUserData] = useState(null);
   const [isLogingin, setIsLogingin] = useState(false);
   const [isregistering, setIsRegistering] = useState(false);
+  const [showMenu, setMenu] = useState(false);
 
   const router = useRouter();
 
@@ -171,11 +173,7 @@ const Header = ({ isSeller }) => {
             href={"/"}
             className="w-[99px] h-[30px] relative flex-col justify-start items-start inline-flex"
           >
-            <Image
-              src={logo}
-              alt=""
-              className="w-[52.443px] h-[16.492px] lg:w-[87.515px] lg:h-[34.376px]"
-            />
+            <Image src={logo} alt="" className="w-[87.515px] h-[34.376px]" />
           </Link>
           {userLocation !== null && (
             <div className="max-w-[181.33px] h-8 pl-2 pr-[10.67px] py-[5.33px] text-white 3xl:text-lg md:text-base text-sm font-normal leading-[14px] rounded-2xl justify-center items-center gap-[2.67px] lg:flex hidden">
@@ -189,22 +187,20 @@ const Header = ({ isSeller }) => {
           )}
         </div>
 
-        <div className="flex items-center h-full lg:gap-4 gap-2">
-          {!userData?.isSeller && !isSeller && (
+        <div className="flex items-center h-full gap-4">
+          {!userData?.isSeller && !pathname.startsWith("/seller") && (
             <button
               onClick={() => router.push("/seller")}
-              className="bg-white rounded md:p-4 p-2 text-[19px] font-bold leading-[12.80px]"
+              className="bg-white rounded xl:w-48 w-40 aspect-[4/1] text-[19px] font-bold leading-[12.80px]"
             >
               Become a Seller
             </button>
           )}
-          <button></button>
           {isLogin ? (
-            <div className="flex items-center h-full lg:gap-[30px] gap-[11px]">
-              {/* <LuBellDot className="lg:text-2xl text-2xl text-white" /> */}
+            <div className="flex justify-center items-center">
               <button
                 type="button"
-                className="size-fit px-7 py-2 rounded border border-white flex items-center gap-2.5 justify-center"
+                className={`xl:w-24 w-20 aspect-[2/1] rounded sm:border border-white flex items-center gap-4 justify-center`}
               >
                 <svg
                   width="20"
@@ -245,21 +241,50 @@ const Header = ({ isSeller }) => {
                   {userData?.token ? userData?.token : 0}
                 </p>
               </button>
-              <UserProfile
-                isSeller={userData?.isSeller}
-                name={userData?.name}
-                username={userData?.userName}
-                id={userData?.uid}
-                profession={userData?.profession}
-              />
+              <button
+                onClick={() => setMenu(!showMenu)}
+                className={`flex sm:hidden flex-col h-6 w-8 justify-between gap-0.5 ml-5`}
+              >
+                <span
+                  className={`w-full h-1 rounded-full bg-white ${
+                    showMenu && "rotate-45 translate-y-[240%]"
+                  } transition-all duration-500 ease-in-out`}
+                ></span>
+                <span
+                  className={`w-full h-1 rounded-full bg-white ${
+                    showMenu && "hidden"
+                  }`}
+                ></span>
+                <span
+                  className={`w-full h-1 rounded-full bg-white ${
+                    showMenu && "-rotate-45 -translate-y-[240%]"
+                  } transition-all duration-500 ease-in-out`}
+                ></span>
+              </button>
+              <div
+                className={`flex sm:flex-row flex-col sm:static fixed bg-black transition-all duration-500 ease-in-out transform ${
+                  showMenu
+                    ? "translate-y-1/3 sm:translate-y-0"
+                    : "scale-y-0 sm:scale-y-100 translate-y-0 sm:translate-y-0"
+                } sm:bg-transparent inset-x-0 sm:items-center items-end sm:z-0 -z-10 h-2/3 sm:p-0 p-10 sm:h-full lg:gap-[30px] gap-[11px]`}
+              >
+                <UserProfile
+                  onClick={() => setMenu(!showMenu)}
+                  isSeller={userData?.isSeller}
+                  name={userData?.name}
+                  username={userData?.userName}
+                  id={userData?.uid}
+                  profession={userData?.profession}
+                />
+              </div>
             </div>
           ) : (
             <button
               type="button"
               onClick={() => setIsLogingin(!isLogingin)}
-              className="w-[94px] h-[48.98px] px-7 pt-[10.49px] pb-[10.48px] rounded border border-white justify-center items-center inline-flex"
+              className="xl:w-24 md:w-20 sm:w-16 w-20 aspect-[2/1] rounded border border-white justify-center items-center inline-flex"
             >
-              <p className="text-white text-lg font-bold leading-7">Join</p>
+              <p className="text-white lg:text-lg font-bold leading-7">Join</p>
             </button>
           )}
         </div>

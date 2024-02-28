@@ -16,22 +16,22 @@ const PurchaseHistory = () => {
         <p className="text-black 3xl:text-2xl pb-7 2xl:text-xl xl:text-lg lg:text-base not-italic font-normal leading-[36.09px]">
           All your previous purchases will shown here
         </p>
-        <table className="table-auto mt-[2.4rem] w-full divide-y divide-black border-collapse">
+        <table className="table-auto mt-[2.4rem] w-full divide-y overflow-x-auto shrink-0 divide-black border-collapse">
           <thead className="">
             <tr className="w-full">
-              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
+              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
                 Section
               </th>
-              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
+              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
                 Seller name
               </th>
-              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                Date of Purchese
+              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
+                Date of Purchase
               </th>
-              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
+              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
                 Contacted
               </th>
-              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
+              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
                 Export
               </th>
             </tr>

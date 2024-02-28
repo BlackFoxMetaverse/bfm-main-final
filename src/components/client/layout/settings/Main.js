@@ -94,26 +94,7 @@ function Main() {
       </div>
       <div className="lg:w-11/12 w-full mx-auto lg:py-24 py-20 flex lg:flex-row flex-col relative justify-between items-start gap-12">
         <div className={`lg:w-1/3 w-full flex justify-between items-center`}>
-          <div className="w-11/12  mx-auto flex lg:flex-col items-start lg:justify-normal justify-between lg:gap-4 lg:min-h-fit shrink-0 lg:bg-white lg:rounded-[20px]">
-            {/* <div className="w-11/12 mx-auto h-[91.63px] justify-start items-center gap-3.5 inline-flex lg:hidden">
-              <img
-                className="w-[89.31px] h-[89.31px] rounded-full"
-                src={
-                  userData?.image
-                    ? s3Url + userData?.image
-                    : "https://cdn-icons-png.freepik.com/512/1077/1077114.png"
-                }
-                alt=""
-              />
-              <div className="flex-col justify-center items-start inline-flex">
-                <div className="text-indigo-500 text-3xl font-semibold font-['DM Sans'] leading-[55.78px] tracking-tight">
-                  {userData?.name}
-                </div>
-                <div className="text-blue-900 text-lg font-light font-['DM Sans'] leading-[55.78px] tracking-tight">
-                  {userData?.email}
-                </div>
-              </div>
-            </div> */}
+          <div className="w-11/12 mx-auto flex lg:flex-col items-start lg:justify-normal justify-between lg:gap-4 lg:min-h-fit shrink-0 lg:bg-white lg:rounded-[20px]">
             <button
               style={{
                 color: `${
@@ -123,12 +104,6 @@ function Main() {
               className="flex items-center gap-3 hover:text-indigo-500 lg:px-4 py-1 rounded-lg w-full lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("account")}
             >
-              {/* {currentSetting === "account" ? (
-                <div className="w-2 lg:h-full lg:bg-[#4461F2] bg-transparent rounded-r-md"></div>
-              ) : (
-                <div className="w-2 lg:h-full bg-transparent"></div>
-              )} */}
-              {/* <FaRegUserCircle /> */}
               Account
             </button>
             <button
@@ -140,12 +115,6 @@ function Main() {
               className="flex items-center hover:text-indigo-500 lg:px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("security")}
             >
-              {/* {currentSetting === "account" ? (
-                <div className="w-2 lg:h-full lg:bg-[#4461F2] bg-transparent rounded-r-md"></div>
-              ) : (
-                <div className="w-2 lg:h-full bg-transparent"></div>
-              )} */}
-              {/* <FaRegUserCircle /> */}
               Security
             </button>
             <button
@@ -159,12 +128,6 @@ function Main() {
               className="flex items-center hover:text-indigo-500 lg:px-4 py-1 rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("notification")}
             >
-              {/* {currentSetting === "notification" ? (
-                <div className="w-2 lg:h-full lg:bg-[#4461F2] bg-transparent rounded-r-md"></div>
-              ) : (
-                <div className="w-2 lg:h-full bg-transparent"></div>
-              )} */}
-              {/* <TbNotification /> */}
               Notification
             </button>
             <button
@@ -178,33 +141,9 @@ function Main() {
               className="flex items-center hover:text-indigo-500 lg:px-4 py-1 whitespace-nowrap rounded-lg w-full gap-3 lg:h-14 h-7 text-black 3xl:text-2xl xl:text-xl lg:text-lg md:text-base text-sm font-medium leading-[normal]"
               onClick={() => handleSettingChange("purchase_history")}
             >
-              {/* {currentSetting === "purchase_history" ? (
-                <div className="w-2 lg:h-full lg:bg-[#4461F2] bg-transparent rounded-r-md"></div>
-              ) : (
-                <div className="w-2 lg:h-full bg-transparent"></div>
-              )} */}
-              {/* <LuWallet /> */}
               Purchase History
             </button>
           </div>
-          {/* <div className="inline-flex flex-col items-start gap-[30px] mx-6">
-            <div className="flex flex-col items-start gap-[9px]">
-              <p className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] text-xl font-medium leading-[normal]">
-                Current tokens{" "}
-              </p>
-              <p className="text-black text-xl font-bold leading-[normal]">
-                10
-              </p>
-            </div>
-            <div className="flex flex-col items-start gap-[9px]">
-              <p className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] text-xl font-medium leading-[normal]">
-                Tokens purchased till now{" "}
-              </p>
-              <p className="text-black text-xl font-bold leading-[normal]">
-                30
-              </p>
-            </div>
-          </div> */}
         </div>
 
         <div className="lg:w-2/3 w-full py-6 shrink-0 min-h-full bg-white/50 rounded-[20px]">

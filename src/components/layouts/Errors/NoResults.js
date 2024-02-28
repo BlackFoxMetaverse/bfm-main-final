@@ -32,7 +32,7 @@ const ActionButton = ({ children, onClick }) => (
 );
 
 const NoResultsFound = ({ onClick }) => (
-  <article className="flex flex-col items-center justify-center mx-auto my-5 max-w-[613px]">
+  <article className="flex flex-col items-center justify-center mx-auto my-10 max-w-[613px]">
     <HeaderImage />
     <SectionTitle>No Result Found!</SectionTitle>
     <SectionDescription>

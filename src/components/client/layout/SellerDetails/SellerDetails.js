@@ -115,7 +115,7 @@ const SellerDataDetails = ({ params }) => {
   const [showModal, setShowModal] = useState(false);
   const [showImage, setShowImage] = useState(true);
   const [addFeedBack, setAddFeedback] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [proposalInput, setProposal] = useState({
