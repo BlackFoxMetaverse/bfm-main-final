@@ -62,35 +62,55 @@ const services = [
   },
 ];
 
-const Plans = [
-  {
-    type: "Basic plan ",
-    isPopular: false,
-    tokens: 10,
-    benifits: "You can view details of 10 profile.",
-    price: 100,
-  },
-  {
-    type: "Pro Plan",
-    isPopular: false,
-    tokens: 20,
-    benifits: "You can view details of 20 profile.",
-    price: 200,
-  },
-  {
-    type: "Executive Plan",
-    isPopular: true,
-    tokens: 30,
-    benifits: "You can view details of 30 profile.",
-    offer: "14%",
-    price: 260,
-  },
-];
+// const Plans = [
+//   {
+//     type: "Basic plan ",
+//     isPopular: false,
+//     tokens: 10,
+//     benifits: "You can view details of 10 profile.",
+//     price: 100,
+//   },
+//   {
+//     type: "Pro Plan",
+//     isPopular: false,
+//     tokens: 20,
+//     benifits: "You can view details of 20 profile.",
+//     price: 200,
+//   },
+//   {
+//     type: "Executive Plan",
+//     isPopular: true,
+//     tokens: 30,
+//     benifits: "You can view details of 30 profile.",
+//     offer: "14%",
+//     price: 260,
+//   },
+// ];
 
 const Hero = () => {
   const [searchInput, setSearchInputData] = useState({});
   const [searchResult, setSearchResult] = useState([]);
+  const [recommendations, setRecommendation] = useState(null);
   const router = useRouter();
+
+  async function fetchRecomendation() {
+    try {
+      const response = await instance.get(
+        `search/recommendation?longitude=${searchInput?.longitude}&latitude=${searchInput?.latitude}&page=1`
+      );
+
+      setRecommendation(response?.data?.data);
+      console.log(response?.data?.message);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchRecomendation();
+  }, [searchInput?.latitude]);
+
+  console.log(searchInput);
 
   return (
     <main className="flex w-full flex-col items-center gap-[120px]">
@@ -118,7 +138,7 @@ const Hero = () => {
             // handleSubmit={handleSearch}
             data={setSearchResult}
             isShown
-            // searchInputData={setSearchInputData}
+            searchInputData={setSearchInputData}
           />
         </div>
       </section>
@@ -142,42 +162,48 @@ const Hero = () => {
                 <FaAngleRight className="text-white" />
               </button>
             </div>
-            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
-              {services?.map((_, index) => (
-                <ServicesCard key={index} />
-              ))}
+            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 relative grid-cols-1 items-start gap-5 w-full">
+              {recommendations?.length === 0 || !recommendations ? (
+                <p className="w-full text-center absolute inset-x-0">
+                  <span className="text-neutral-900 text-xl">No </span>
+                  <span className="text-neutral-900 text-[32px] font-bold">
+                    Professionals{" "}
+                  </span>
+                  <span className="text-neutral-900 text-xl">Near You</span>
+                </p>
+              ) : (
+                recommendations?.map((data, index) => (
+                  <ServicesCard key={index} {...data} />
+                ))
+              )}
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-10 w-5/6 m-auto">
-            <p>
-              <span className="text-neutral-900 text-[32px] font-bold capitalize">
-                {searchInput?.term ? searchInput.term : "Professionals"}
-              </span>
-              <span className="text-neutral-900 text-xl">Near You</span>
-            </p>
-            <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
+          <div className="flex flex-col items-center gap-10 w-11/12 m-auto">
+            <div className="flex justify-between items-center w-full">
+              <p className="flex-grow">
+                <span className="text-neutral-900 text-[32px] font-bold capitalize">
+                  {searchInput?.term
+                    ? searchInput.term?.toUpperCase()
+                    : "Professionals"}
+                </span>
+                <span className="text-neutral-900 text-xl">Near You</span>
+              </p>
+              {searchResult?.length > 4 && (
+                <button
+                  type="button"
+                  onClick={() => router.push(`/client/more`)}
+                  className="w-[34.02px] h-[29.69px] px-[12.37px] py-[7.42px] bg-neutral-900 rounded border border-violet-50 justify-center items-center gap-[4.95px] inline-flex"
+                >
+                  <FaAngleRight className="text-white" />
+                </button>
+              )}
+            </div>
+            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
               {searchResult?.map((data, index) => (
-                <ServicesCard
-                  key={index}
-                  img={data?.image}
-                  distance={data?.distance}
-                  id={data?.uid}
-                  username={data?.userName}
-                  profession={data?.profession}
-                />
+                <ServicesCard key={index} {...data} />
               ))}
             </div>
-            {searchResult?.length > 4 && (
-              <button
-                type="button"
-                onClick={() => router.push(`/client/more`)}
-                className="flex justify-center items-center gap-2 rounded pl-8 pr-6 py-4 text-[#562FB9] text-xl font-normal leading-[100%] tracking-[-1px]"
-              >
-                View More
-                <AiFillRightSquare />
-              </button>
-            )}
           </div>
         )}
       </section>

@@ -11,7 +11,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import instance from "@/utils/axios";
 import Security from "../../modules/settings/Security";
 import Toast from "@/components/Modules/Toast/Toast";
-import fetchUserData from "@/utils/userData";
+import { fetchUserData } from "@/utils/userData";
 
 function TokenInfoCard({ label, value }) {
   return (
@@ -147,15 +147,6 @@ function Main() {
         </div>
 
         <div className="lg:w-2/3 w-full py-6 shrink-0 min-h-full bg-white/50 rounded-[20px]">
-          {/* <div className="block lg:hidden w-5/6 mx-auto mb-10">
-            <button
-              type="button"
-              className=""
-              onClick={() => setClicked(!isClicked)}
-            >
-              <FaAngleLeft />
-            </button>
-          </div> */}
           {renderSetting(currentSetting, userData)}
         </div>
       </div>

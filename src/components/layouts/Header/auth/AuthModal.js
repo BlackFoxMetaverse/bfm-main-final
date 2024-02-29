@@ -2,10 +2,12 @@
 
 import Login from "@/components/client/auth/Login";
 import Register from "@/components/client/auth/Register";
-import React from "react";
+import React, { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 
 const AuthModal = ({ onClose, animation, register, isRegister }) => {
+  const [uid, setUid] = useState(null);
+
   return (
     <main
       className={`flex bg-black fixed right-0 inset-y-0 3xl:w-1/4 xl:w-1/3 lg:w-1/2 md:w-2/3 w-full z-40 ${animation} transition-all duration-700 ease-in-out`}
@@ -18,12 +20,9 @@ const AuthModal = ({ onClose, animation, register, isRegister }) => {
         <RxCross1 />
       </button>
       {isRegister ? (
-        <Register close={onClose} />
+        <Register close={onClose} uid={uid} />
       ) : (
-        <Login
-          close={onClose}
-          register={register}
-        />
+        <Login setUId={setUid} close={onClose} register={register} />
       )}
     </main>
   );

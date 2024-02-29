@@ -2,7 +2,7 @@
 
 import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
@@ -15,6 +15,7 @@ const dummyData = ["Photography", "Marketing", "Gaming", "Developer"];
 const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const params = useSearchParams();
 
   const [rangeSection, setRangeSection] = useState(false);
   const [isLocation, setIsLocation] = useState(false);
@@ -32,7 +33,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     distance: 0,
     latitude: 0,
     longitude: 0,
-    term: "",
+    profession: "",
     limitUser: 50,
   });
   const [isCitySelected, setCitySelected] = useState(null);
@@ -69,6 +70,8 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     dummyData.push(tags);
   }
 
+  const queryParams = new URLSearchParams({ ...searchData });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSearchData({ ...searchData, [name]: value });
@@ -76,31 +79,42 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
 
   const [searchResult, setSearchResult] = useState(null);
 
+  const fetchData = async () => {
+    try {
+      if (pathname.startsWith("/client/search")) {
+        const response = await instance.get(
+          `search/nearby?${queryParams?.toString()}`
+        );
+        setSearchResult(response?.data?.data);
+      }
+    } catch (error) {
+      console.error(error?.response?.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   async function handleSearch(e) {
     e.preventDefault();
     try {
       const token = localStorage.getItem("bfm-client-token");
       const res = await instance.get(
-        `search/nearby?longitude=${searchData?.longitude}&latitude=${searchData?.latitude}&distance=${searchData?.distance}&limitUser=${searchData?.limitUser}&profession=${searchData?.term}`,
+        `search/nearby?${queryParams.toString()}`,
         {
           headers: {
             token: token,
           },
         }
       );
+      console.log(queryParams.toString());
       if (res.status === 200) {
         if (pathname === "/") {
-          window.scrollTo({
-            behavior: "smooth",
-            top: 660,
-          });
-          setSearchData(searchData);
-          setSearchResult(res.data?.data);
-          console.log(res.data?.data);
+          router.push(`/client/search?${queryParams.toString()}`);
         } else {
           setSearchResult(res.data?.data);
           console.log(res.data?.data);
-          // setSearchResult(res.data?.data);
         }
       } else if (res.data.message === "User token has expired") {
         router.push("/client/auth/login");
@@ -113,9 +127,9 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   }
 
   useEffect(() => {
-    // searchInputData(searchData);
+    searchInputData(searchData);
     data(searchResult);
-  }, [searchResult]);
+  }, [searchResult, searchData]);
 
   console.log(searchData);
 
@@ -137,9 +151,9 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
             </label>
             <input
               type="text"
-              name="term"
-              id="term"
-              value={searchData.term}
+              name="profession"
+              id="profession"
+              value={searchData.profession}
               onChange={handleChange}
               className="lg:min-w-[294px] w-full h-full text-base font-[450] leading-[150.687%] focus:outline-none"
               placeholder="Search by profession..."
@@ -179,6 +193,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                       type="range"
                       name="distance"
                       id="distance"
+                      required
                       value={searchData.distance}
                       onChange={handleChange}
                       min="0"

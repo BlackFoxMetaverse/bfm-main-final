@@ -15,8 +15,8 @@ import { BsCheckCircleFill, BsGear, BsPhone } from "react-icons/bs";
 import instance from "@/utils/axios";
 import s3FileUpload from "@/utils/imageUploader";
 import { getUserPreciseLocation } from "@/utils/location";
-import Form1 from "../../modules/sellerForm/Form1";
 import checkToken from "@/utils/api/checkToken";
+import { checkUserDataByToken } from "../../../../utils/userData";
 
 const SellerForm = () => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
@@ -32,7 +32,7 @@ const SellerForm = () => {
     city: "",
     profession: "",
     gender: "",
-    experience: "",
+    experience: "0-1",
     services: [],
     skills: [],
     collegeName: "",
@@ -47,6 +47,16 @@ const SellerForm = () => {
   const [formCount, setCount] = useState(1);
   const [userNameValid, setUserNameValid] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("bfm-client-token");
+    checkUserDataByToken(token)
+      .then((data) => setUserData(data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  console.log(userData);
 
   useEffect(() => {
     const token = localStorage.getItem("bfm-client-token");
@@ -181,6 +191,7 @@ const SellerForm = () => {
             token: token,
           },
         });
+        router.back();
         return Promise.resolve(response.data);
       } else {
         const bodyObj = await transform(inputData);
@@ -189,6 +200,9 @@ const SellerForm = () => {
             token: token,
           },
         });
+        router.replace(
+          `/seller/dashboard/${response?.data?.data?.name}/${response?.data?.data?.uid}`
+        );
         return Promise.resolve(response.data);
       }
     } catch (error) {
@@ -216,8 +230,9 @@ const SellerForm = () => {
 
     emailTimeout = setTimeout(() => {
       instance
-        .get(`check/email?uid=${res?.uid}&email=${email}`)
+        .get(`check/email?uid=${userData?.uid}&email=${email}`)
         .then((response) => {
+          console.log(response.data);
           setEmailValid(response.data);
         })
         .catch((error) => {
@@ -228,17 +243,20 @@ const SellerForm = () => {
         });
     }, 450);
   }
-  function checkUserName(email) {
+
+  function checkUserName(userName) {
     if (userNameTimeout) {
       clearTimeout(userNameTimeout);
     }
 
     userNameTimeout = setTimeout(() => {
       instance
-        .get(`check/email?uid=${res?.uid}&userName=${userName}`)
+        .get(
+          `check/userName?uid=${userData?.data?.user?.uid}&userName=${userName}`
+        )
         .then((Res) => setUserNameValid(Res.data))
         .catch((error) => {
-          console.error("Error checking email:", error);
+          console.error("Error checking username:", error);
         })
         .finally(() => {
           userNameTimeout = null;
@@ -250,7 +268,7 @@ const SellerForm = () => {
     <main className="w-full mx-auto py-20 space-y-10">
       <section className="flex overflow-hidden relative flex-col justify-center items-center px-16 py-12 text-white min-h-[346px] max-md:px-5">
         <img
-          loading="lazy"
+          loading="eager"
           src="https://images.unsplash.com/photo-1618172193622-ae2d025f4032?q=80&w=1364&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Decorative background"
           className="object-cover absolute inset-0 w-full h-full"
@@ -265,27 +283,37 @@ const SellerForm = () => {
         </div>
       </section>
 
-      <div className="w-5/6 mx-auto flex gap-10 justify-between items-start flex-col lg:flex-row">
+      <div className="max-w-[1920px] w-11/12 my-12 py-10 mx-auto flex gap-10 justify-between items-start flex-col lg:flex-row">
         {/* Form Component */}
         <div className="flex flex-col items-center justify-center gap-10 w-11/12 mx-auto">
           {/* Form Names and positions */}
-          <div className="flex items-center gap-10">
-            <div className="flex items-center gap-3">
-              <p className="flex w-[25px] h-[25px] justify-center items-center bg-[#1DBF73] px-0 py-[5.5px] rounded-[12.5px] text-white text-center text-sm font-semibold">
+          <div className="flex items-center xl:gap-10 gap-4">
+            <button
+              type="button"
+              onClick={() => setCount(1)}
+              disabled={formCount === 1 ? true : false}
+              className="flex items-center gap-3"
+            >
+              <p className="flex md:size-[25px] size-3 justify-center items-center bg-[#1DBF73] px-0 py-[5.5px] rounded-[12.5px] text-white text-center md:text-sm text-[8px] font-semibold">
                 1
               </p>
-              <p className="text-[#222325] text-sm font-semibold leading-6">
+              <p className="text-[#222325] md:text-sm text-[8px] font-semibold whitespace-nowrap leading-6">
                 Personal Information
               </p>
-              <FaAngleRight />
-            </div>
-            <div className="flex items-center gap-3">
+              <FaAngleRight className="md:text-sm text-[8px]" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setCount(2)}
+              disabled={formCount <= 2 ? true : false}
+              className="flex items-center gap-3"
+            >
               <p
-                className={`flex w-[25px] h-[25px] justify-center items-center ${
+                className={`flex md:size-[25px] size-3 justify-center items-center ${
                   formCount === 2 || formCount === 3
                     ? "bg-[#1DBF73]"
                     : "bg-black/10"
-                } px-0 py-[5.5px] rounded-[12.5px] text-white text-center text-sm font-semibold`}
+                } px-0 py-[5.5px] rounded-[12.5px] text-white text-center md:text-sm text-[8px] font-semibold`}
               >
                 2
               </p>
@@ -294,33 +322,38 @@ const SellerForm = () => {
                   formCount === 2 || formCount === 3
                     ? "text-[#222325]"
                     : "text-black/35"
-                } text-sm font-semibold leading-6`}
+                } md:text-sm text-[8px] font-semibold whitespace-nowrap leading-6`}
               >
                 Professional Information
               </p>
-              <FaAngleRight />
-            </div>
-            <div className="flex items-center gap-3">
+              <FaAngleRight className="md:text-sm text-[8px]" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setCount(3)}
+              disabled={formCount === 3 ? false : true}
+              className="flex items-center gap-3"
+            >
               <p
-                className={`flex w-[25px] h-[25px] justify-center items-center ${
+                className={`flex md:size-[25px] size-3 justify-center items-center ${
                   formCount === 3 ? "bg-[#1DBF73]" : "bg-black/10"
-                } px-0 py-[5.5px] rounded-[12.5px] text-white text-center text-sm font-semibold`}
+                } px-0 py-[5.5px] rounded-[12.5px] text-white text-center md:text-sm text-[8px] font-semibold`}
               >
                 3
               </p>
               <p
                 className={`${
                   formCount === 3 ? "text-[#222325]" : "text-black/35"
-                } text-sm font-semibold leading-6`}
+                } md:text-sm text-[8px] font-semibold whitespace-nowrap leading-6`}
               >
                 Show Your Work
               </p>
-              <FaAngleRight />
-            </div>
+              <FaAngleRight className="md:text-sm text-[8px]" />
+            </button>
           </div>
 
           {/* Forms */}
-          <div className="flex flex-col items-end gap-[22.916px] bg-[#FBFBFB] w-3/4 py-7">
+          <div className="max-w-[1920px] 2xl:w-1/2 lg:w-2/3 flex flex-col gap-10 w-full py-10 mx-auto bg-gray-100">
             {formCount === 1 && (
               <PersonalInfo
                 inputData={inputData}

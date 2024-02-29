@@ -15,7 +15,8 @@ const profession = [
   "Software Developer",
 ];
 
-const ProfessionalInfo = ({ inputData, setInputData, setCount }) => {
+const ProfessionalInfo = ({ inputData, setInputData, setCount, isShown }) => {
+  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   const [currentTag, setCurrentTag] = useState("");
   const [currentService, setCurrentService] = useState("");
   const [document, setDocument] = useState(null);
@@ -83,7 +84,7 @@ const ProfessionalInfo = ({ inputData, setInputData, setCount }) => {
     <form
       action=""
       onSubmit={handleSubmit}
-      className="flex w-5/6 mx-auto flex-col items-end gap-10 md:pt-10 rounded-[40px]"
+      className="flex w-11/12 mx-auto flex-col items-end gap-10 rounded-[40px]"
     >
       <div className="flex flex-col items-start gap-5 w-full">
         <div className="flex flex-col items-start text-left gap-[7px]">
@@ -267,7 +268,11 @@ const ProfessionalInfo = ({ inputData, setInputData, setCount }) => {
             } whitespace-break-spaces break-words shrink text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]`}
           >
             {inputData?.resume
-              ? inputData?.resume?.name?.slice(0, 40) + "..."
+              ? inputData?.resume?.name === undefined
+                ? `${inputData?.name.split(" ")[0]}'sResume.${
+                    inputData?.resume.split(".")[1]
+                  }`
+                : inputData?.resume?.name?.slice(0, 40) + "..."
               : "Upload your resume here"}
           </label>
           <input
@@ -298,14 +303,14 @@ const ProfessionalInfo = ({ inputData, setInputData, setCount }) => {
           </button>
         </div>
       </div>
+      {/* {isShown && ( */}
       <button
         type="submit"
-        className="px-8 py-4 bg-indigo-500 rounded-lg border-2 justify-center items-center gap-2 inline-flex"
+        className="flex justify-center items-center gap-2 rounded [background:var(--Primary-1,#4461F2)] px-8 py-4 text-[color:var(--Primary-blue,#FFF)] font-[450] leading-[100%] tracking-[-1px]"
       >
-        <p className="text-white text-xl font-['Neue Helvetica'] leading-tight">
-          Save & Continue
-        </p>
+        <p className="">Save & Continue</p>
       </button>
+      {/* )} */}
     </form>
   );
 };

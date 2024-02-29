@@ -14,14 +14,12 @@ import { RxCrossCircled } from "react-icons/rx";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
 import s3FileUpload from "@/utils/imageUploader";
 
-const Register = ({ close }) => {
+const Register = ({ close, uid }) => {
   const [document, setDocument] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  // const [isUniqueUser, setUniqueUser] = useState(true);
   const [isUniqueEmail, setUniqueEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    // imageFile: "",
     name: "",
     email: "",
   });
@@ -31,38 +29,6 @@ const Register = ({ close }) => {
   });
 
   const router = useRouter();
-
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setProfileImage(file);
-  //     const imageUrl = URL.createObjectURL(file);
-  //     setProfileImage(imageUrl);
-  //     setFormData({ ...formData, imageFile: file });
-  //   }
-  // };
-
-  // function checkUniqueUserName(e) {
-  //   const userName = e.target.value;
-  //   if (userName === "") {
-  //     return;
-  //   }
-  //   setFormData({ ...formData, name: userName });
-  //   var checkTimeout;
-  //   if (checkTimeout) {
-  //     clearTimeout(checkTimeout);
-  //   }
-  //   checkTimeout = setTimeout(() => {
-  //     instance
-  //       .get(`/check/userName?userName=${userName}`)
-  //       .then((res) => {
-  //         setUniqueUser(res.data);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err.message);
-  //       });
-  //   }, 500);
-  // }
 
   function checkUniqueEmail(e) {
     const email = e.target.value;
@@ -76,12 +42,15 @@ const Register = ({ close }) => {
     setFormData({ ...formData, email: email });
     checkTimeout = setTimeout(() => {
       instance
-        .get(`/check/email?email=${email}`)
+        .get(
+          `/check/email?uid=${uid}&email=${email}`
+        )
         .then((res) => {
           setUniqueEmail(res.data);
         })
         .catch((err) => {
-          console.log(err.message);
+          console.error(err.message);
+          setUniqueEmail(false);
         });
     }, 500);
   }
@@ -100,6 +69,7 @@ const Register = ({ close }) => {
       .then((response) => {
         console.log(response);
         close();
+        window.location.reload();
       })
       .catch((err) => console.error(err.message))
       .finally(() => setSubmitting(true));
@@ -109,9 +79,6 @@ const Register = ({ close }) => {
 
   return (
     <div className="flex flex-col py-12 w-full space-y-20">
-      {/* <div className="max-w-[206px] w-full flex flex-col items-center space-y-10 justify-center shrink-0">
-        <Image src={Logo} alt="" className=" w-full  fill-white" />
-      </div> */}
       <div className="flex py-[35px] rounded-[40px] items-center justify-center gap-[69px] shrink-0 overflow-hidden">
         <form
           onSubmit={handleSubmit}
@@ -125,44 +92,6 @@ const Register = ({ close }) => {
               Enter your Details for completion of your account
             </p>
           </div>
-          {/* <div
-            className={`lg:w-[121.962px] lg:h-[121.962px] w-[93.196px] h-[93.196px] relative shrink-0 rounded-[121.962px]`}
-          >
-            {profileImage ? (
-              <div className="w-full h-full">
-                <img
-                  src={profileImage}
-                  alt=""
-                  className="flex w-full h-full aspect-square items-start rounded-[102px]"
-                />
-              </div>
-            ) : (
-              <div className="w-full h-full">
-                <FaUserAlt className="w-full h-full bg-black/20 pt-5 flex aspect-square items-start rounded-[102px]" />
-                <input
-                  type="file"
-                  id="imageInput"
-                  name="imageInput"
-                  className="hidden"
-                  required={false}
-                  onChange={handleImageChange}
-                />
-              </div>
-            )}
-            <label
-              htmlFor="imageInput"
-              className="flex lg:w-[38.418px] lg:h-[37.031px] w-[29.357px] h-[28.297px] flex-col justify-center items-center gap-[12.274px] shrink-0 bg-[#DADADA] z-10 lg:p-[12.274px] p-[9.379px] rounded-[71.19px] absolute bottom-0 right-0"
-            >
-              <FaCamera />
-              <input
-                type="file"
-                id="imageInput"
-                name="imageInput"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
-          </div> */}
           <div className="flex flex-col w-full justify-center items-start gap-[5px]">
             <label
               htmlFor="Username"
@@ -181,19 +110,6 @@ const Register = ({ close }) => {
               className="flex h-11 items-center gap-[5px] self-stretch bg-white rounded-lg p-3.5 border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />
           </div>
-          {/* {document?.getElementById("Username").value !== "" ? (
-            isUniqueUser ? (
-              <div className="flex gap-1.5 items-center w-full text-green-600 xl:text-sm text-xs capitalize">
-                <BsCheckCircleFill />
-                this username is unique and valid
-              </div>
-            ) : (
-              <div className="flex gap-1.5 items-center w-full text-red-600 xl:text-sm text-xs capitalize">
-                <RxCrossCircled />
-                this username is already taken
-              </div>
-            )
-          ) : null} */}
           <div className="flex flex-col w-full justify-center items-start gap-[5px]">
             <label
               htmlFor="email"
@@ -262,11 +178,6 @@ const Register = ({ close }) => {
           </button>
         </form>
       </div>
-      {/* <div className=" w-full flex flex-col items-center space-y-10 justify-center">
-        <p className="self-stretch text-white text-center text-lg not-italic font-bold leading-[normal] uppercase">
-          Discover More, Connect Locally
-        </p>
-      </div> */}
       <div className="absolute" id="recaptcha"></div>
     </div>
   );

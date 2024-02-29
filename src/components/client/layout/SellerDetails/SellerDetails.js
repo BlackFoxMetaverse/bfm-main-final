@@ -15,6 +15,8 @@ import { BsStarFill } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import FeedBackCard from "../../modules/FeedBackSection/FeedBackCard";
 import ProposalModal from "../../modules/proposalSection/ProposalModal";
+import instance from "@/utils/axios";
+import Toast from "@/components/Modules/Toast/Toast";
 
 const ImageComponent = ({ src, alt, className, onClick }) => (
   <img
@@ -26,24 +28,37 @@ const ImageComponent = ({ src, alt, className, onClick }) => (
   />
 );
 
-const FeedBackModal = ({ feedbackData, close }) => {
+const FeedBackModal = ({ close, uid_for }) => {
   const myRef = useRef(null);
 
   const handleClose = (e) => {
     if (myRef.current && !myRef.current.contains(e.target)) {
       close();
     }
-  }
+  };
 
   const stars = [1, 2, 3, 4, 5];
   const [feedback, setFeedback] = useState({
+    uid_for: uid_for,
     rating: 0,
-    feedbackTerm: "",
+    description: "",
   });
 
-  const handleSubmit = () => {
-    feedbackData(feedback);
-    close();
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("bfm-client-token");
+      const response = await instance.post("main/feedback", feedback, {
+        headers: {
+          token: token,
+        },
+      });
+      console.log(response);
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      close();
+    }
   };
 
   // useEffect(() => {
@@ -53,8 +68,15 @@ const FeedBackModal = ({ feedbackData, close }) => {
   console.log(feedback);
 
   return (
-    <div onClick={handleClose} className="w-full h-screen flex items-center justify-center bg-black/50 fixed inset-0 z-50">
-      <div ref={myRef} onClick={(e) => e.stopPropagation()} className="bg-white flex flex-col max-w-[1920px] aspect-video 2xl:w-1/2 xl:w-2/3 lg:w-5/6 w-full rounded-2xl lg:px-5 py-5">
+    <div
+      onClick={handleClose}
+      className="w-full h-screen flex items-center justify-center bg-black/50 fixed inset-0 z-50"
+    >
+      <div
+        ref={myRef}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white flex flex-col max-w-[1920px] aspect-video 2xl:w-1/2 xl:w-2/3 lg:w-5/6 w-full rounded-2xl lg:px-5 py-5"
+      >
         <h2 className="3xl:text-5xl 2xl:text-3xl w-11/12 mx-auto text-2xl font-bold">
           Give a Feedback
         </h2>
@@ -88,9 +110,9 @@ const FeedBackModal = ({ feedbackData, close }) => {
           name="feedback"
           id="feedback"
           placeholder="My Feedback!!"
-          value={feedback.feedbackTerm}
+          value={feedback.description}
           onChange={(e) =>
-            setFeedback({ ...feedback, feedbackTerm: e.target.value })
+            setFeedback({ ...feedback, description: e.target.value })
           }
           cols="30"
           rows=""
@@ -110,46 +132,22 @@ const FeedBackModal = ({ feedbackData, close }) => {
 
 const SellerDataDetails = ({ params }) => {
   const router = useRouter();
-  const [showTooltip, setShowTooltip] = useState(false);
+  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
+  const [error, setError] = useState(null);
   const [sellerData, setSellerData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showImage, setShowImage] = useState(true);
   const [addFeedBack, setAddFeedback] = useState(false);
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
+  const [proposalStatus, setProposalStatus] = useState(null);
   const [proposalInput, setProposal] = useState({
     subject: "",
     feedback: "",
   });
   const [proposalSent, setProposalSent] = useState(false);
-
-  const services = [
-    "SEO",
-    "Freelancing",
-    "User Research",
-    "UI Research",
-    "Prototyping",
-    "Wireframing",
-  ];
-  const feedbacksData = [
-    {
-      imageSrc:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/ec9057b567c10586011945dc82f27532d518f41f637d48ef6ef795e6a9034a88?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
-      authorName: "Jane Doe",
-      feedback:
-        "I really appreciate the insights and perspective shared in this article. It's definitely given me something to think about and has helped me see things from a different angle. Thank you for writing and sharing!",
-      ratingText: "3",
-    },
-    {
-      imageSrc:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/ec9057b567c10586011945dc82f27532d518f41f637d48ef6ef795e6a9034a88?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
-      authorName: "Jane Doe",
-      feedback:
-        "I really appreciate the insights and perspective shared in this article. It's definitely given me something to think about and has helped me see things from a different angle. Thank you for writing and sharing!",
-      ratingText: "1",
-    },
-  ];
+  const [feedbackData, setFeedBackData] = useState(null);
   const image = [
     "https://s3-alpha-sig.figma.com/img/088d/f14d/a208675f602fab1876f249bacd792579?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Kvks0aVQm6JuAEkVZSA11e7lEy4NReDZbC1mhMfCleDvwiiH~-wmw48Bzd7ZL867hevFWK9Ni5iGk96lyLzvyS9PMFkfFAkyiH3bXuDDJIBv9xUMqaXqpLjiLj2DsxYqS647eV~SGPsWXxDoVNS3dHP0wWapBhYTxbxBiQ3QpxxcsxtDbfytR38j1T-JmYGmxaBQP5wxMGaN1lG1FO7pdc18wsHi1-iIi5n1zqfKD3EdHgdHe6yTOQS9U9JWjFW2gyh51pcNkJNUSbh9q1DKdABohwyowYDtF9Ydf5Uul9sMrE~V15T3S4Ee9lJKNH1-Hr5XLeGBlamh7jAkGdA1tA__",
     "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
@@ -172,36 +170,112 @@ const SellerDataDetails = ({ params }) => {
     setModalImageUrl(null);
   };
 
+  async function fetchSellerData() {
+    try {
+      const response = await instance.get(
+        `/main/sellerProfile?uid=${params.id}`
+      );
+
+      // if (response?.data?.message === "Seller with free data") {
+      //   setShowDetails(true);
+      // }
+      setSellerData(response?.data?.data);
+    } catch (error) {
+      console.error(error?.response?.data);
+      setError("Something went wrong");
+      setTimeout(() => {
+        router.back();
+      }, 6000);
+    }
+  }
+
+  useEffect(() => {
+    fetchSellerData();
+  }, []);
+
+  async function handleRevealInfo() {
+    try {
+      const token = localStorage.getItem("bfm-client-token");
+      const response = await instance.get(
+        `main/revealInfo?seller_uid=${params?.id}&seller_field=email`,
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+      console.log(response);
+
+      setShowDetails(response?.data?.payLoad?.isTransaction);
+      setProposalStatus(response?.data?.payLoad?.status);
+    } catch (error) {
+      console.error(error?.response?.status);
+      setShowDetails(false);
+
+      if (error?.response?.status === 401) {
+        setError("You Need to login Here 👆 to see the contact info");
+      } else {
+        setError("Something went wrong Can't reveal the Information");
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleRevealInfo();
+  }, []);
+
+  async function getFeedBack() {
+    try {
+      const token = localStorage.getItem("bfm-client-token");
+      const response = await instance.get(
+        `/main/sellerFeedback?uid=${params?.id}`,
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+
+      setFeedBackData(response?.data?.data);
+    } catch (error) {
+      console.error(error?.response);
+    }
+  }
+
+  useEffect(() => {
+    getFeedBack();
+  }, []);
+
+  console.log(feedbackData);
+
   return (
     <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-32 py-24 mx-auto">
+      {error !== null && <Toast type={"error"} message={error} />}
       <div className="flex gap-7 xl:w-[40%] w-full items-start lg:sticky static inset-y-28 h-full">
-        {/* <button
-            type="button"
-            onClick={() => router.back()}
-            className="px-[17.57px] py-[10.54px] bg-neutral-900 rounded-md border-2 border-violet-50 justify-center items-center gap-[7.03px] hidden lg:inline-flex"
-          >
-            <FaAngleLeft className="text-white" />
-          </button> */}
         <div className="space-y-5 w-full">
           <div className="w-full flex flex-col overflow-hidden gap-8 rounded-lg justify-center bg-white p-7 items-center">
             <div className="w-full h-full items-start shrink-0 gap-[22.29px] flex">
               <div className="w-1/3 aspect-square rounded-2xl shrink-0 overflow-hidden relative bg-stone-300">
                 <img
-                  src="https://s3-alpha-sig.figma.com/img/e5f1/c231/96d9c17181e09c0c069fb92abf5dcd9b?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=d0tt1M-~cJJK5yeNSqhOosCaOy0Cr5gHFeI2Nqgy8P8LnRCBajnfpgTR2o9gsaOw5GbVA6wgGhKUYRswddZNLDuuEKvMBpe5t3P69887rWQby6X0nwE0-6Vjc0ic7d452O80U9xtm7cs2vmXQ8gcZLN7G0tDoW6jFrc-B2jP46Bm52KaJYlVHzs1dkcqIrbxT-Lg-L8sHd8DMlfRydGIUI2s~nKxvnpzOS3LzoC5LNO23gbPEnpFJ50FqyT1XuT-uqPGrnPpyTpiTIB~P15wJU3II3-OweUGqaG~PuHYvEuE41Hl860e9AM3QyccNhe-V4otdMoUIebKRjfsi3gQRQ__"
+                  src={sellerData?.image ? s3Url + sellerData?.image : null}
                   alt=""
                   className="size-full object-cover shrink-0"
                 />
               </div>
               <div className="flex-col w-2/3 justify-between h-full items-start 3xl:gap-2 gap-1 inline-flex">
                 <div className="text-black 3xl:text-2xl 2xl:text-xl lg:text-lg text-lg font-bold whitespace-nowrap">
-                  {showDetails ? "Rajesh Ramayana" : "Ra***"}
+                  {showDetails
+                    ? sellerData?.name
+                    : sellerData?.name.slice(0, 2) + "***"}
                 </div>
                 <div className="flex-col justify-start items-start gap-[4.68px] flex">
                   <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
-                    {params?.username ? decodeURIComponent(params?.username) : "Username"}
+                    {params?.username
+                      ? decodeURIComponent(params?.username)
+                      : "Username"}
                   </div>
                   <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
-                    UI/UX Designer{" "}
+                    {sellerData?.profession}{" "}
                   </div>
                 </div>
                 {/* <div className="w-[72.45px] h-[25.03px] pl-[9.82px] pr-[8.63px] pt-[4.91px] pb-[5.12px] bg-gray-200 rounded-xl justify-center items-center inline-flex">
@@ -211,7 +285,7 @@ const SellerDataDetails = ({ params }) => {
                   </div> */}
                 <div className="px-2 py-1 bg-black rounded-xl justify-center items-center gap-1 inline-flex">
                   <div className="text-white text-base font-normal whitespace-nowrap">
-                    Faridabad, Haryana
+                    {sellerData?.city}
                   </div>
                   <IoLocationOutline className="text-white" />
                 </div>
@@ -225,50 +299,54 @@ const SellerDataDetails = ({ params }) => {
             </div>
             {showDetails && (
               <div className="w-full flex-col justify-start items-start gap-7 flex">
-                <div className="flex-col w-full justify-start items-start gap-0.5 flex">
-                  <div className="text-black text-xl font-bold">
-                    Phones Number
+                {sellerData?.phone_number && (
+                  <div className="flex-col w-full justify-start items-start gap-0.5 flex">
+                    <div className="text-black text-xl font-bold">
+                      Phones Number
+                    </div>
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
+                      {proposalStatus === "done" ? (
+                        sellerData?.phone_number
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={proposalSent ? true : false}
+                          onClick={() => setShowProposalModal(true)}
+                          className={`px-7 py-1 border ${
+                            proposalSent ? "bg-green-500" : "bg-black"
+                          } rounded text-white flex items-center justify-center gap-2`}
+                        >
+                          {!proposalSent ? "Request Contact" : "Request Sent"}
+                        </button>
+                      )}
+                      {showProposalModal && (
+                        <ProposalModal
+                          close={() => setShowProposalModal(false)}
+                          handleSubmit={(e) => {
+                            e.preventDefault();
+                            setProposalSent(true);
+                            setTimeout(() => {
+                              setShowProposalModal(false);
+                            }, 2000);
+                          }}
+                          inputData={proposalInput}
+                          setInputData={setProposal}
+                          sent={proposalSent}
+                        />
+                      )}
+                    </div>
                   </div>
-                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
-                    {sellerData?.gender === "male" ? (
-                      sellerData?.phone_number
-                    ) : (
-                      <button
-                        type="button"
-                        disabled={proposalSent ? true : false}
-                        onClick={() => setShowProposalModal(true)}
-                        className={`px-7 py-1 border ${
-                          proposalSent ? "bg-green-500" : "bg-black"
-                        } rounded text-white flex items-center justify-center gap-2`}
-                      >
-                        {!proposalSent ? "Request Contact" : "Request Sent"}
-                      </button>
-                    )}
-                    {showProposalModal && (
-                      <ProposalModal
-                        close={() => setShowProposalModal(false)}
-                        handleSubmit={(e) => {
-                          e.preventDefault();
-                          setProposalSent(true);
-                          setTimeout(() => {
-                            setShowProposalModal(false);
-                          }, 2000);
-                        }}
-                        inputData={proposalInput}
-                        setInputData={setProposal}
-                        sent={proposalSent}
-                      />
-                    )}
+                )}
+                {sellerData?.email && (
+                  <div className="flex-col justify-start items-start gap-0.5 flex">
+                    <div className="text-black text-xl font-bold">
+                      Email Address
+                    </div>
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                      {sellerData?.email}
+                    </div>
                   </div>
-                </div>
-                <div className="flex-col justify-start items-start gap-0.5 flex">
-                  <div className="text-black text-xl font-bold">
-                    Email Address
-                  </div>
-                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
-                    randomemail@gmail.com
-                  </div>
-                </div>
+                )}
                 <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
                   <FaGithub />
                   <FaLinkedinIn />
@@ -276,35 +354,11 @@ const SellerDataDetails = ({ params }) => {
                 </div>
               </div>
             )}
-            {/* <div className=" px-5 space-y-9">
-                <div className="w-full relative justify-end items-end py-5 text-end ">
-                  {!showDetails && (
-                    <div
-                      className="relative inline-block"
-                      onMouseEnter={() => setShowTooltip(true)}
-                      onMouseLeave={() => setShowTooltip(false)}
-                    >
-                      <FaInfoCircle className="w-4 h-4 text-blue-600 cursor-pointer" />
-                      {showTooltip && (
-                        <div className="absolute right-6 w-[270px] p-2 space-y-4 bottom-full bg-white  rounded shadow-lg">
-                          <h2 className="font-semibold text-sm text-center ">
-                            How to get contact information?
-                          </h2>
-                          <p className=" text-xs text-center ">
-                            There are a lot of things you can do in space, and
-                            space essentially is unlimited resources.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div> */}
           </div>
           {!showDetails ? (
             <button
               className="bg-black w-full text-white flex justify-center items-center p-3 rounded-lg "
-              onClick={openModal}
+              onClick={handleRevealInfo}
             >
               Reveal Contact Information
             </button>
@@ -315,7 +369,7 @@ const SellerDataDetails = ({ params }) => {
                 Service Provided
               </div>
               <div className="flex items-center flex-wrap gap-2">
-                {services?.map((service, index) => (
+                {sellerData?.services?.map((service, index) => (
                   <div
                     key={index}
                     className="px-[12.95px] pt-[4.35px] pb-[3.52px] rounded-[20.03px] border border-stone-950 justify-center items-center inline-flex"
@@ -332,13 +386,13 @@ const SellerDataDetails = ({ params }) => {
                 Skills
               </div>
               <div className="flex items-center flex-wrap gap-2">
-                {services?.map((service, index) => (
+                {sellerData?.skills?.map((skill, index) => (
                   <div
                     key={index}
                     className="px-[12.95px] pt-[4.35px] pb-[3.52px] rounded-[20.03px] border border-stone-950 justify-center items-center inline-flex"
                   >
                     <p className="text-stone-950 text-sm leading-normal">
-                      {service}
+                      {skill}
                     </p>
                   </div>
                 ))}
@@ -355,7 +409,7 @@ const SellerDataDetails = ({ params }) => {
       <div className="flex flex-col rounded w-full">
         {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
         <ImageComponent
-          src={image[0]}
+          src={sellerData?.images[0] ? s3Url + sellerData.images[0] : image[0]}
           alt=""
           className="object-cover size-full rounded"
         />
@@ -372,69 +426,43 @@ const SellerDataDetails = ({ params }) => {
             About Me
           </h2>
           <p className="mt-2.5 w-full text-lg leading-7 text-neutral-600 text-justify max-md:max-w-full">
-            Design a futuristic 3D skeleton model with a dynamic RGB lighting
-            system set against a captivating space-themed background. Craft the
-            skeleton to have a sleek, futuristic aesthetic, incorporating
-            intricate details and streamlined features. Implement an RGB
-            lighting scheme that pulsates or transitions smoothly across the
-            skeleton, creating an engaging visual effect. Ensure compatibility
-            with real-time rendering engines to maximize interactivity. The
-            space-themed background should complement the futuristic theme, with
-            stars, nebulae, or cosmic elements. Prioritize a balance between
-            creativity and functionality, delivering a visually stunning 3D
-            model ready for use in various digital or multimedia applications.
+            {sellerData?.description}
           </p>
         </div>
         {/* Experience */}
-        <div className="flex-col justify-start items-start gap-2.5 mt-7 inline-flex">
-          <div className="text-neutral-800 text-[32px] font-bold">
-            Experience
-          </div>
-          <div className="flex-col justify-start items-start gap-5 flex">
-            <div className="px-[30px] py-5 rounded-[10px] border border-zinc-300 flex-col justify-start items-start gap-2.5 flex">
-              <div className="text-indigo-500 text-2xl leading-[27px]">
-                AERATE (Car Blog Website)
-              </div>
-              <div className="self-stretch text-neutral-600 text-lg font-normal leading-[27px]">
-                Design a futuristic 3D skeleton model with a dynamic RGB
-                lighting system set against a captivating space-themed
-                background. Craft the skeleton to have a sleek, futuristic
-                aesthetic, incorporating intricate details and streamlined
-                features.{" "}
-              </div>
-              <button
-                type="button"
-                className="px-7 py-2.5 rounded border border-black justify-center items-center gap-2.5 inline-flex"
-              >
-                <div className="text-black text-lg font-bold font-['Helvetica Neue'] leading-7">
-                  Look At the Project
-                </div>
-                <FaAngleRight />
-              </button>
+        {sellerData?.experienceDetails && (
+          <div className="flex-col justify-start items-start gap-2.5 mt-7 inline-flex">
+            <div className="text-neutral-800 text-[32px] font-bold">
+              Experience
             </div>
-            <div className="px-[30px] py-5 rounded-[10px] border border-zinc-300 flex-col justify-start items-start gap-2.5 flex">
-              <div className="text-indigo-500 text-2xl leading-[27px]">
-                AERATE (Car Blog Website)
-              </div>
-              <div className="self-stretch text-neutral-600 text-lg font-normal leading-[27px]">
-                Design a futuristic 3D skeleton model with a dynamic RGB
-                lighting system set against a captivating space-themed
-                background. Craft the skeleton to have a sleek, futuristic
-                aesthetic, incorporating intricate details and streamlined
-                features.{" "}
-              </div>
-              <button
-                type="button"
-                className="px-7 py-2.5 rounded border border-black justify-center items-center gap-2.5 inline-flex"
-              >
-                <div className="text-black text-lg font-bold font-['Helvetica Neue'] leading-7">
-                  Look At the Project
+            <div className="flex-col justify-start items-start gap-5 flex">
+              {sellerData?.experienceDetails?.map((exp, index) => (
+                <div
+                  key={index}
+                  className="px-[30px] py-5 rounded-[10px] border border-zinc-300 flex-col justify-start items-start gap-2.5 flex"
+                >
+                  <div className="text-indigo-500 text-2xl leading-[27px]">
+                    {exp?.title}
+                  </div>
+                  <div className="self-stretch text-neutral-600 text-lg font-normal leading-[27px]">
+                    {exp?.description}
+                  </div>
+                  <Link
+                    href={exp?.link}
+                    target="_blank"
+                    type="button"
+                    className="px-7 py-2.5 rounded border border-black justify-center items-center gap-2.5 inline-flex"
+                  >
+                    <div className="text-black text-lg font-bold font-['Helvetica Neue'] leading-7">
+                      Look At the Project
+                    </div>
+                    <FaAngleRight />
+                  </Link>
                 </div>
-                <FaAngleRight />
-              </button>
+              ))}
             </div>
           </div>
-        </div>
+        )}
         {showImage ? (
           <div
             style={{
@@ -442,17 +470,21 @@ const SellerDataDetails = ({ params }) => {
             }}
             className="grid grid-cols-1 justify-center py-7 items-center w-full gap-2"
           >
-            {image?.slice(1, image?.length)?.map((data, i) => (
-              <div key={i} className={`relative`}>
-                <ImageComponent
-                  loading="lazy"
-                  className="size-full cursor-pointer object-cover rounded"
-                  src={data}
-                  alt=""
-                  onClick={() => openImageModal(data)}
-                />
-              </div>
-            ))}
+            {sellerData?.images
+              ?.slice(1, sellerData?.images?.length)
+              ?.map((data, i) =>
+                data ? (
+                  <div key={i} className={`relative`}>
+                    <ImageComponent
+                      loading="lazy"
+                      className="size-full cursor-pointer object-cover rounded"
+                      src={data ? s3Url + data : image[i]}
+                      alt=""
+                      onClick={() => openImageModal(s3Url + data)}
+                    />
+                  </div>
+                ) : null
+              )}
 
             {modalImageUrl && (
               <ImageModal
@@ -468,8 +500,8 @@ const SellerDataDetails = ({ params }) => {
           <header className="text-3xl font-bold text-black max-md:max-w-full">
             Client Feedback
           </header>
-          {feedbacksData ? (
-            feedbacksData.map((feedbackData, index) => (
+          {feedbackData ? (
+            feedbackData.map((feedbackData, index) => (
               <FeedBackCard key={index} {...feedbackData} />
             ))
           ) : (
@@ -483,17 +515,19 @@ const SellerDataDetails = ({ params }) => {
               Give Feedback
             </button>
           ) : (
-            <button className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-black whitespace-nowrap bg-gray-100 rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full">
-              Load More
-            </button>
+            feedbackData?.length > 5 && (
+              <button className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-black whitespace-nowrap bg-gray-100 rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full">
+                Load More
+              </button>
+            )
           )}
         </section>
       </div>
       {/* )} */}
       {addFeedBack && (
         <FeedBackModal
-          feedbackData={() => {}}
           close={() => setAddFeedback(!addFeedBack)}
+          uid_for={params?.id}
         />
       )}
       {showModal && <Modal closeModal={closeModal} />}

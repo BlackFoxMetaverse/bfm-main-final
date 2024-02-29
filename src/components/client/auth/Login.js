@@ -10,9 +10,10 @@ import PreLoader from "@/components/Modules/Preloader/preLoader";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../firebase";
 // import { updateUserLocation } from "@/utils/location";
+import { checkUserDataByToken } from "../../../utils/userData";
 import instance from "@/utils/axios";
 
-const Login = ({ close, register }) => {
+const Login = ({ close, register, setUId }) => {
   const [countryCode, setCountryCode] = useState("+91");
   const [number, setNumber] = useState("");
   const [numberLength, setLength] = useState(0);
@@ -90,48 +91,21 @@ const Login = ({ close, register }) => {
 
         console.log(token);
 
-        // loginUser(token)
-        //   .then(() => {
-        //     console.log(isExistingUser)
-        //   // if (isExistingUser) {
-        //   //   router.replace("/");
-        //   // } else {
-        //   //   router.replace("/client/auth/register");
-        //   // }
-        // });
-
-        // loginUser(token);
-
-        try {
-          const response = await instance.get("/main/user", {
-            headers: {
-              token: token,
-            },
-          });
-
-          const userExists = response.data?.message !== "User not found !!!";
-
-          if (userExists) {
-            window.location.reload();
-          } else {
-            register();
-          }
-        } catch (error) {
-          console.error("Error checking existing user:", error);
-          const userExists = response.data?.message !== "User not found !!!";
-
-          if (userExists) {
-            window.location.reload();
-          } else {
-            register();
-          }
-          // Handle error (e.g., show an error message to the user)
-        }
+        checkUserDataByToken(token)
+          .then((data) => {
+            if (data?.isUser) {
+              window.location.reload();
+            } else {
+              register();
+              setUId(data?.uid);
+            }
+          })
+          .catch((err) => console.log(err));
 
         return () => clearTimeout(timer);
       })
       .catch((error) => {
-        window.location.reload();
+        // window.location.reload();
         console.log("user login error:", error);
       });
   };
@@ -214,9 +188,7 @@ const Login = ({ close, register }) => {
         <form
           onSubmit={handleOTPSubmit}
           className={`flex ${
-            isFilled
-              ? "translate-y-0"
-              : "scale-y-0 -translate-y-1/2"
+            isFilled ? "translate-y-0" : "scale-y-0 -translate-y-1/2"
           } transform transition-all relative inset-x-0 duration-500 ease-in-out flex-col gap-[19px] shrink-0 self-stretch`}
         >
           <div className="flex flex-col gap-8 self-stretch">

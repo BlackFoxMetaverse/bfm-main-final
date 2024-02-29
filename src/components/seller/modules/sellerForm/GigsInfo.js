@@ -43,7 +43,7 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
     <form
       action=""
       onSubmit={handleSubmit}
-      className="flex flex-col items-end gap-10 self-stretch w-5/6 mx-auto"
+      className="flex flex-col items-end gap-10 self-stretch w-11/12 mx-auto"
     >
       <div className="flex flex-col w-full items-start gap-[7px]">
         <h5 className="text-black md:text-[32px] text-[18.99px] not-italic font-bold leading-[normal]">
@@ -257,7 +257,7 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
               name="legalization"
               id="legalization"
               required
-              className="border border-[#4461F2] rounded appearance-none w-full h-full object-cover checked:bg-[#4461F2] flex justify-center items-center checked:marker:bg-white checked:after:content-['✔'] checked:after:text-white checked:after:text-xs"
+              className="border border-[#4461F2] rounded appearance-none size-4 object-cover checked:bg-[#4461F2] flex justify-center items-center checked:after:content-['\2713'] checked:after:text-white checked:after:text-xs"
             />
           </div>
           <label
@@ -270,9 +270,9 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
       </div>
       <button
         type="submit"
-        className="px-8 py-4 bg-indigo-500 rounded-md border-2 justify-center items-center gap-2 inline-flex"
+        className="flex justify-center items-center gap-2 rounded [background:var(--Primary-1,#4461F2)] px-8 py-4 text-[color:var(--Primary-blue,#FFF)] font-[450] leading-[100%] tracking-[-1px]"
       >
-        <p className="text-white text-xl leading-tight">Finish</p>
+        <p className="">Finish</p>
       </button>
     </form>
   );

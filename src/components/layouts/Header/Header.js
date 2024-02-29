@@ -33,11 +33,11 @@ const UserProfile = ({ name, profession, username, id, isSeller, onClick }) => {
         } transition-all duration-300 sm:block hidden ease-in-out`}
       />
       <div
-        className={`min-h-[175px] sm:bg-white flex flex-col rounded absolute w-full inset-x-0 ${
+        className={`min-h-[175px] sm:bg-white flex flex-col rounded absolute w-full ${
           options
             ? "sm:top-full top-2/3 sm:translate-y-3"
             : "sm:-top-full top-2/3 sm:scale-y-0 sm:-translate-y-3"
-        } stroke-black py-3 transition-all duration-300 ease-in-out transform gap-2`}
+        } stroke-black py-3 sm:min-w-40 transition-all duration-300 ease-in-out transform gap-2`}
       >
         <p className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-start">
           {isSeller ? (
@@ -69,7 +69,7 @@ const UserProfile = ({ name, profession, username, id, isSeller, onClick }) => {
           </Link>
           <Link
             href={"/client/settings"}
-            className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
+            className="sm:text-neutral-700 text-white text-lg whitespace-nowrap font-medium leading-normal"
           >
             Purchase History
           </Link>

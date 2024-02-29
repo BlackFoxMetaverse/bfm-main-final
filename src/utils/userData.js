@@ -1,6 +1,6 @@
 import instance from "./axios";
 
-export default async function fetchUserData() {
+async function fetchUserData() {
   try {
     const token = localStorage.getItem("bfm-client-token");
     const response = await instance.get("/main/user", {
@@ -20,3 +20,34 @@ export default async function fetchUserData() {
     return error?.message;
   }
 }
+
+async function checkUserDataByToken(token) {
+  try {
+    const response = await instance.get("check/token", {
+      headers: {
+        token: token,
+      },
+    });
+
+    return response?.data;
+  } catch (error) {
+    return error?.response?.data;
+  }
+}
+
+async function getSellerProfile(token) {
+  try {
+    const response = await instance.get("main/seller", {
+      headers: {
+        token: token,
+      },
+    });
+  
+    return response?.data;
+  } catch (error) {
+    return error?.response?.data;
+  }
+
+}
+
+module.exports = { fetchUserData, checkUserDataByToken, getSellerProfile };

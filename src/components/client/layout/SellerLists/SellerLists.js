@@ -4,22 +4,38 @@ import React, { useEffect, useState } from "react";
 import SearchForm from "../../modules/FormLayout/SearchForm";
 import ServicesCard from "../../modules/ServicesCard/ServicesCard";
 import NoResultsFound from "@/components/layouts/Errors/NoResults";
-
-const RecentData = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-];
+import instance from "@/utils/axios";
 
 const SellerLists = ({ params }) => {
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchInput, setSearchInput] = useState(null);
+  const [searchResult, setSearchResult] = useState(null);
+  const [recentData, setRecents] = useState([]);
 
-  console.log(searchResult);
+  async function fetchNearbyData() {
+    try {
+      const response = await instance.get(
+        `search/recommendation?longitude=${searchInput?.longitude}&latitude=${searchInput?.latitude}&page=1`
+      );
+
+      setRecents(response?.data?.data);
+      console.log(response?.data?.message);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchNearbyData();
+  }, [searchInput?.latitude]);
 
   function handleSearchAgain() {
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
-    })
-  };
+      behavior: "smooth",
+    });
+  }
+
+  console.log(searchInput?.profession === "");
 
   return (
     <main className="w-full">
@@ -35,36 +51,39 @@ const SellerLists = ({ params }) => {
         </div>
         <div className="flex max-w-[1920px] flex-wrap w-11/12 h-32 mx-auto items-center">
           <SearchForm
+            searchInputData={setSearchInput}
             handleSubmit={(e) => e.preventDefault()}
             data={setSearchResult}
           />
         </div>
       </section>
-
       {/* Recent Section */}
-      {searchResult?.length !== 0 ? (
-        searchResult === null ? (
-          <section className="space-y-5 w-11/12 mx-auto my-12 flex flex-col gap-5 items-center">
-            <div className="flex items-end justify-between w-full">
-              <div>
-                <span className="text-neutral-900 text-[32.46px] font-bold">
-                 {params === "more" ? "Professionals" : decodeURIComponent(params)}{" "}
-                </span>
-                <span className="text-neutral-900 text-xl">Near You</span>
-              </div>
-              <div className="text-neutral-900 text-xl">20 results</div>
+      {searchResult === null ? (
+        <section className="space-y-5 w-11/12 mx-auto my-12 flex flex-col gap-5 items-center">
+          <div className="flex items-end justify-between w-full">
+            <div>
+              <span className="text-neutral-900 text-[32.46px] font-bold">
+                {params === "more"
+                  ? "Professionals"
+                  : decodeURIComponent(params)}{" "}
+              </span>
+              <span className="text-neutral-900 text-xl">Near You</span>
             </div>
+            <div className="text-neutral-900 text-xl capitalize">
+              {recentData?.length}{" "}
+              {recentData?.length <= 1 ? "result" : "results"}
+            </div>
+          </div>
+          {recentData?.length !== 0 ? (
             <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
-              {RecentData?.map((_, index) => (
-                <ServicesCard
-                  key={index}
-                  id={_?.uid}
-                  username={_?.userName}
-                  distance={_?.distance}
-                  profession={_?.profession}
-                />
+              {recentData?.map((data, index) => (
+                <ServicesCard key={index} {...data} />
               ))}
             </div>
+          ) : (
+            <div>No Result</div>
+          )}
+          {recentData?.length > 20 && (
             <button
               type="button"
               className="w-1/3 h-9 py-2.5 bg-neutral-900 rounded justify-center items-center inline-flex mx-auto"
@@ -73,29 +92,34 @@ const SellerLists = ({ params }) => {
                 View More
               </div>
             </button>
-          </section>
-        ) : (
-          <section className="space-y-5 w-5/6 mx-auto my-12">
-            <div className="flex items-end justify-between">
-              <div>
-                <span className="text-neutral-900 text-[32.46px] font-bold">
-                  Photographer{" "}
-                </span>
-                <span className="text-neutral-900 text-xl">Near You</span>
-              </div>
-              <div className="text-neutral-900 text-xl">50 results</div>
+          )}
+        </section>
+      ) : (
+        <section className="space-y-5 w-5/6 mx-auto my-12">
+          <div className="flex items-end justify-between">
+            <div>
+              <span className="text-neutral-900 text-[32.46px] font-bold">
+                {searchResult?.profession === ""
+                  ? "Professionals"
+                  : searchResult?.profession}
+              </span>
+              <span className="text-neutral-900 text-xl">Near You</span>
             </div>
+            <div className="text-neutral-900 text-xl capitalize">
+              {searchResult?.length}{" "}
+              {searchResult?.length <= 1 ? "result" : "results"}
+            </div>
+          </div>
+          {searchResult?.length !== 0 ? (
             <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
               {searchResult?.map((data, index) => (
-                <ServicesCard
-                  key={index}
-                  id={data?.uid}
-                  username={data?.userName}
-                  distance={data?.distance}
-                  profession={data?.profession}
-                />
+                <ServicesCard key={index} {...data} />
               ))}
             </div>
+          ) : (
+            <NoResultsFound onClick={handleSearchAgain} />
+          )}
+          {searchResult?.length > 20 && (
             <button
               type="button"
               className="w-1/3 h-9 py-2.5 bg-neutral-900 rounded justify-center items-center inline-flex mx-auto"
@@ -104,10 +128,8 @@ const SellerLists = ({ params }) => {
                 View More
               </div>
             </button>
-          </section>
-        )
-      ) : (
-        <NoResultsFound onClick={handleSearchAgain} />
+          )}
+        </section>
       )}
     </main>
   );

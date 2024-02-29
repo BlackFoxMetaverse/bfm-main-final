@@ -16,6 +16,7 @@ const PersonalInfo = ({
   emailValid,
   checkUserName,
   checkEmail,
+  isShown,
 }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   var randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -170,7 +171,7 @@ const PersonalInfo = ({
                 className="flex gap-2 items-center bg-white w-full pr-3.5 text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none"
               >
                 <span
-                  className={`flex-grow text-left ${
+                  className={`flex-grow text-left capitalize ${
                     inputData.gender !== "" ? "text-black" : "text-[#9F9F9F]"
                   }`}
                 >
@@ -263,12 +264,14 @@ const PersonalInfo = ({
           </div>
         </div>
       </div>
+      {/* {isShown && ( */}
       <button
         type="submit"
         className="flex justify-center items-center gap-2 rounded [background:var(--Primary-1,#4461F2)] px-8 py-4 text-[color:var(--Primary-blue,#FFF)] font-[450] leading-[100%] tracking-[-1px]"
       >
         Save & Continue
       </button>
+      {/* )} */}
     </form>
   );
 };
