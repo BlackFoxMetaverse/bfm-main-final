@@ -165,7 +165,7 @@ const Header = ({ isSeller }) => {
   return (
     <main
       className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 transition-all duration-500 ease-in-out ${
-        pathname.startsWith("/client/slug") ||
+        pathname.startsWith("/client/username") ||
         pathname.startsWith("/client/settings") ||
         pathname.startsWith("/seller")
           ? "bg-black"

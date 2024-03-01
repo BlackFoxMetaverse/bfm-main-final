@@ -23,8 +23,6 @@ function Main() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  console.log(searchParams.get("setting")?.toString());
-
   const [currentSetting, setCurrentSetting] = useState(
     searchParams.get("setting")?.toString()
       ? searchParams.get("setting")?.toString()

@@ -102,19 +102,19 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Escape") {
       setShowSuggestions(false);
+      setRangeSection(false);
+      setIsLocation(false);
     }
   };
 
   const handleProfessionSuggestionClick = (suggestion) => {
     setSearchData({ ...searchData, profession: suggestion });
-    // You may also want to close the suggestion dropdown here if you have one
   };
 
   const [searchResult, setSearchResult] = useState(null);
 
   const fetchData = async () => {
     try {
-      console.log(window.location.search);
       if (pathname !== "/" && window.location.search !== "") {
         const response = await instance.get(
           `search/nearby${window.location.search}`
@@ -154,6 +154,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   return (
     <div
       style={{ width: width }}
+      onKeyDown={handleKeyDown}
       className="xl:w-3/4 w-11/12 max-w-[1920px] flex justify-center items-center"
     >
       <form

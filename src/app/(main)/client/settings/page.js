@@ -1,6 +1,13 @@
 import Main from "@/components/client/layout/settings/Main";
 import React from "react";
+import { Suspense } from "react";
 
-export default function Page() {
-  return <Main />;
-}
+const page = () => {
+  return (
+    <Suspense>
+      <Main />
+    </Suspense>
+  );
+};
+
+export default page;

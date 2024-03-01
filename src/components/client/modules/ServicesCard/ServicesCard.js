@@ -32,7 +32,7 @@ const MessageModal = ({ close, message, userName, uid, showButton }) => {
           <button
             type="button"
             className="flex justify-center items-center rounded-md px-7 py-3 bg-black text-white"
-            onClick={() => router.push(`/client/slug/${userName}/${uid}`)}
+            onClick={() => router.push(`/client/username/${userName}/${uid}`)}
           >
             Go Anyway
           </button>

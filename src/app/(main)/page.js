@@ -1,9 +1,13 @@
 "use client";
 
 import Hero from "@/components/client/layout/Hero/Hero";
-import { useRouter } from "next/navigation";
-export default function Home() {
-  const router = useRouter();
+import { Suspense } from "react";
+const page = () => {
+  return (
+    <Suspense>
+      <Hero />;
+    </Suspense>
+  );
+};
 
-  return <Hero />;
-}
+export default page;

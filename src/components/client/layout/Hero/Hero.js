@@ -3,21 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ServicesCard from "@/components/client/modules/ServicesCard/ServicesCard";
 import Image from "next/image";
-import { HiMiniSignal } from "react-icons/hi2";
-import {
-  FaAngleRight,
-  FaCheck,
-  FaChevronDown,
-  FaRegCompass,
-} from "react-icons/fa6";
-import { IoLocationOutline } from "react-icons/io5";
-import Location from "@/components/DeviceLocation/location";
-import { BsCheck2, BsSearch } from "react-icons/bs";
-import { AiFillRightSquare } from "react-icons/ai";
+import { FaAngleRight, FaCheck } from "react-icons/fa6";
 import SearchForm from "../../modules/FormLayout/SearchForm";
 import instance from "@/utils/axios";
-import SearchCard from "@/components/Modules/SearchedCard/SearchCard";
-import Toast from "@/components/Modules/Toast/Toast";
 
 const services = [
   {
@@ -61,31 +49,6 @@ const services = [
     name: "Photography",
   },
 ];
-
-// const Plans = [
-//   {
-//     type: "Basic plan ",
-//     isPopular: false,
-//     tokens: 10,
-//     benifits: "You can view details of 10 profile.",
-//     price: 100,
-//   },
-//   {
-//     type: "Pro Plan",
-//     isPopular: false,
-//     tokens: 20,
-//     benifits: "You can view details of 20 profile.",
-//     price: 200,
-//   },
-//   {
-//     type: "Executive Plan",
-//     isPopular: true,
-//     tokens: 30,
-//     benifits: "You can view details of 30 profile.",
-//     offer: "14%",
-//     price: 260,
-//   },
-// ];
 
 const Hero = () => {
   const [searchInput, setSearchInputData] = useState({});
@@ -256,67 +219,6 @@ const Hero = () => {
           ))}
         </div>
       </section>
-
-      {/* Payement Section */}
-      {/* <section className="w-full h-full relative overflow-hidden pt-5 pb-12 flex flex-col gap-6 items-center justify-between">
-        <img
-          src="https://c.wallhere.com/photos/8d/c0/1920x1080_px_black_background_digital_art_geometry_lines_Low_Poly_minimalism_monochrome-571899.jpg!d"
-          alt=""
-          className="w-full h-full absolute inset-0 -z-10 object-cover"
-        />
-        <h1 className="text-white text-[64px] font-bold leading-[normal]">
-          Subscription plans
-        </h1>
-        <p className="text-white text-2xl font-normal leading-[normal]">
-          You can buy Bunch of tokens together and view multiple profile details
-          with paying every time.{" "}
-        </p>
-        <div className="flex-grow flex justify-between items-end flex-wrap gap-12 w-5/6">
-          {Plans?.map((plan, index) => (
-            <div
-              key={index}
-              className="flex flex-col h-full gap-5 max-w-[360px] w-full aspect-square"
-            >
-              {plan.isPopular && (
-                <p className="text-white text-2xl text-center font-medium leading-[normal]">
-                  Most Popular plan
-                </p>
-              )}
-              <div className="bg-white w-full h-full rounded-[26.966px] border-[0.674px] border-solid flex flex-col justify-evenly items-center">
-                <h3 className="text-black text-[32.36px] font-bold leading-[normal]">
-                  {plan.type}
-                </h3>
-                <div className="space-y-2">
-                  <p className="text-black text-center text-[16.18px] font-bold leading-[normal]">
-                    Get {plan.tokens} tokens
-                  </p>
-                  <p className="text-black text-center text-[13.483px] font-normal leading-[16.18px]">
-                    {plan.benifits}
-                  </p>
-                </div>
-                <div className="space-y-4 text-center">
-                  {plan.offer && (
-                    <p className="text-black text-base font-bold leading-[normal]">
-                      ${plan.offer} off
-                    </p>
-                  )}
-                  <p className="text-black text-[21.573px] font-bold leading-[normal]">
-                    ₹{plan.price}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="w-[233.933px] h-[51.91px] shrink-0 [background:var(--Primary-1,#4461F2)] rounded-[13.483px] text-white text-[21.573px] font-bold leading-[normal]"
-                >
-                  Subscribe
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section> */}
-
-      {/* signup */}
       <div className="w-5/6 h-[293.71px] mb-20 relative bg-gradient-to-r from-black/40 to-black/5 overflow-hidden">
         <img
           src="https://miro.medium.com/v2/resize:fit:828/format:webp/0*MVU81WeBRsliVq3U"
