@@ -9,6 +9,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaChevronDown, FaRegCompass } from "react-icons/fa6";
 import { HiMiniSignal } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
+import servicesData from "../../../../utils/professionData/services.json";
 
 const dummyData = ["Photography", "Marketing", "Gaming", "Developer"];
 
@@ -29,6 +30,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   ]);
   const [cityTerm, setCityTerm] = useState("");
   const [filteredCities, setFilteredCities] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchData, setSearchData] = useState({
     distance: 0,
     latitude: 0,
@@ -36,6 +38,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     profession: "",
     limitUser: 50,
   });
+  const [suggestions, setSuggestions] = useState([]);
   const [isCitySelected, setCitySelected] = useState(null);
 
   function handleCitySearch(e) {
@@ -58,6 +61,17 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     }
   }
 
+  useEffect(() => {
+    const professionSuggestions = Object.keys(servicesData)
+      .map((category) =>
+        Object.keys(servicesData[category].Services).map(
+          (service) => `${category} - ${service}`
+        )
+      )
+      .flat();
+    setSuggestions(professionSuggestions);
+  }, []);
+
   const handleLocationChange = (location) => {
     setSearchData({
       ...searchData,
@@ -75,63 +89,67 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSearchData({ ...searchData, [name]: value });
+    setShowSuggestions(value.trim() !== "");
+    if (pathname !== "/") {
+      const updatedParams = new URLSearchParams({
+        ...searchData,
+        [name]: value,
+      });
+      router.replace(`${pathname}?${updatedParams}`);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Escape") {
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleProfessionSuggestionClick = (suggestion) => {
+    setSearchData({ ...searchData, profession: suggestion });
+    // You may also want to close the suggestion dropdown here if you have one
   };
 
   const [searchResult, setSearchResult] = useState(null);
 
   const fetchData = async () => {
     try {
-      if (pathname.startsWith("/client/search")) {
+      console.log(window.location.search);
+      if (pathname !== "/" && window.location.search !== "") {
         const response = await instance.get(
-          `search/nearby?${queryParams?.toString()}`
+          `search/nearby${window.location.search}`
         );
-        setSearchResult(response?.data?.data);
+        return Promise.resolve(response?.data?.data);
       }
     } catch (error) {
-      console.error(error?.response?.data);
+      return Promise.reject(error);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData()
+      .then((data) => setSearchResult(data))
+      .catch((err) => console.error(err));
   }, []);
 
   async function handleSearch(e) {
     e.preventDefault();
-    try {
-      const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.get(
-        `search/nearby?${queryParams.toString()}`,
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
-      console.log(queryParams.toString());
-      if (res.status === 200) {
-        if (pathname === "/") {
-          router.push(`/client/search?${queryParams.toString()}`);
-        } else {
-          setSearchResult(res.data?.data);
-          console.log(res.data?.data);
-        }
-      } else if (res.data.message === "User token has expired") {
-        router.push("/client/auth/login");
-      } else {
-        throw new Error("Something went wrong");
-      }
-    } catch (error) {
-      console.error(error);
+    const searchPath = `/client/search?${queryParams.toString()}`;
+    if (pathname === "/") {
+      router.push(searchPath);
+    } else {
+      fetchData()
+        .then((data) => setSearchResult(data))
+        .catch((err) => console.error(err));
     }
   }
 
   useEffect(() => {
     searchInputData(searchData);
-    data(searchResult);
+    if (pathname !== "/") {
+      data(searchResult);
+    }
   }, [searchResult, searchData]);
-
-  console.log(searchData);
 
   return (
     <div
@@ -145,7 +163,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
       >
         <Location onLocationChange={handleLocationChange} />
         <div className="flex justify-center items-center gap-10 h-full w-full bg-white border-[color:var(--Foundation-Grey-grey-50,#E9E9E9)] relative shadow-[0px_1px_4px_0px_rgba(0,0,0,0.10)] lg:px-[25px] lg:py-3 px-4 py-1.5 rounded-[10px] border-2 border-solid">
-          <div className="flex items-center gap-4 flex-grow">
+          <div className="flex items-center gap-4 flex-grow relative">
             <label htmlFor="search">
               <BsSearch />
             </label>
@@ -155,9 +173,36 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               id="profession"
               value={searchData.profession}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               className="lg:min-w-[294px] w-full h-full text-base font-[450] leading-[150.687%] focus:outline-none"
               placeholder="Search by profession..."
             />
+            {showSuggestions &&
+              (suggestions.length > 0 ? (
+                <div className="suggestion-dropdown absolute left-0 w-[200%] flex flex-col gap-2 top-full translate-y-10 bg-white rounded-md py-10 px-5 max-h-80 overflow-y-scroll">
+                  {suggestions
+                    .filter((suggestion) =>
+                      suggestion
+                        .toLowerCase()
+                        .includes(searchData.profession.toLowerCase())
+                    )
+                    .map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="suggestion-item cursor-pointer hover:bg-neutral-200 rounded-full px-5 py-2.5"
+                        onClick={() =>
+                          handleProfessionSuggestionClick(suggestion)
+                        }
+                      >
+                        {suggestion}
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="absolute left-0 w-[200%] flex flex-col gap-2 top-full translate-y-10 bg-white rounded-md py-10 px-5 max-h-80a overflow-y-scroll">
+                  No Related Professionals
+                </div>
+              ))}
           </div>
           <div className="flex items-center gap-5 lg:static absolute top-full lg:translate-y-0 translate-y-1/2 left-0 py-1.5 px-3 lg:px-0 lg:py-0 rounded-lg bg-white justify-end">
             <div className="h-10 w-px lg:static hidden shrink-0 bg-black/50"></div>
@@ -323,7 +368,9 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               <button
                 key={index}
                 type="button"
-                onClick={() => setSearchData({ ...searchData, term: item })}
+                onClick={() =>
+                  setSearchData({ ...searchData, profession: item })
+                }
                 className="min-w-[65.59px] min-h-[39.27px] pl-[15.55px] pr-4 pt-[4.79px] pb-[5.48px] rounded-3xl border border-white justify-center items-center inline-flex text-white text-base font-normal leading-7"
               >
                 {item}

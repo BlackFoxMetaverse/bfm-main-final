@@ -9,7 +9,7 @@ import instance from "@/utils/axios";
 const SellerLists = ({ params }) => {
   const [searchInput, setSearchInput] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
-  const [recentData, setRecents] = useState([]);
+  const [recomendations, setRecommendations] = useState([]);
 
   async function fetchNearbyData() {
     try {
@@ -17,7 +17,7 @@ const SellerLists = ({ params }) => {
         `search/recommendation?longitude=${searchInput?.longitude}&latitude=${searchInput?.latitude}&page=1`
       );
 
-      setRecents(response?.data?.data);
+      setRecommendations(response?.data?.data);
       console.log(response?.data?.message);
     } catch (error) {
       console.error(error);
@@ -34,8 +34,8 @@ const SellerLists = ({ params }) => {
       behavior: "smooth",
     });
   }
-
-  console.log(searchInput?.profession === "");
+  console.log(recomendations);
+  console.log(searchResult);
 
   return (
     <main className="w-full">
@@ -58,32 +58,32 @@ const SellerLists = ({ params }) => {
         </div>
       </section>
       {/* Recent Section */}
-      {searchResult === null ? (
+      {searchResult === null || searchResult === undefined ? (
         <section className="space-y-5 w-11/12 mx-auto my-12 flex flex-col gap-5 items-center">
           <div className="flex items-end justify-between w-full">
             <div>
               <span className="text-neutral-900 text-[32.46px] font-bold">
-                {params === "more"
+                {params?.profession === "more"
                   ? "Professionals"
-                  : decodeURIComponent(params)}{" "}
+                  : decodeURIComponent(params?.profession)}{" "}
               </span>
               <span className="text-neutral-900 text-xl">Near You</span>
             </div>
             <div className="text-neutral-900 text-xl capitalize">
-              {recentData?.length}{" "}
-              {recentData?.length <= 1 ? "result" : "results"}
+              {recomendations?.length}{" "}
+              {recomendations?.length <= 1 ? "result" : "results"}
             </div>
           </div>
-          {recentData?.length !== 0 ? (
+          {recomendations?.length === 0 ? (
+            <div>No Result</div>
+          ) : (
             <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
-              {recentData?.map((data, index) => (
+              {recomendations?.map((data, index) => (
                 <ServicesCard key={index} {...data} />
               ))}
             </div>
-          ) : (
-            <div>No Result</div>
           )}
-          {recentData?.length > 20 && (
+          {recomendations?.length > 20 && (
             <button
               type="button"
               className="w-1/3 h-9 py-2.5 bg-neutral-900 rounded justify-center items-center inline-flex mx-auto"
@@ -99,8 +99,11 @@ const SellerLists = ({ params }) => {
           <div className="flex items-end justify-between">
             <div>
               <span className="text-neutral-900 text-[32.46px] font-bold">
-                {searchResult?.profession === ""
-                  ? "Professionals"
+                {searchResult?.profession === "" ||
+                searchResult?.profession === undefined
+                  ? params?.profession === "more"
+                    ? "Professionals"
+                    : decodeURIComponent(params?.profession)
                   : searchResult?.profession}
               </span>
               <span className="text-neutral-900 text-xl">Near You</span>

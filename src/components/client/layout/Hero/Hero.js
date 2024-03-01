@@ -42,7 +42,7 @@ const services = [
   },
   {
     src: require("../../../../../public/clients_images/services/programming.svg"),
-    name: "Programming & Tech",
+    name: "Developer",
   },
   {
     src: require("../../../../../public/clients_images/services/business.svg"),
@@ -110,8 +110,6 @@ const Hero = () => {
     fetchRecomendation();
   }, [searchInput?.latitude]);
 
-  console.log(searchInput);
-
   return (
     <main className="flex w-full flex-col items-center gap-[120px]">
       {/* Hero */}
@@ -135,7 +133,6 @@ const Hero = () => {
             </span>
           </div>
           <SearchForm
-            // handleSubmit={handleSearch}
             data={setSearchResult}
             isShown
             searchInputData={setSearchInputData}
@@ -145,67 +142,38 @@ const Hero = () => {
 
       {/* Services */}
       <section className="w-full max-w-[1920px] mx-auto">
-        {searchResult?.length === 0 || searchResult === null ? (
-          <div className="flex flex-col items-start gap-10 w-11/12 m-auto">
-            <div className="flex justify-between items-center w-full">
-              <p>
+        <div className="flex flex-col items-start gap-10 w-11/12 m-auto">
+          <div className="flex justify-between items-center w-full">
+            <p>
+              <span className="text-neutral-900 text-[32px] font-bold">
+                Professionals{" "}
+              </span>
+              <span className="text-neutral-900 text-xl">Near You</span>
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push(`/client/more`)}
+              className="w-[34.02px] h-[29.69px] px-[12.37px] py-[7.42px] bg-neutral-900 rounded border border-violet-50 justify-center items-center gap-[4.95px] inline-flex"
+            >
+              <FaAngleRight className="text-white" />
+            </button>
+          </div>
+          <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 relative grid-cols-1 items-start gap-5 w-full">
+            {recommendations?.length === 0 || !recommendations ? (
+              <p className="w-full text-center absolute inset-x-0">
+                <span className="text-neutral-900 text-xl">No </span>
                 <span className="text-neutral-900 text-[32px] font-bold">
                   Professionals{" "}
                 </span>
                 <span className="text-neutral-900 text-xl">Near You</span>
               </p>
-              <button
-                type="button"
-                onClick={() => router.push(`/client/more`)}
-                className="w-[34.02px] h-[29.69px] px-[12.37px] py-[7.42px] bg-neutral-900 rounded border border-violet-50 justify-center items-center gap-[4.95px] inline-flex"
-              >
-                <FaAngleRight className="text-white" />
-              </button>
-            </div>
-            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 relative grid-cols-1 items-start gap-5 w-full">
-              {recommendations?.length === 0 || !recommendations ? (
-                <p className="w-full text-center absolute inset-x-0">
-                  <span className="text-neutral-900 text-xl">No </span>
-                  <span className="text-neutral-900 text-[32px] font-bold">
-                    Professionals{" "}
-                  </span>
-                  <span className="text-neutral-900 text-xl">Near You</span>
-                </p>
-              ) : (
-                recommendations?.map((data, index) => (
-                  <ServicesCard key={index} {...data} />
-                ))
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-10 w-11/12 m-auto">
-            <div className="flex justify-between items-center w-full">
-              <p className="flex-grow">
-                <span className="text-neutral-900 text-[32px] font-bold capitalize">
-                  {searchInput?.term
-                    ? searchInput.term?.toUpperCase()
-                    : "Professionals"}
-                </span>
-                <span className="text-neutral-900 text-xl">Near You</span>
-              </p>
-              {searchResult?.length > 4 && (
-                <button
-                  type="button"
-                  onClick={() => router.push(`/client/more`)}
-                  className="w-[34.02px] h-[29.69px] px-[12.37px] py-[7.42px] bg-neutral-900 rounded border border-violet-50 justify-center items-center gap-[4.95px] inline-flex"
-                >
-                  <FaAngleRight className="text-white" />
-                </button>
-              )}
-            </div>
-            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
-              {searchResult?.map((data, index) => (
+            ) : (
+              recommendations?.map((data, index) => (
                 <ServicesCard key={index} {...data} />
-              ))}
-            </div>
+              ))
+            )}
           </div>
-        )}
+        </div>
       </section>
 
       {/* unknown section */}
@@ -268,7 +236,11 @@ const Hero = () => {
           {services?.map((service, index) => (
             <button
               type="button"
-              onClick={() => router.push(`/client/${service.name}/`)}
+              onClick={() =>
+                router.push(
+                  `/client/${service.name}?distance=100000&profession=${service.name}&latitude=${searchInput.latitude}&longitude=${searchInput.longitude}&limitUser=50`
+                )
+              }
               className="flex flex-col items-center justify-center gap-5"
               key={index}
             >

@@ -1,0 +1,146 @@
+{
+    "Web Development": {
+      "Skills": {
+        "Languages": ["HTML", "CSS", "JavaScript", "PHP", "Python"],
+        "Frameworks": ["React", "Angular", "Vue", "Django", "Flask"],
+        "Databases": ["MySQL", "MongoDB", "PostgreSQL", "SQLite"],
+        "Tools": ["Git", "Docker", "Webpack", "NPM"]
+      },
+      "Services": {
+        "Website Design": {},
+        "Website Development": {},
+        "E-commerce Development": {},
+        "Web Application Development": {},
+        "Maintenance and Support": {}
+      }
+    },
+    "Graphic Design": {
+      "Skills": {
+        "Tools": ["Adobe Photoshop", "Adobe Illustrator", "Sketch", "Figma", "InDesign"],
+        "Principles": ["Typography", "Color Theory", "Layout", "Branding", "UX/UI Principles"]
+      },
+      "Services": {
+        "Logo Design": {},
+        "Brand Identity": {},
+        "UI/UX Design": {},
+        "Print Design": {},
+        "Digital Illustration": {}
+      }
+    },
+    "Content Writing": {
+      "Skills": {
+        "Writing": ["SEO Writing", "Technical Writing", "Creative Writing", "Copywriting", "Blogging"],
+        "Research": ["Keyword Research", "Market Research", "Subject Matter Expertise"],
+        "Editing": ["Grammar", "Punctuation", "Style Guides", "Proofreading"]
+      },
+      "Services": {
+        "Blog Posts": {},
+        "Articles": {},
+        "White Papers": {},
+        "Website Content": {},
+        "Product Descriptions": {}
+      }
+    },
+    "Digital Marketing": {
+      "Skills": {
+        "SEO": ["Keyword Research", "On-page SEO", "Off-page SEO", "Local SEO"],
+        "Advertising": ["Google Ads", "Facebook Ads", "Instagram Ads", "LinkedIn Ads"],
+        "Social Media": ["Content Creation", "Community Management", "Analytics", "Strategy"],
+        "Email Marketing": ["Campaign Management", "List Building", "A/B Testing"]
+      },
+      "Services": {
+        "Search Engine Optimization": {},
+        "Pay Per Click Management": {},
+        "Social Media Marketing": {},
+        "Email Marketing": {},
+        "Content Marketing": {}
+      }
+    },
+    "SEO Specialist": {
+      "Skills": {
+        "SEO Tools": ["Google Analytics", "SEMRush", "Ahrefs", "Moz"],
+        "Strategies": ["Keyword Strategy", "Content Optimization", "Backlink Strategy"],
+        "Technical SEO": ["Site Speed Optimization", "Mobile Optimization", "Schema Markup"]
+      },
+      "Services": {
+        "SEO Audits": {},
+        "Keyword Research": {},
+        "SEO Strategy Planning": {},
+        "Link Building": {},
+        "SEO Reporting": {}
+      }
+    },
+    "Software Development": {
+      "Skills": {
+        "Languages": ["Java", "C#", "Python", "C++", "Ruby"],
+        "Development Practices": ["Agile Methodologies", "Test-Driven Development", "Continuous Integration"],
+        "Frameworks": ["NET", "Spring", "Ruby on Rails", "Node.js"],
+        "Tools": ["Git", "JIRA", "Docker", "Jenkins"]
+      },
+      "Services": {
+        "Custom Software Development": {},
+        "Mobile App Development": {},
+        "Desktop Application Development": {},
+        "System Integration": {},
+        "Software Consulting": {}
+      }
+    },
+    "Virtual Assistance": {
+      "Skills": {
+        "Communication": ["Email Management", "Phone Handling", "Live Chat Support"],
+        "Organization": ["Scheduling", "Task Management", "Project Coordination"],
+        "Technical": ["MS Office", "Google Suite", "CRM Software"],
+        "Social Media": ["Management", "Scheduling Posts", "Engagement Analysis"]
+      },
+      "Services": {
+        "Administrative Support": {},
+        "Customer Service": {},
+        "Email Management": {},
+        "Calendar Management": {},
+        "Social Media Management": {}
+      }
+    },
+    "Translation": {
+      "Skills": {
+        "Languages": ["Fluency in Multiple Languages"],
+        "Writing": ["Writing in Target Language", "Understanding of Cultural Nuances"],
+        "Technical": ["Knowledge of Specific Industries", "Use of Translation Software"]
+      },
+      "Services": {
+        "Document Translation": {},
+        "Website Localization": {},
+        "Subtitling and Dubbing": {},
+        "Technical Translation": {},
+        "Interpreting Services": {}
+      }
+    },
+    "Data Analysis": {
+      "Skills": {
+        "Analytical Tools": ["Excel", "SQL", "R", "Python", "Tableau"],
+        "Data Management": ["Data Cleaning", "Data Visualization", "Data Mining"],
+        "Statistics": ["Descriptive Statistics", "Inferential Statistics", "Predictive Modeling"]
+      },
+      "Services": {
+        "Data Analysis": {},
+        "Data Visualization": {},
+        "Statistical Analysis": {},
+        "Data Reporting": {},
+        "Predictive Analytics": {}
+      }
+    },
+    "Video Editing": {
+      "Skills": {
+        "Editing Software": ["Adobe Premiere Pro", "Final Cut Pro", "After Effects", "DaVinci Resolve"],
+        "Video Production": ["Storyboarding", "Color Grading", "Sound Design"],
+        "Graphic Design": ["Motion Graphics", "Visual Effects", "Typography"]
+      },
+      "Services": {
+        "Video Editing": {},
+        "Motion Graphics": {},
+        "Post-Production": {},
+        "Color Correction": {},
+        "Audio Editing": {}
+      }
+    }
+  }
+  

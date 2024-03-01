@@ -4,7 +4,6 @@ import Toast from "@/components/Modules/Toast/Toast";
 import instance from "@/utils/axios";
 import React, { useEffect, useState } from "react";
 import { BsExclamationCircleFill } from "react-icons/bs";
-import { FaAngleRight } from "react-icons/fa6";
 import Moment from "react-moment";
 
 const PurchaseHistory = () => {
@@ -33,8 +32,6 @@ const PurchaseHistory = () => {
   useEffect(() => {
     fetchTransactions();
   }, []);
-
-  console.log(Purchase_History);
 
   return (
     <div>
@@ -67,7 +64,7 @@ const PurchaseHistory = () => {
               <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
                 Token After
               </th>
-              <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]"></th>
+              {/* <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pb-4 whitespace-nowrap 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]"></th> */}
             </tr>
           </thead>
           <tbody className="relative">
@@ -97,15 +94,14 @@ const PurchaseHistory = () => {
                   <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] text-center 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
                     {history?.token_after}
                   </td>
-                  <td className="flex items-center justify-center">
-                    {/* history */}
+                  {/* <td className="flex items-center justify-center">
                     <button
                       type="button"
                       className="flex items-center justify-center my-6 w-full gap-[var(--numberLength,12.547px)] text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#4461F2))] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]"
                     >
                       Action <FaAngleRight />
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             )}

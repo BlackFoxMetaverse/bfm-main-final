@@ -4,14 +4,10 @@ import React, { useEffect, useState } from "react";
 import Accounts from "../../modules/settings/Accounts";
 import Notification from "../../modules/settings/Notification";
 import PurchaseHistory from "../../modules/settings/PurchaseHistory";
-import { FaRegUserCircle } from "react-icons/fa";
-import { TbNotification } from "react-icons/tb";
-import { LuWallet } from "react-icons/lu";
-import { FaAngleLeft } from "react-icons/fa6";
-import instance from "@/utils/axios";
 import Security from "../../modules/settings/Security";
 import Toast from "@/components/Modules/Toast/Toast";
 import { fetchUserData } from "@/utils/userData";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 function TokenInfoCard({ label, value }) {
   return (
@@ -23,15 +19,30 @@ function TokenInfoCard({ label, value }) {
 }
 
 function Main() {
-  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const [currentSetting, setCurrentSetting] = useState("account");
-  const [isClicked, setClicked] = useState(false);
+  console.log(searchParams.get("setting")?.toString());
+
+  const [currentSetting, setCurrentSetting] = useState(
+    searchParams.get("setting")?.toString()
+      ? searchParams.get("setting")?.toString()
+      : "account"
+  );
   const [userData, setuserData] = useState(null);
 
+  // useEffect(() => {
+  //   if (pathname === "/client/settings") {
+  //     router.replace(`${pathname}?setting=account`);
+  //   } else {
+  //     router.replace(`${pathname}`);
+  //   }
+  // }, []);
+
   const handleSettingChange = (newSetting) => {
+    router.replace(`${pathname}?setting=${newSetting}`);
     setCurrentSetting(newSetting);
-    setClicked(!isClicked);
   };
 
   const tokenData = [
@@ -42,34 +53,11 @@ function Main() {
     },
   ];
 
-  async function getUserData() {
-    try {
-      const token = localStorage.getItem("bfm-client-token");
-      const res = await instance.get("/main/user", {
-        headers: {
-          token: token,
-        },
-      });
-      if (res?.status === 200) {
-        setuserData(res?.data?.data);
-      } else if (res?.status === 401) {
-        setuserData("You need to Login");
-      } else {
-        throw new Error();
-      }
-      console.log(res.data);
-    } catch (error) {
-      console.log(error?.message);
-    }
-  }
-
   useEffect(() => {
     fetchUserData()
       .then((data) => setuserData(data))
       .catch((error) => <Toast message={error} type={"error"} />);
   }, []);
-
-  console.log(userData);
 
   return (
     <main

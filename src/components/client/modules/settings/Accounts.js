@@ -14,7 +14,6 @@ const Accounts = ({ userData }) => {
     name: "",
     email: "",
   });
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setNewUserData({
@@ -22,11 +21,6 @@ const Accounts = ({ userData }) => {
       email: userData?.email,
     });
   }, [userData]);
-
-  console.log(newUserData);
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +36,6 @@ const Accounts = ({ userData }) => {
           token: token,
         },
       });
-      console.log(res);
       if (res.status === 200) {
         setShowModal({
           type: "success",
@@ -53,7 +46,7 @@ const Accounts = ({ userData }) => {
         }, 6000);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setShowModal({ type: "error", message: "Something went wrong" });
       setTimeout(() => {
         setShowModal({});
@@ -72,14 +65,13 @@ const Accounts = ({ userData }) => {
         },
       });
 
-      console.log(response);
-
       setShowModal({
         type: "success",
         message: "Profile Deleted Successfully",
       });
       setTimeout(() => {
         setShowModal({});
+        router.push("/");
       }, 6000);
     } catch (error) {
       console.error(error?.response?.data?.message);
@@ -89,9 +81,6 @@ const Accounts = ({ userData }) => {
       }, 6000);
     }
   };
-
-  console.log(userData);
-  console.log(showModal);
 
   return (
     <div className="w-5/6 h-full mx-auto">

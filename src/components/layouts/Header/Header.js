@@ -14,13 +14,23 @@ import { IoLocationOutline, IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
 import AuthModal from "./auth/AuthModal";
 
-const UserProfile = ({ name, profession, username, id, isSeller, onClick }) => {
+const UserProfile = ({
+  name,
+  profession,
+  userName,
+  uid,
+  isSeller,
+  onClick,
+}) => {
   const [options, setOptions] = useState(false);
 
   return (
     <div
       // type="button"
-      onClick={() => { setOptions(!options); onClick()}}
+      onClick={() => {
+        setOptions(!options);
+        onClick();
+      }}
       className="flex gap-2.5 cursor-pointer justify-between items-center w-full text-base leading-6 sm:p-0 py-32 text-white relative"
     >
       <p className="grow font-bold justify-end px-3 py-2.5 italic rounded whitespace-nowrap tracking-wide border border-solid border-black border-opacity-10">
@@ -40,35 +50,34 @@ const UserProfile = ({ name, profession, username, id, isSeller, onClick }) => {
         } stroke-black py-3 sm:min-w-40 transition-all duration-300 ease-in-out transform gap-2`}
       >
         <p className="flex-grow flex flex-col w-11/12 mx-auto gap-2 justify-around items-start">
-          {isSeller ? (
+          {isSeller && (
             <Link
-              href={`/seller/dashboard/${username ? username : name}/${id}`}
+              href={`/seller/dashboard/${userName ? userName : name}/${uid}`}
               className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
             >
               View Profile
             </Link>
-          ) : (
-            <Link
-              href={"/client/settings"}
-              className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
-            >
-              My Account
-            </Link>
           )}
           <Link
-            href={"/client/settings"}
+            href={"/client/settings?setting=account"}
+            className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
+          >
+            My Account
+          </Link>
+          <Link
+            href={"/client/settings?setting=security"}
             className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
           >
             Security
           </Link>
           <Link
-            href={"/client/settings"}
+            href={"/client/settings?setting=notification"}
             className="sm:text-neutral-700 text-white text-lg font-medium leading-normal"
           >
             Notification
           </Link>
           <Link
-            href={"/client/settings"}
+            href={"/client/settings?setting=purchase_history"}
             className="sm:text-neutral-700 text-white text-lg whitespace-nowrap font-medium leading-normal"
           >
             Purchase History
@@ -123,12 +132,13 @@ const Header = ({ isSeller }) => {
         setUserData(res.data.data);
       } else if (res?.status === 401) {
         setIsLogin(false);
+        router.push("/");
       } else {
         setIsLogin(false);
-        throw new Error("Something went wrong!!");
+        router.push("/");
       }
     } catch (error) {
-      return error?.message;
+      return error?.response?.data;
     }
   }
 
@@ -155,7 +165,7 @@ const Header = ({ isSeller }) => {
   return (
     <main
       className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 transition-all duration-500 ease-in-out ${
-        pathname.startsWith("/client/username") ||
+        pathname.startsWith("/client/slug") ||
         pathname.startsWith("/client/settings") ||
         pathname.startsWith("/seller")
           ? "bg-black"
@@ -268,14 +278,7 @@ const Header = ({ isSeller }) => {
                     : "scale-y-0 sm:scale-y-100 translate-y-0 sm:translate-y-0"
                 } sm:bg-transparent inset-x-0 sm:items-center items-end sm:z-0 -z-10 h-2/3 sm:p-0 p-10 sm:h-full lg:gap-[30px] gap-[11px]`}
               >
-                <UserProfile
-                  onClick={() => setMenu(!showMenu)}
-                  isSeller={userData?.isSeller}
-                  name={userData?.name}
-                  username={userData?.userName}
-                  id={userData?.uid}
-                  profession={userData?.profession}
-                />
+                <UserProfile onClick={() => setMenu(!showMenu)} {...userData} />
               </div>
             </div>
           ) : (

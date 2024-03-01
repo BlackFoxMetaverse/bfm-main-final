@@ -246,7 +246,7 @@ const SellerDataDetails = ({ params }) => {
     getFeedBack();
   }, []);
 
-  console.log(feedbackData);
+  console.log(sellerData);
 
   return (
     <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-32 py-24 mx-auto">

@@ -9,15 +9,15 @@ async function fetchUserData() {
       },
     });
 
-    if (response.status === 201) {
+    if (response.status === 401) {
       throw new Error("You Need to Login Click Here 👆");
     } else if (response.status === 200) {
-      return response?.data?.data;
+      return Promise.resolve(response?.data?.data);
     } else {
       throw new Error("Something went wrong");
     }
   } catch (error) {
-    return error?.message;
+    return Promise.reject(error);
   }
 }
 
@@ -29,9 +29,9 @@ async function checkUserDataByToken(token) {
       },
     });
 
-    return response?.data;
+    return Promise.resolve(response?.data);
   } catch (error) {
-    return error?.response?.data;
+    return Promise.reject(error);
   }
 }
 
@@ -42,12 +42,11 @@ async function getSellerProfile(token) {
         token: token,
       },
     });
-  
-    return response?.data;
-  } catch (error) {
-    return error?.response?.data;
-  }
 
+    return Promise.resolve(response?.data);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
 module.exports = { fetchUserData, checkUserDataByToken, getSellerProfile };
