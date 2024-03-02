@@ -197,7 +197,7 @@ const SellerDataDetails = ({ params }) => {
     try {
       const token = localStorage.getItem("bfm-client-token");
       const response = await instance.get(
-        `main/revealInfo?seller_uid=${params?.id}&seller_field=email`,
+        `main/revealInfo?seller_uid=${params?.id}&seller_field=phone_number`,
         {
           headers: {
             token: token,
@@ -212,17 +212,20 @@ const SellerDataDetails = ({ params }) => {
       console.error(error?.response?.status);
       setShowDetails(false);
 
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 400) {
         setError("You Need to login Here 👆 to see the contact info");
       } else {
         setError("Something went wrong Can't reveal the Information");
       }
+      setTimeout(() => {
+        setError("");
+      }, 6000);
     }
   }
 
-  useEffect(() => {
-    handleRevealInfo();
-  }, []);
+  // useEffect(() => {
+  //   handleRevealInfo();
+  // }, []);
 
   async function getFeedBack() {
     try {

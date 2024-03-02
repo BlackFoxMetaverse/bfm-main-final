@@ -118,7 +118,7 @@ const Login = () => {
   const [mobilenumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [verified, setVerified] = useState(false);
-  const [formCount, setCount] = useState(4);
+  const [formCount, setCount] = useState(1);
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imageKey, setImageKey] = useState(null);
@@ -253,7 +253,9 @@ const Login = () => {
   };
 
   const handleServiceRemove = (ServiceToRemove) => {
-    setServices((prevServices) => prevServices.filter((Service) => Service !== ServiceToRemove));
+    setServices((prevServices) =>
+      prevServices.filter((Service) => Service !== ServiceToRemove)
+    );
   };
 
   //--------------user to backend interaction-------------
@@ -1356,13 +1358,13 @@ const Login = () => {
             </div>
             <div className="inline-flex items-start gap-5 justify-around w-full sm:h-9 h-[22.86px]">
               <Link
-                href={"#"}
+                href={"/terms-and-conditions"}
                 className="text-black md:text-base text-[12.24px] not-italic font-normal leading-6"
               >
                 Terms and Conditions
               </Link>
               <Link
-                href={"#"}
+                href={"/privacy-policy"}
                 className="text-black md:text-base text-[12.24px] not-italic font-normal leading-6"
               >
                 Privacy Policy

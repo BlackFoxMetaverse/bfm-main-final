@@ -41,6 +41,24 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [isCitySelected, setCitySelected] = useState(null);
 
+  const handleSearchDropdownToggle = () => {
+    setShowSuggestions(!showSuggestions);
+    setRangeSection(false);
+    setIsLocation(false);
+  };
+
+  const handleRangeDropdownToggle = () => {
+    setRangeSection(!rangeSection);
+    setShowSuggestions(false);
+    setIsLocation(false);
+  };
+
+  const handleLocationDropdownToggle = () => {
+    setIsLocation(!isLocation);
+    setRangeSection(false);
+    setShowSuggestions(false);
+  };
+
   function handleCitySearch(e) {
     setCityTerm(e.target.value);
 
@@ -89,7 +107,9 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSearchData({ ...searchData, [name]: value });
-    setShowSuggestions(value.trim() !== "");
+    if (name === "profession") {
+      setShowSuggestions(searchData?.profession.trim() !== "");
+    }
     if (pathname !== "/") {
       const updatedParams = new URLSearchParams({
         ...searchData,
@@ -134,6 +154,9 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
 
   async function handleSearch(e) {
     e.preventDefault();
+    setIsLocation(false);
+    setShowSuggestions(false);
+    setRangeSection(false);
     const searchPath = `/client/search?${queryParams.toString()}`;
     if (pathname === "/") {
       router.push(searchPath);
@@ -175,12 +198,13 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               value={searchData.profession}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
+              onClick={handleSearchDropdownToggle}
               className="lg:min-w-[294px] w-full h-full text-base font-[450] leading-[150.687%] focus:outline-none"
               placeholder="Search by profession..."
             />
             {showSuggestions &&
               (suggestions.length > 0 ? (
-                <div className="suggestion-dropdown absolute left-0 w-[200%] flex flex-col gap-2 top-full translate-y-10 bg-white rounded-md py-10 px-5 max-h-80 overflow-y-scroll">
+                <div className="suggestion-dropdown absolute left-0 z-20 w-[200%] flex flex-col gap-2 top-full translate-y-10 bg-white rounded-md py-10 px-5 max-h-80 overflow-y-scroll">
                   {suggestions
                     .filter((suggestion) =>
                       suggestion
@@ -215,7 +239,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                 <HiMiniSignal className="w-full h-full" />
               </label>
               <div
-                onClick={() => setRangeSection(!rangeSection)}
+                onClick={handleRangeDropdownToggle}
                 className="group cursor-pointer gap-5 flex items-center text-[#737579] text-base not-italic font-normal leading-[normal]"
               >
                 <p>
@@ -231,8 +255,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               </div>
               {rangeSection && (
                 <div
-                  onBlur={() => setRangeSection(false)}
-                  className={`2xl:w-[165%] w-full h-32 space-y-5 bg-white rounded-lg absolute inset-x-0 top-full translate-y-2 lg:translate-y-7 px-10 py-16`}
+                  className={`lg:w-[165%] w-full h-32 space-y-5 bg-white rounded-lg absolute inset-x-0 top-full translate-y-2 lg:translate-y-7 px-10 py-16`}
                 >
                   <div className="relative flex justify-center items-center">
                     <input
@@ -246,15 +269,6 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                       max="1000000"
                       className="accent-black w-full h-1 bg-gray-300 rounded-full focus:outline-none border-none"
                     />
-                    {/* <div
-                      style={{
-                        position: "absolute",
-                        left: `${searchData.distance / 10000}%`,
-                      }}
-                      className="w-12 h-12 z-0 transition-all duration-700 ease-in-out -translate-x-1/2 rounded-full overflow-hidden bg-white cursor-e-resize"
-                    >
-                      <FaRegCompass className="w-full h-full" />
-                    </div> */}
                   </div>
                   <div className="w-full flex justify-end items-center">
                     <p>
@@ -268,7 +282,6 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                         {parseInt(searchData.distance / 1000)} Kms
                       </span>
                     </p>
-                    {/* {parseInt(searchData.distance / 1000)} Kms */}
                   </div>
                 </div>
               )}
@@ -279,7 +292,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                 <IoLocationOutline className="w-full h-full" />
               </label>
               <button
-                onClick={() => setIsLocation(!isLocation)}
+                onClick={handleLocationDropdownToggle}
                 type="button"
                 className="group cursor-pointer gap-5 flex items-center text-[#737579] text-base capitalize not-italic font-normal leading-[normal]"
               >
@@ -291,10 +304,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                 />
               </button>
               {isLocation && (
-                <div
-                  // onBlur={() => setIsLocation(false)}
-                  className="min-h-[17rem] 2xl:w-[163%] w-full translate-y-2 lg:translate-y-7 px-[22px] py-10 absolute inset-x-0 top-full rounded bg-white flex-col items-start gap-[46px] flex"
-                >
+                <div className="lg:w-[165%] w-full h-80 space-y-5 z-50 bg-white rounded-lg absolute inset-x-0 top-full translate-y-2 lg:translate-y-7 px-10 py-16">
                   <label
                     htmlFor="search-city"
                     className="w-full p-3 bg-zinc-100 rounded-[37.96px] justify-center items-center gap-[7.59px] inline-flex text-black text-xs font-normal "
@@ -306,7 +316,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                       id="search-city"
                       value={cityTerm}
                       onChange={handleCitySearch}
-                      className="w-full bg-transparent focus:outline-none"
+                      className="w-full bg-transparent text-xl focus:outline-none"
                       placeholder="search"
                     />
                   </label>

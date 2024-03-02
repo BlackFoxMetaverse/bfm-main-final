@@ -1,25 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import Logo from "../../../../public/logos/white_fox.svg";
+import { usePathname, useRouter } from "next/navigation";
 import OtpInput from "@/components/Modules/Otp/OtpInput";
-import axios from "axios";
-import PreLoader from "@/components/Modules/Preloader/preLoader";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../firebase";
-// import { updateUserLocation } from "@/utils/location";
 import { checkUserDataByToken } from "../../../utils/userData";
-import instance from "@/utils/axios";
 
-const Login = ({ close, register, setUId }) => {
+const Login = ({ close, register, setUId, message }) => {
   const [countryCode, setCountryCode] = useState("+91");
   const [number, setNumber] = useState("");
   const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
   const [otp, setOtp] = useState("");
 
+  const pathname = usePathname();
   const router = useRouter();
 
   const handleOtpChange = (newOtp) => {
@@ -30,20 +25,6 @@ const Login = ({ close, register, setUId }) => {
     setNumber(e.target.value);
     setLength(e.target.value.toString().length);
   };
-
-  // async function loginUser(token) {
-  //   try {
-  //     const response = await instance.get("/user/login", {
-  //       headers: {
-  //         token: token,
-  //       },
-  //     });
-  //     const data = response?.data?.check;
-  //     setExistingUser(data.isUser);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
 
   const generateRecaptcha = () => {
     const recaptchaElement = document.getElementById("recaptcha");
@@ -74,7 +55,6 @@ const Login = ({ close, register, setUId }) => {
         setFilled(true);
       })
       .catch((error) => {
-        // handleToast(toastType.one, 3000);
         console.log("send otp error:", error);
       });
   };
@@ -94,9 +74,19 @@ const Login = ({ close, register, setUId }) => {
         checkUserDataByToken(token)
           .then((data) => {
             if (data?.isUser) {
-              window.location.reload();
+              if (pathname === "/seller") {
+                router.replace(
+                  `/seller/dashboard/${data?.data?.seller?.name}/${data?.data?.seller?.uid}`
+                );
+              } else {
+                window.location.reload();
+              }
             } else {
-              register();
+              if (pathname === "/seller") {
+                router.replace(`/seller/form`);
+              } else {
+                register();
+              }
               setUId(data?.uid);
             }
           })
@@ -105,35 +95,25 @@ const Login = ({ close, register, setUId }) => {
         return () => clearTimeout(timer);
       })
       .catch((error) => {
-        // window.location.reload();
         console.log("user login error:", error);
       });
   };
 
-  // console.log(isExistingUser);
-
   return (
-    <div className="w-full mt-20">
-      {/* <div className=" w-full flex flex-col items-center space-y-10 justify-center">
-        <Image src={Logo} alt="" className=" w-1/4  fill-white" />
-        <p className="self-stretch text-white text-center text-lg not-italic font-bold leading-[normal] uppercase">
-          Local Talent, Global Impact: Connecting You to Services Near and Far!
-        </p>
-      </div> */}
-      <div className="flex flex-col w-full py-[35px] rounded-[40px] shrink-0 overflow-hidden">
-        {/* {!isFilled ? ( */}
+    <div className={`w-full ${pathname === "/seller" ? "my-7" : "mt-20"}`}>
+      <div
+        className={`flex flex-col w-full ${
+          pathname === "/seller" ? "py-7" : "py-[35px]"
+        } rounded-[40px] shrink-0 overflow-hidden`}
+      >
         <form
           onSubmit={handleNumberSubmit}
           className="flex max-w-full flex-col gap-[19px] shrink-0 self-stretch"
         >
           <div className="flex flex-col gap-4">
             <h1 className="text-white text-[32px] not-italic font-bold leading-[normal]">
-              WELCOME!
+              {message}!
             </h1>
-            {/* <p className=" text-[#666] text-center not-italic font-normal leading-[27px]">
-                Pleae enter your phone number. You will receive a text message
-                to verify your account. Message & data rates may apply.
-              </p> */}
           </div>
           <div className="flex flex-col items-start gap-8 w-full self-stretch">
             <div className="flex flex-col w-5/6 rounded-xl items-start gap-1 py-3 bg-black/10">
@@ -141,17 +121,6 @@ const Login = ({ close, register, setUId }) => {
                 Enter Phone Number
               </label>
               <div className="flex w-full bg-white border-2 rounded-md items-center gap-1 px-4 py-3 bg-black/10">
-                {/* <select
-                    name="select country"
-                    required
-                    className="flex justify-center items-center gap-2 focus:outline-none bg-transparent"
-                    id=""
-                  >
-                    <option value="India">India</option>
-                    <option value="USA">USA</option>
-                    <option value="UK">UK</option>
-                    <option value="UAE">UAE</option>
-                  </select> */}
                 <input
                   className="text-[color:var(--mono-90,#18181B)] bg-transparent w-[29px] text-base focus:outline-none not-italic font-medium leading-6"
                   type="text"
@@ -184,7 +153,6 @@ const Login = ({ close, register, setUId }) => {
             Send OTP
           </button>
         </form>
-        {/* ) : ( */}
         <form
           onSubmit={handleOTPSubmit}
           className={`flex ${
@@ -211,13 +179,7 @@ const Login = ({ close, register, setUId }) => {
             </button>
           </div>
         </form>
-        {/* )} */}
       </div>
-      {/* <div className=" w-full flex flex-col items-center space-y-10 justify-center">
-        <p className="self-stretch text-white text-center text-lg not-italic font-bold leading-[normal] uppercase">
-          Discover More, Connect Locally
-        </p>
-      </div> */}
       <div className="absolute" id="recaptcha"></div>
     </div>
   );

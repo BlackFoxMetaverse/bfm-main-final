@@ -4,43 +4,6 @@ import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { BsStarFill } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
-import { checkUserDataByToken } from "../../../../utils/userData";
-
-const MessageModal = ({ close, message, userName, uid, showButton }) => {
-  const myRef = useRef(null);
-  const router = useRouter();
-
-  const handleClose = (e) => {
-    if (myRef.current && !myRef.current.contains(e.target)) {
-      close();
-    }
-  };
-
-  return (
-    <div
-      onClick={handleClose}
-      className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center"
-    >
-      <div
-        ref={myRef}
-        onClick={(e) => e.stopPropagation()}
-        className="2xl:w-1/5 xl:w-1/4 lg:w-1/3 rounded sm:w-1/2 border-2 border-orange-300 w-11/12 m-auto p-7 bg-white aspect-video flex flex-col justify-center items-center"
-      >
-        <p className="flex-grow font-bold font-xl w-full">Warning</p>
-        <p className="flex-grow font-semibold">{message}</p>
-        {showButton && (
-          <button
-            type="button"
-            className="flex justify-center items-center rounded-md px-7 py-3 bg-black text-white"
-            onClick={() => router.push(`/client/username/${userName}/${uid}`)}
-          >
-            Go Anyway
-          </button>
-        )}
-      </div>
-    </div>
-  );
-};
 
 const ServicesCard = ({
   userName,
@@ -54,37 +17,15 @@ const ServicesCard = ({
   description,
 }) => {
   const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
-  const [showWarnig, setWarning] = useState(false);
-  const [message, setMessage] = useState(null);
-  const [showButton, setShowButton] = useState(false);
-
-  async function handleDetails() {
-    setWarning(!showWarnig);
-    const token = localStorage.getItem("bfm-client-token");
-    checkUserDataByToken(token)
-      .then((data) => {
-        console.log(data);
-        setMessage(
-          "If you go further your 1 token will deducted automatically"
-        );
-        setShowButton(true);
-      })
-      .catch((err) => {
-        console.error(err);
-        setMessage("You Need to login to see the seller's Details");
-        setShowButton(false);
-      });
-  }
-
-  console.log(showWarnig);
+  const router = useRouter();
 
   return (
     <div
       suppressHydrationWarning
-      onClick={handleDetails}
+      onClick={() => router.push(`/client/username/${userName}/${uid}`)}
       className="flex flex-col cursor-pointer items-start w-full border bg-transparent rounded-md overflow-huidden"
     >
-      <div className="flex size-full items-center justify-center bg-gradient-to-b from-black/25 to-white/75 overflow-hidden aspect-video relative">
+      <div className="flex size-full items-center justify-center bg-gradient-to-b -z-10 from-black/25 to-white/75 overflow-hidden aspect-video relative">
         <img
           loading="eager"
           src={
@@ -157,14 +98,6 @@ const ServicesCard = ({
           </div>
         </div>
       </div>
-      {showWarnig && (
-        <MessageModal
-          showButton={showButton}
-          message={message}
-          close={() => setWarning(!showWarnig)}
-          params={{ userName, uid }}
-        />
-      )}
     </div>
   );
 };

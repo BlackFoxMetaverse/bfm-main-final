@@ -1,15 +1,19 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { checkUserDataByToken } from "../../../../utils/userData";
+import { useRouter } from "next/navigation";
+import Login from "@/components/client/auth/Login";
+
 const FeatureCard = ({ title, description, bg, imgUrl, altText }) => (
   <div className="justify-center self-stretch items-center px-8 py-10 rounded-3xl border-solid flex flex-col shadow-xl bg-white border border-[#E5F4F2] w-1/3 max-lg:w-full">
     <div
       className={`flex justify-center items-center self-center px-5 rounded-3xl bg-opacity-20 size-[84px]`}
       style={{
         backgroundColor: bg,
-        backgroundBlendMode: "color-dodge"
+        backgroundBlendMode: "color-dodge",
       }}
     >
       <img
@@ -87,10 +91,9 @@ const FeatureSection = () => {
   );
 };
 
-
 function StepItem({ stepNumber, title, description, imageUrl, altText }) {
   return (
-    <div className="flex flex-col w-[33%] max-md:w-full">
+    <div className="flex flex-col w-[33%] max-md:w-full p-10 shadow-lg rounded-md">
       <div className="flex flex-col items-center text-center text-white max-md:mt-10">
         <img src={imageUrl} alt={altText} className="w-20 aspect-square" />
         <h3 className="mt-9 text-3xl font-bold">
@@ -134,7 +137,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="flex justify-center items-center px-16 py-12 bg-indigo-300 max-md:px-5">
+    <section className="flex justify-center items-center px-16 py-12 bg-purple-800 max-md:px-5">
       <div className="flex flex-col mt-8 w-full max-w-[1528px]">
         <h2 className="self-center text-5xl font-bold text-white whitespace-nowrap max-md:text-4xl">
           How it works
@@ -158,35 +161,86 @@ function HowItWorks() {
   );
 }
 
-const Hero = () => (
-  <div className="flex flex-col">
-    <div className="relative w-full h-screen flex justify-center items-center">
-      <section className="flex flex-col items-center text-white max-w-[976px] mx-auto p-4">
-        <header className="text-6xl font-bold text-center mb-7 max-md:text-4xl">
-          Unleash Your Potential, <br /> Elevate Your Craft.
-        </header>
-        <p className="text-2xl text-center mb-10">
-          Join Black Fox Metaverse and connect with clients worldwide,
-          showcasing your skills like never before.
-        </p>
-        <Link
-          href={"/seller/form"}
-          type="button"
-          className="justify-center px-9 py-4 text-xl tracking-tighter leading-5 text-white whitespace-nowrap rounded-lg bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 max-md:px-5"
-        >
-          Become a Seller
-        </Link>
-      </section>
-      <Image
-        loading="eager"
-        src={require("../../../../../public/seller/theme_bg.svg")}
-        className="size-full absolute inset-0 object-cover -z-10"
-        alt=""
-      />
+const LoginModal = ({ close }) => {
+  const myRef = useRef(null);
+
+  const handleClose = (e) => {
+    if (myRef.current && !myRef.current.contains(e.target)) {
+      close();
+    }
+  };
+
+  return (
+    <main
+      onClick={handleClose}
+      className="fixed inset-0 h-screen flex justify-center items-center"
+    >
+      <div
+        ref={myRef}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-black p-10 w-1/2"
+      >
+        <Login message={"Become a Seller"} />
+      </div>
+    </main>
+  );
+};
+
+const Hero = () => {
+  const router = useRouter();
+  const [uid, setUid] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClick = () => {
+    const token = localStorage.getItem("bfm-client-token");
+    checkUserDataByToken(token)
+      .then((data) => {
+        console.log(data);
+        if (data?.isUser || data?.isSeller) {
+          router.replace(
+            `/seller/dashboard/${data?.data?.seller?.name}/${data?.data?.seller?.uid}`
+          );
+        } else {
+          setShowModal(!showModal);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowModal(!showModal);
+      });
+  };
+
+  return (
+    <div className="flex flex-col">
+      <div className="relative w-full h-screen flex justify-center items-center bg-black/35">
+        <section className="flex flex-col items-center text-white max-w-[976px] mx-auto p-4">
+          <header className="text-6xl font-bold text-center mb-7 max-md:text-4xl">
+            Unleash Your Potential, <br /> Elevate Your Craft.
+          </header>
+          <p className="text-2xl text-center mb-10">
+            Join Black Fox Metaverse and connect with clients worldwide,
+            showcasing your skills like never before.
+          </p>
+          <button
+            onClick={handleClick}
+            type="button"
+            className="justify-center px-9 py-4 text-xl tracking-tighter leading-5 text-white whitespace-nowrap rounded-lg bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 max-md:px-5"
+          >
+            Become a Seller
+          </button>
+        </section>
+        <Image
+          loading="eager"
+          src={require("../../../../../public/seller/theme_bg.svg")}
+          className="size-full absolute inset-0 object-cover -z-10"
+          alt=""
+        />
+      </div>
+      <FeatureSection />
+      <HowItWorks />
+      {showModal && <LoginModal close={() => setShowModal(!showModal)} />}
     </div>
-    <FeatureSection />
-    <HowItWorks />
-  </div>
-);
+  );
+};
 
 export default Hero;

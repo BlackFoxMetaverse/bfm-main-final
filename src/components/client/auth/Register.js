@@ -1,22 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import Logo from "../../../../public/logos/white_fox.svg";
-import { FaUserAlt } from "react-icons/fa";
-import { FaCamera } from "react-icons/fa6";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import instance from "@/utils/axios";
 import { BsCheckCircleFill } from "react-icons/bs";
-import { RiCrossFill } from "react-icons/ri";
 import { RxCrossCircled } from "react-icons/rx";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
-import s3FileUpload from "@/utils/imageUploader";
 
 const Register = ({ close, uid }) => {
   const [document, setDocument] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
   const [isUniqueEmail, setUniqueEmail] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -42,9 +35,7 @@ const Register = ({ close, uid }) => {
     setFormData({ ...formData, email: email });
     checkTimeout = setTimeout(() => {
       instance
-        .get(
-          `/check/email?uid=${uid}&email=${email}`
-        )
+        .get(`/check/email?uid=${uid}&email=${email}`)
         .then((res) => {
           setUniqueEmail(res.data);
         })
@@ -105,7 +96,9 @@ const Register = ({ close, uid }) => {
               id="Username"
               value={formData.name}
               placeholder="Enter User Name"
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
               className="flex h-11 items-center gap-[5px] self-stretch bg-white rounded-lg p-3.5 border-solid text-sm font-normal leading-[100%] tracking-[-0.7px] focus:outline-none"
             />

@@ -34,8 +34,6 @@ const SellerLists = ({ params }) => {
       behavior: "smooth",
     });
   }
-  console.log(recomendations);
-  console.log(searchResult);
 
   return (
     <main className="w-full">
@@ -99,12 +97,12 @@ const SellerLists = ({ params }) => {
           <div className="flex items-end justify-between">
             <div>
               <span className="text-neutral-900 text-[32.46px] font-bold">
-                {searchResult?.profession === "" ||
-                searchResult?.profession === undefined
-                  ? params?.profession === "more"
-                    ? "Professionals"
-                    : decodeURIComponent(params?.profession)
-                  : searchResult?.profession}
+                {searchInput?.profession !== ""
+                  ? searchInput?.profession + " "
+                  : params?.profession === "more" ||
+                    params?.profession === "search"
+                  ? "Professionals "
+                  : decodeURIComponent(params?.profession) + " "}
               </span>
               <span className="text-neutral-900 text-xl">Near You</span>
             </div>

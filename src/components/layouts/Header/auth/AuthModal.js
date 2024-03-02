@@ -22,7 +22,12 @@ const AuthModal = ({ onClose, animation, register, isRegister }) => {
       {isRegister ? (
         <Register close={onClose} uid={uid} />
       ) : (
-        <Login setUId={setUid} close={onClose} register={register} />
+        <Login
+          setUId={setUid}
+          close={onClose}
+          register={register}
+          message={"WELCOME"}
+        />
       )}
     </main>
   );

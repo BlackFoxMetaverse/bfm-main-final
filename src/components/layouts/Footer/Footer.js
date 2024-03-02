@@ -12,7 +12,11 @@ const ItemList = ({ title, items }) => (
     <div className="flex flex-col text-base font-medium text-indigo-200 whitespace-nowrap max-md:mt-10">
       <SectionTitle title={title} />
       {items.map((item, index) => (
-        <Link href={item.href} key={index} className={`mt-${index === 0 ? "4" : "2.5"}`}>
+        <Link
+          href={item.href}
+          key={index}
+          className={`mt-${index === 0 ? "4" : "2.5"}`}
+        >
           {item.name}
         </Link>
       ))}
@@ -29,72 +33,91 @@ const FooterLink = ({ src, altText }) => (
   />
 );
 
-const Footer = () => (
-  <footer className="flex gap-5 justify-between items-center mx-auto mt-10 max-md:flex-wrap w-5/6">
-    <FooterLink
-      src="https://cdn.builder.io/api/v1/image/assets/TEMP/fc48f3c8b133eedbccaa1fa9bae188116982f1f52ab42bc8683499d5cbaaf537?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
-      altText=""
-    />
-    <div className="flex gap-5 justify-between self-stretch my-auto text-sm font-bold leading-7 text-indigo-200">
-      <div>Terms</div>
-      <div className="flex-auto">Data Privacy Statement</div>
-      <div>Cookies</div>
-    </div>
-    <div className="flex gap-4 self-stretch my-auto">
+const Footer = () => {
+  const date = new Date();
+  return (
+    <footer className="flex gap-5 justify-between items-center mx-auto mt-10 max-md:flex-wrap w-5/6">
       <FooterLink
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/f3aff4d5fa96d9063f30eb16f0d4d8b8ca8e40954f28672aa1c08d1a317c183d?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+        src="https://cdn.builder.io/api/v1/image/assets/TEMP/fc48f3c8b133eedbccaa1fa9bae188116982f1f52ab42bc8683499d5cbaaf537?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
         altText=""
       />
-      <FooterLink
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/b7048516f2117dfdeb4d47b8285f1fea8908b53cd8481256b336a630617aab02?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
-        altText=""
-      />
-      <FooterLink
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/5e8c3b7f77a32898f873f9cd1b9c9e9391edcf3ea116a38d56d058ffd4f999c7?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
-        altText=""
-      />
-    </div>
-  </footer>
-);
+      <div className="flex gap-5 justify-between self-stretch my-auto text-sm font-bold leading-7 text-indigo-200">
+        All right reserved Black Fox Metaverse © {date.getFullYear()}. Made with
+        ❤️ in Bharat.
+      </div>
+      <div className="flex gap-4 self-stretch my-auto">
+        <FooterLink
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/f3aff4d5fa96d9063f30eb16f0d4d8b8ca8e40954f28672aa1c08d1a317c183d?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+          altText=""
+        />
+        <FooterLink
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/b7048516f2117dfdeb4d47b8285f1fea8908b53cd8481256b336a630617aab02?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+          altText=""
+        />
+        <FooterLink
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/5e8c3b7f77a32898f873f9cd1b9c9e9391edcf3ea116a38d56d058ffd4f999c7?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
+          altText=""
+        />
+      </div>
+    </footer>
+  );
+};
 
 const WebsiteFooter = () => {
   const sectionData = [
     {
-      title: "BFM",
+      title: "Product",
       items: [
-        { name: "Explore", href: "#" },
-        { name: "All NFTs", href: "#" },
-        { name: "Blog", href: "#" },
-        { name: "About", href: "#" },
-        { name: "SideMap", href: "#" },
+        { name: "Explore", href: "/" },
+        {
+          name: "Feedback",
+          href: "https://docs.google.com/forms/d/e/1FAIpQLSfbK6zX3heRTgI5TReq5lVqJSIRC3ZFUk3fN0fXTL_e1B7HZw/viewform?usp=sf_link",
+        },
+        {
+          name: "Bug",
+          href: "https://docs.google.com/forms/d/e/1FAIpQLSeD8gvnQdmUvIBdwaQT4OrlMzp92ubGKPcLLuDnrRC8hiaOyQ/viewform?usp=sf_link",
+        },
+        {
+          name: "Suggest Feature",
+          href: "https://docs.google.com/forms/d/e/1FAIpQLSfm1N1DUFdQ4rttJmhfjSQJsjGepuf86vk4oYoULIeV0n4-rA/viewform?usp=sf_link",
+        },
       ],
     },
     {
-      title: "My Account",
+      title: "Socials",
       items: [
-        { name: "Profile", href: "#" },
-        { name: "Favourite", href: "#" },
-        { name: "Watchlist", href: "#" },
-        { name: "My Collection", href: "#" },
-        { name: "Settings", href: "#" },
-      ],
-    },
-    {
-      title: "Resources",
-      items: [
-        { name: "Platform Status", href: "#" },
-        { name: "Partners", href: "#" },
-        { name: "Taxes", href: "#" },
-        { name: "News Letter", href: "#" },
+        {
+          name: "Instgram",
+          href: "https://www.instagram.com/blackfoxmetaverse?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D",
+        },
+        {
+          name: "LinkedIn",
+          href: "https://www.linkedin.com/company/blackfoxmetaverse/",
+        },
+        {
+          name: "Twitter",
+          href: "https://twitter.com/Bfmofficial_",
+        },
+        {
+          name: "Youtube",
+          href: "https://www.youtube.com/channel/UC1JOEC2zUaG5vN-RnLktNSw",
+        },
       ],
     },
     {
       title: "Community",
       items: [
+        { name: "Blog", href: "/blog" },
         { name: "Help Center", href: "#" },
-        { name: "BFM Token", href: "#" },
-        { name: "Suggest Feature", href: "#" },
-        { name: "Subscribe", href: "#" },
+      ],
+    },
+    {
+      title: "Legal",
+      items: [
+        { name: "Privacy Policy", href: "/privacy-policy" },
+        { name: "Refund Policy", href: "#" },
+        { name: "Terms and Conditions", href: "/terms-and-conditions" },
+        { name: "Contact Us", href: "#" },
       ],
     },
   ];
@@ -109,7 +132,11 @@ const WebsiteFooter = () => {
         </nav>
         <div className="flex flex-col py-9 text-sm text-indigo-200 max-md:max-w-full">
           <SectionTitle title="Subscribe" />
-          <form action="" onSubmit={(e) => e.preventDefault()} className="flex gap-5 justify-between pl-4 mt-4 rounded-md border-gray-900 border-solid bg-zinc-800 border-[1.5px]">
+          <form
+            action=""
+            onSubmit={(e) => e.preventDefault()}
+            className="flex gap-5 justify-between pl-4 mt-4 rounded-md border-gray-900 border-solid bg-zinc-800 border-[1.5px]"
+          >
             <label htmlFor="emailInput" className="sr-only">
               Email address
             </label>
