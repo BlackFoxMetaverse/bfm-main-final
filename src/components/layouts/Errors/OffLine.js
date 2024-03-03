@@ -1,12 +1,14 @@
+import Image from "next/image";
 import * as React from "react";
 
 function OffLine() {
   return (
     <section className="flex flex-col items-center justify-center h-screen max-w-[538px] mx-auto p-4">
-      <img
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/81c8b711b3c7d2175af6c060fd65ce1d89090f05090b24cc5a266e88f64b4f83?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
-        alt="Connection lost illustration"
+      <Image
+        loading="eager"
+        src={require("../../../../public/clients_images/offline.svg")}
+        alt="Connection lost"
+        decoding="auto"
         className="w-full aspect-[1.45] max-w-[490px] md:max-w-full"
       />
       <h1 className="mt-16 text-5xl whitespace-nowrap text-slate-800 md:mt-10 md:text-4xl">

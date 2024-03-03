@@ -107,7 +107,7 @@ const WebsiteFooter = () => {
     {
       title: "Community",
       items: [
-        { name: "Blog", href: "/blog" },
+        { name: "Blog", href: "/blogs" },
         { name: "Help Center", href: "#" },
       ],
     },

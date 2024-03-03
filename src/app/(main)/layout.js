@@ -18,10 +18,10 @@ export default function RootLayout({ children }) {
           backgroundColor: "#ecedee",
         }}
         suppressHydrationWarning
-        // className="bg-[#ecedee]"
+        className="min-h-screen flex flex-col"
       >
         <Header />
-        {children}
+        <div className="flex-grow">{children}</div>
         <Footer />
       </body>
     </html>
