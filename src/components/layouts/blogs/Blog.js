@@ -64,13 +64,6 @@ const Blog = () => {
               </button>
             ))}
           </div>
-          <Link
-            href={"/blogs/create"}
-            type="button"
-            className="text-indigo-500"
-          >
-            + Create
-          </Link>
         </div>
         <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 size-full 2xl:gap-8 xl:gap-6 md:gap-4 sm:gap-2 gap-3">
           {blogs?.map((blog, index) => (
