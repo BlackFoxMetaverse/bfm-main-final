@@ -1,13 +1,7 @@
-"use client";
+import Hero from "@/components/client/layout/Hero/LandingPage";
 
-import Hero from "@/components/client/layout/Hero/Hero";
-import { Suspense } from "react";
 const page = () => {
-  return (
-    <Suspense>
-      <Hero />;
-    </Suspense>
-  );
+  return <Hero />;
 };
 
 export default page;

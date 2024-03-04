@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ServicesCard from "@/components/client/modules/ServicesCard/ServicesCard";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import SearchForm from "../../modules/FormLayout/SearchForm";
 import instance from "@/utils/axios";
 import Link from "next/link";
 import AuthModal from "@/components/layouts/Header/auth/AuthModal";
+import { getUserPreciseLocation } from "@/utils/location";
 
 const services = [
   {
@@ -68,7 +69,7 @@ const services = [
   },
 ];
 
-const Hero = () => {
+const LandingPage = () => {
   const [searchInput, setSearchInputData] = useState({});
   const [searchResult, setSearchResult] = useState([]);
   const [recommendations, setRecommendation] = useState(null);
@@ -78,8 +79,9 @@ const Hero = () => {
 
   async function fetchRecomendation() {
     try {
+      const location = await getUserPreciseLocation();
       const response = await instance.get(
-        `search/recommendation?longitude=${searchInput?.longitude}&latitude=${searchInput?.latitude}&page=1`
+        `search/recommendation?longitude=${location?.longitude}&latitude=${location?.latitude}&page=1`
       );
 
       setRecommendation(response?.data?.data);
@@ -91,11 +93,11 @@ const Hero = () => {
 
   useEffect(() => {
     fetchRecomendation();
-  }, [searchInput?.latitude]);
+  }, []);
 
   return (
     <main className="flex w-full flex-col items-center gap-[120px]">
-      {/* Hero */}
+      {/* LandingPage */}
       <section className="relative flex w-full lg:py-40 py-32 min-h-screen flex-col justify-center items-center gap-2.5">
         <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
           <img
@@ -115,11 +117,9 @@ const Hero = () => {
               your business&apos;s back office with Freelancers
             </span>
           </div>
-          <SearchForm
-            data={setSearchResult}
-            isShown
-            searchInputData={setSearchInputData}
-          />
+          <Suspense>
+            <SearchForm isShown searchInputData={setSearchInputData} />
+          </Suspense>
         </div>
       </section>
 
@@ -240,7 +240,11 @@ const Hero = () => {
               type="button"
               onClick={() =>
                 router.push(
-                  `/client/${service.title}?distance=100000&profession=${service.title}&latitude=${searchInput.latitude}&longitude=${searchInput.longitude}&limitUser=50`
+                  `/client/${encodeURIComponent(
+                    service.title
+                  )}?distance=100000&profession=${service.title}&latitude=${
+                    searchInput.latitude
+                  }&longitude=${searchInput.longitude}&limitUser=50`
                 )
               }
               className={`flex items-center ${service.color} justify-center w-full gap-1 rounded overflow-hidden`}
@@ -296,4 +300,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default LandingPage;

@@ -7,9 +7,14 @@ import Image from "next/image";
 import { FaAngleDown } from "react-icons/fa6";
 import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
-import { IoLocationOutline, IoLogOutOutline } from "react-icons/io5";
+import {
+  IoLocationOutline,
+  IoLogOutOutline,
+  IoNotificationsSharp,
+} from "react-icons/io5";
 import Link from "next/link";
 import AuthModal from "./auth/AuthModal";
+import Notification from "@/components/Modules/Notification/Notification";
 
 const UserProfile = ({
   name,
@@ -115,6 +120,40 @@ const Header = ({ isSeller }) => {
   const [isLogingin, setIsLogingin] = useState(false);
   const [isregistering, setIsRegistering] = useState(false);
   const [showMenu, setMenu] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notification, setNotification] = useState([
+    {
+      imageSrc:
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/2bd7ea0b327db1dfcef9be5d491bcc1d2cd38f83fca77ff268b742605f58ed15?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+      altText: "Ashwin Bose's profile picture",
+      title: "Ashwin Bose",
+      description: "is requesting access to your contact information.",
+      buttonText: "Accept",
+      buttonClassName: "bg-indigo-500",
+      time: "2m",
+    },
+    {
+      imageSrc:
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/abe06b77cd388025fa93196028798eefb4b548aaf5784f2e5c43c388bede219a?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+      altText: "Patrick's profile picture",
+      title: "Patrick",
+      description: "added a comment on your portfolio.",
+      buttonText: "View",
+      buttonClassName: "bg-blue-600",
+      time: "8h",
+    },
+    {
+      imageSrc:
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/43d9260dbeed603549ffc53e7b933a844daaec92d005e33c16ebeeca26d41004?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+      altText: "Feature notification icon",
+      title: "New Feature Alert!",
+      description:
+        "We’re pleased to introduce the latest enhancements in our templating experience.",
+      buttonText: "Try now",
+      buttonClassName: "bg-blue-600",
+      time: "14h",
+    },
+  ]);
 
   const router = useRouter();
 
@@ -131,7 +170,6 @@ const Header = ({ isSeller }) => {
         },
       });
       if (res?.status === 200) {
-        console.log(res.data?.data);
         setIsLogin(true);
         setUserData(res.data.data);
       } else if (res?.status === 401) {
@@ -148,7 +186,7 @@ const Header = ({ isSeller }) => {
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [isLogin]);
 
   useEffect(() => {
     const scrolling = () => {
@@ -169,7 +207,7 @@ const Header = ({ isSeller }) => {
   return (
     <main
       className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 transition-all duration-500 ease-in-out ${
-        pathname.startsWith("/client/username") ||
+        pathname.startsWith("/client/slug") ||
         pathname.startsWith("/client/settings") ||
         pathname.startsWith("/seller")
           ? "bg-black"
@@ -214,7 +252,7 @@ const Header = ({ isSeller }) => {
             <div className="flex justify-center items-center">
               <button
                 type="button"
-                className={`2xl:w-24 sm:w-16 aspect-[2/1] rounded sm:border border-white flex items-center gap-3 justify-center`}
+                className={`2xl:px-6 2xl:py-2 sm:px-3 sm:py-0.5 aspect-[2/1] rounded sm:border border-white flex items-center gap-3 justify-center`}
               >
                 <svg
                   width="20"
@@ -255,6 +293,18 @@ const Header = ({ isSeller }) => {
                   {userData?.token ? userData?.token : 0}
                 </p>
               </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotification(!showNotification)}
+                  type="button"
+                  className="mr-2 ml-3 text-white"
+                >
+                  <IoNotificationsSharp />
+                </button>
+                {showNotification && (
+                  <Notification notifications={notification} />
+                )}
+              </div>
               <button
                 onClick={() => setMenu(!showMenu)}
                 className={`flex sm:hidden flex-col h-6 w-8 justify-between gap-0.5 ml-5`}

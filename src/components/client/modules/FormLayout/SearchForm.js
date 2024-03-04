@@ -240,7 +240,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               </label>
               <div
                 onClick={handleRangeDropdownToggle}
-                className="group cursor-pointer gap-5 flex items-center text-[#737579] text-base not-italic font-normal leading-[normal]"
+                className="group cursor-pointer gap-5 flex items-center text-[#737579] whitespace-nowrap text-base not-italic font-normal leading-[normal]"
               >
                 <p>
                   {searchData?.distance === 0 || searchData?.distance === "0"

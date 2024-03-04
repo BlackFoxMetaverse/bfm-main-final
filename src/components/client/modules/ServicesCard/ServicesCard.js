@@ -22,7 +22,7 @@ const ServicesCard = ({
   return (
     <div
       suppressHydrationWarning
-      onClick={() => router.push(`/client/username/${userName}/${uid}`)}
+      onClick={() => router.push(`/client/slug/${userName}/${uid}`)}
       className="flex flex-col cursor-pointer items-start w-full border bg-transparent rounded-md overflow-huidden"
     >
       <div className="flex size-full items-center justify-center bg-gradient-to-b -z-10 from-black/25 to-white/75 overflow-hidden aspect-video relative">
