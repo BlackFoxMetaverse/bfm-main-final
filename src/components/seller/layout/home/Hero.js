@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { checkUserDataByToken } from "../../../../utils/userData";
 import { useRouter } from "next/navigation";
-import Login from "@/components/client/auth/Login";
+import AuthModal from "@/components/layouts/Header/auth/AuthModal";
 
 const FeatureCard = ({ title, description, bg, imgUrl, altText }) => (
   <div className="justify-center self-stretch items-center px-8 py-10 rounded-3xl border-solid flex flex-col shadow-xl bg-white border border-[#E5F4F2] w-1/3 max-lg:w-full">
@@ -93,7 +93,7 @@ const FeatureSection = () => {
 
 function StepItem({ stepNumber, title, description, imageUrl, altText }) {
   return (
-    <div className="flex flex-col w-[33%] max-md:w-full p-10 shadow-lg rounded-md">
+    <div className="flex flex-col w-[33%] max-md:w-full p-10 rounded-md">
       <div className="flex flex-col items-center text-center text-white max-md:mt-10">
         <img src={imageUrl} alt={altText} className="w-20 aspect-square" />
         <h3 className="mt-9 text-3xl font-bold">
@@ -137,7 +137,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="flex justify-center items-center px-16 py-12 bg-purple-800 max-md:px-5">
+    <section className="flex justify-center items-center px-16 py-12 bg-[#6981F5] max-md:px-5">
       <div className="flex flex-col mt-8 w-full max-w-[1528px]">
         <h2 className="self-center text-5xl font-bold text-white whitespace-nowrap max-md:text-4xl">
           How it works
@@ -161,35 +161,11 @@ function HowItWorks() {
   );
 }
 
-const LoginModal = ({ close }) => {
-  const myRef = useRef(null);
-
-  const handleClose = (e) => {
-    if (myRef.current && !myRef.current.contains(e.target)) {
-      close();
-    }
-  };
-
-  return (
-    <main
-      onClick={handleClose}
-      className="fixed inset-0 h-screen flex justify-center items-center"
-    >
-      <div
-        ref={myRef}
-        onClick={(e) => e.stopPropagation()}
-        className="bg-black p-10 w-1/2"
-      >
-        <Login message={"Become a Seller"} />
-      </div>
-    </main>
-  );
-};
-
 const Hero = () => {
   const router = useRouter();
   const [uid, setUid] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [isregistering, setIsRegistering] = useState(false);
 
   const handleClick = () => {
     const token = localStorage.getItem("bfm-client-token");
@@ -201,12 +177,12 @@ const Hero = () => {
             `/seller/dashboard/${data?.data?.seller?.name}/${data?.data?.seller?.uid}`
           );
         } else {
-          setShowModal(!showModal);
+          setShowAuth(!showAuth);
         }
       })
       .catch((err) => {
         console.error(err);
-        setShowModal(!showModal);
+        setShowAuth(!showAuth);
       });
   };
 
@@ -238,7 +214,12 @@ const Hero = () => {
       </div>
       <FeatureSection />
       <HowItWorks />
-      {showModal && <LoginModal close={() => setShowModal(!showModal)} />}
+      <AuthModal
+        onClose={() => setShowAuth(!showAuth)}
+        animation={showAuth ? "translate-x-0" : "translate-x-full"}
+        register={() => setIsRegistering(!isregistering)}
+        isRegister={isregistering}
+      />
     </div>
   );
 };

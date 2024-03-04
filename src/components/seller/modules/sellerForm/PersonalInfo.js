@@ -175,7 +175,7 @@ const PersonalInfo = ({
                     inputData.gender !== "" ? "text-black" : "text-[#9F9F9F]"
                   }`}
                 >
-                  {inputData.gender || "male"}
+                  {inputData.gender || "Gender"}
                 </span>
                 <TbCaretDownFilled />
               </button>

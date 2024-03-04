@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import instance from "@/utils/axios";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { RxCrossCircled } from "react-icons/rx";
@@ -21,6 +21,7 @@ const Register = ({ close, uid }) => {
     setDocument(window.document);
   });
 
+  const pathname = usePathname();
   const router = useRouter();
 
   function checkUniqueEmail(e) {
@@ -60,7 +61,11 @@ const Register = ({ close, uid }) => {
       .then((response) => {
         console.log(response);
         close();
-        window.location.reload();
+        if (pathname === "/seller") {
+          router.push("/seller/form");
+        } else {
+          window.location.reload();
+        }
       })
       .catch((err) => console.error(err.message))
       .finally(() => setSubmitting(true));

@@ -83,7 +83,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     const professionSuggestions = Object.keys(servicesData)
       .map((category) =>
         Object.keys(servicesData[category].Services).map(
-          (service) => `${category} - ${service}`
+          (service) => `${service}`
         )
       )
       .flat();

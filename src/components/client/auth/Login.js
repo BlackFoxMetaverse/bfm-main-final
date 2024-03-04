@@ -69,24 +69,23 @@ const Login = ({ close, register, setUId, message }) => {
 
         localStorage.setItem("bfm-client-token", token);
 
-        console.log(token);
-
         checkUserDataByToken(token)
           .then((data) => {
             if (data?.isUser) {
-              if (pathname === "/seller") {
-                router.replace(
+              if (pathname === "/seller" && data?.isSeller) {
+                router.push(
                   `/seller/dashboard/${data?.data?.seller?.name}/${data?.data?.seller?.uid}`
                 );
+                window.location.reload();
+              } else if (pathname === "/seller" && data?.isUser) {
+                router.push(`/seller/form`);
+                window.location.reload();
               } else {
                 window.location.reload();
               }
+              setUId(data?.uid);
             } else {
-              if (pathname === "/seller") {
-                router.replace(`/seller/form`);
-              } else {
-                register();
-              }
+              register();
               setUId(data?.uid);
             }
           })

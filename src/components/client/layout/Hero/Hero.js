@@ -6,47 +6,65 @@ import Image from "next/image";
 import { FaAngleRight, FaCheck } from "react-icons/fa6";
 import SearchForm from "../../modules/FormLayout/SearchForm";
 import instance from "@/utils/axios";
+import Link from "next/link";
+import AuthModal from "@/components/layouts/Header/auth/AuthModal";
 
 const services = [
   {
-    src: require("../../../../../public/clients_images/services/graphics-design.svg"),
-    name: "Graphics & Design",
+    color: "bg-slate-600",
+    title: "Programming",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/e3a21e3d1fbdfa462abae318200cc62fe65c1bbcb997305d8e7abb3c51071985?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "Programming project example",
   },
   {
-    src: require("../../../../../public/clients_images/services/online-marketing.svg"),
-    name: "Digital Marketing",
+    color: "bg-red-400",
+    title: "Photographer",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/633a8cc4437c07f977ecce80b217a766f63ff7f526abc98c9a4411a1319a2081?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "Photography work example",
   },
   {
-    src: require("../../../../../public/clients_images/services/writing-translation.svg"),
-    name: "Writing & Translation",
+    color: "bg-blue-500",
+    title: "Videography",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/a94aee83b96b83d80b49f4475eaf7be49b3c3e1868f1ece3a5590de190e8e5f6?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "Videography work example",
   },
   {
-    src: require("../../../../../public/clients_images/services/video-animation.svg"),
-    name: "Video & Animation",
+    color: "bg-emerald-500",
+    title: "Graphic Designer",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/efa76496881950efcbf187ae699b1cf332d4e14e6d15bdefdcd559f0453b88dd?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "Graphic Design work example",
   },
   {
-    src: require("../../../../../public/clients_images/services/music-audio.svg"),
-    name: "Music & Audio",
+    color: "bg-teal-600",
+    title: "Digital Marketing",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/8304afa04f19879d2bc1f7802b7d72c170ab627a1b9f5fed504b6325bc2a1ebe?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "Digital Marketing campaign example",
   },
   {
-    src: require("../../../../../public/clients_images/services/programming.svg"),
-    name: "Developer",
+    color: "bg-violet-800",
+    title: "Music Production",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/ed3fabf47449b183d47c766ef765cabc1910f017ebe4a4c2848070336f38611d?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "Music Production setup example",
   },
   {
-    src: require("../../../../../public/clients_images/services/business.svg"),
-    name: "Business",
+    color: "bg-rose-700",
+    title: "Graphic Designer",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/578c5f787fc086b4d87109cd0f96f7d1e68c5096adfda8b1d32ef9bdbf47dec3?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "Another Graphic Design work example",
   },
   {
-    src: require("../../../../../public/clients_images/services/lifestyle.svg"),
-    name: "Lifestyle",
-  },
-  {
-    src: require("../../../../../public/clients_images/services/data.svg"),
-    name: "Data",
-  },
-  {
-    src: require("../../../../../public/clients_images/services/photography.svg"),
-    name: "Photography",
+    color: "bg-orange-300",
+    title: "UI/UX Designer",
+    imageSrc:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6e4f18858edcdb7fbfcec670deec83925fb413d7fcf5b1613f5a5e41f823e1?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
+    imageAlt: "UI/UX Designer work example",
   },
 ];
 
@@ -54,6 +72,8 @@ const Hero = () => {
   const [searchInput, setSearchInputData] = useState({});
   const [searchResult, setSearchResult] = useState([]);
   const [recommendations, setRecommendation] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
+  const [isregistering, setIsRegistering] = useState(false);
   const router = useRouter();
 
   async function fetchRecomendation() {
@@ -141,44 +161,63 @@ const Hero = () => {
 
       {/* unknown section */}
       <section className="flex flex-col lg:flex-row w-full items-center lg:h-screen h-full overflow-hidden">
-        <img
+        <Image
           className="flex-1 lg:w-1/2 w-full h-full object-cover"
-          src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt=""
+          src={require("../../../../../public/clients_images/mission.svg")}
         />
         <div className="w-full h-full flex-1 bg-red-950 py-10 lg:py-0 justify-center items-center flex">
           <div className="w-3/4 h-full mx-auto flex-col justify-center items-start gap-[51.84px] inline-flex">
-            <div className="text-white 2xl:text-6xl xl:text-4xl lg:text-3xl text-3xl font-bold leading-[normal]">
-              Paperwork is our passion. What&apos;s yours?
+            <div>
+              <div>
+                <span className="text-white text-[32px] font-normal">
+                  Your Dream,
+                </span>
+                <span className="text-white text-[32px] font-extrabold">
+                  {" "}
+                  Our Vision
+                </span>
+              </div>
+              <div>
+                <span className="text-white text-[32px] font-normal">
+                  Your Passion,
+                </span>
+                <span className="text-white text-[32px] font-extrabold">
+                  {" "}
+                  Our Mission
+                </span>
+              </div>
             </div>
             <div className="flex-col justify-end items-start gap-[35.38px] flex">
-              <button
-                type="button"
-                className="pl-[24.55px] pr-[31.45px] pt-[13.50px] pb-4 bg-emerald-500 rounded-[4.91px] border border-emerald-500 justify-start items-start inline-flex"
-              >
-                <p className="text-white text-[22.09px] font-bold leading-[33.14px]">
-                  Get Started for Free
-                </p>
-              </button>
-              <div className="flex-col justify-start items-start gap-[18.41px] flex">
+              <div className="flex-col justify-start items-start gap-3 flex">
                 <div className="justify-start items-center gap-3.5 flex">
-                  <FaCheck className="text-white text-2xl" />
+                  <FaCheck className="text-blue-800 text-2xl" />
                   <div className="text-white/70 text-2xl font-normal leading-loose">
-                    No credit card
+                    Passion To Portfolio
                   </div>
                 </div>
                 <div className="justify-start items-center gap-3.5 flex">
-                  <FaCheck className="text-white text-2xl" />
+                  <FaCheck className="text-blue-800 text-2xl" />
                   <div className="text-white/70 text-2xl font-normal leading-loose">
-                    No spam
+                    Location Based Opportunities
                   </div>
                 </div>
                 <div className="justify-start items-center gap-3.5 flex">
-                  <FaCheck className="text-white text-2xl" />
+                  <FaCheck className="text-blue-800 text-2xl" />
                   <div className="text-white/70 text-2xl font-normal leading-loose">
-                    No hassle
+                    Find Your Worth and Get Paid
                   </div>
                 </div>
               </div>
+              <Link
+                href={"/seller"}
+                type="button"
+                className="pl-[24.55px] pr-[31.45px] pt-[13.50px] pb-4 bg-emerald-500 rounded-[4.91px] border border-emerald-500 justify-start items-start inline-flex"
+              >
+                <p className="text-white text-[22.09px] font-bold tracking-wider leading-[33.14px]">
+                  Create Profile Now
+                </p>
+              </Link>
             </div>
           </div>
         </div>
@@ -188,33 +227,34 @@ const Hero = () => {
       <section className="flex flex-col items-start gap-10 w-5/6">
         <div>
           <span className="text-neutral-900 text-[32px] font-normal">
-            What you Need?
+            We Have Got,
           </span>
           <span className="text-neutral-900 text-[32px] font-extrabold">
             {" "}
-            We Got it!
+            Everything you need
           </span>
         </div>
-        <div className="grid lg:grid-cols-5 grid-cols-2 flex-wrap gap-10 justify-between w-full mt-16 items-center">
+        <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 flex-wrap gap-10 justify-between w-full mt-16 items-center">
           {services?.map((service, index) => (
             <button
               type="button"
               onClick={() =>
                 router.push(
-                  `/client/${service.name}?distance=100000&profession=${service.name}&latitude=${searchInput.latitude}&longitude=${searchInput.longitude}&limitUser=50`
+                  `/client/${service.title}?distance=100000&profession=${service.title}&latitude=${searchInput.latitude}&longitude=${searchInput.longitude}&limitUser=50`
                 )
               }
-              className="flex flex-col items-center justify-center gap-5"
+              className={`flex items-center ${service.color} justify-center w-full gap-1 rounded overflow-hidden`}
               key={index}
             >
-              <Image
-                src={service.src}
-                alt=""
-                className="w-[57.749px] h-[57.749px] object-cover shrink-0"
-              />
-              <p className="text-[#222325] text-center text-[18.436px] font-normal leading-[27.653px]">
-                {service.name}
+              <p className="text-white flex-1 text-center text-[18.436px] font-normal whitespace-nowrap leading-[27.653px]">
+                {service.title}
               </p>
+              <img
+                loading="lazy"
+                src={service.imageSrc}
+                alt={service.imageAlt}
+                className="w-1/3 aspect-square object-cover shrink-0"
+              />
             </button>
           ))}
         </div>
@@ -226,26 +266,32 @@ const Hero = () => {
           className="absolute inset-0 w-full h-full object-cover -z-10"
         />
         <div className="w-11/12 mx-auto py-[37.94px] flex-col justify-start items-start gap-[5.37px] flex">
-          <div className="text-neutral-50 text-[39.16px] font-bold leading-[46.99px]">
+          <div className="text-neutral-50 xl:text-[39.16px] text-3xl font-bold leading-normal">
             Build a strong online presence
           </div>
-          <div className="text-neutral-50 text-[22.03px] font-normal leading-loose">
+          <div className="text-neutral-50 xl:text-[22.03px] text-lg font-normal leading-normal">
             Boost your business with this course on personal branding
             techniques.
           </div>
         </div>
         <div className="w-11/12 mx-auto">
           <button
-            onClick={() => router.push("/seller")}
+            onClick={() => setShowAuth(!showAuth)}
             type="button"
             className="px-8 py-4 bg-white rounded border-2 justify-center items-center gap-2 inline-flex"
           >
             <div className="text-indigo-500 text-xl leading-tight">
-              Become a Seller
+              Join BFM
             </div>
           </button>
         </div>
       </div>
+      <AuthModal
+        onClose={() => setShowAuth(!showAuth)}
+        animation={showAuth ? "translate-x-0" : "translate-x-full"}
+        register={() => setIsRegistering(!isregistering)}
+        isRegister={isregistering}
+      />
     </main>
   );
 };

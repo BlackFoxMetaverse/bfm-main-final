@@ -56,8 +56,6 @@ const SellerForm = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  console.log(userData);
-
   useEffect(() => {
     const token = localStorage.getItem("bfm-client-token");
     if (!token) console.warn("No token found");
@@ -73,7 +71,10 @@ const SellerForm = () => {
             },
           });
         } else {
-          setInputData({ ...inputData, phone_number: data.phone_number });
+          setInputData({
+            ...inputData,
+            phone_number: data.phone_number,
+          });
         }
       })
       .catch((err) => {
@@ -232,7 +233,6 @@ const SellerForm = () => {
       instance
         .get(`check/email?uid=${userData?.uid}&email=${email}`)
         .then((response) => {
-          console.log(response.data);
           setEmailValid(response.data);
         })
         .catch((error) => {

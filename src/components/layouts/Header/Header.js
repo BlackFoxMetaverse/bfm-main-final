@@ -4,10 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import logo from "../../../../public/logos/white_fox.svg";
 import Image from "next/image";
-import { HiLocationMarker } from "react-icons/hi";
-import { BsSearch } from "react-icons/bs";
-import { LuBellDot } from "react-icons/lu";
-import { FaAngleDown, FaAnglesDown } from "react-icons/fa6";
+import { FaAngleDown } from "react-icons/fa6";
 import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
 import { IoLocationOutline, IoLogOutOutline } from "react-icons/io5";
@@ -24,9 +21,11 @@ const UserProfile = ({
 }) => {
   const [options, setOptions] = useState(false);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
     <div
-      // type="button"
       onClick={() => {
         setOptions(!options);
         onClick();
@@ -88,7 +87,14 @@ const UserProfile = ({
           type="button"
           onClick={() => {
             localStorage.removeItem("bfm-client-token");
-            window.location.reload();
+            if (
+              pathname === "/seller/form" ||
+              pathname.startsWith("/seller/dashboard")
+            ) {
+              router.push("/");
+            } else {
+              window.location.reload();
+            }
           }}
           className="mt-2 w-11/12 mx-auto text-red-500 text-base font-bold leading-normal items-center gap-[5px] inline-flex"
         >
@@ -101,8 +107,6 @@ const UserProfile = ({
 };
 
 const Header = ({ isSeller }) => {
-  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
-
   const pathname = usePathname();
   const [isScrolling, setScrolling] = useState(false);
   const [userLocation, setUserLocation] = useState(null);

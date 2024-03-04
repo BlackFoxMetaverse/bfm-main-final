@@ -85,7 +85,7 @@ const SellerPortfolio = ({ params }) => {
             <div className="w-full h-full items-start shrink-0 gap-[22.29px] flex">
               <div className="w-1/3 aspect-square rounded-2xl shrink-0 overflow-hidden relative bg-stone-300">
                 <img
-                  src="https://s3-alpha-sig.figma.com/img/e5f1/c231/96d9c17181e09c0c069fb92abf5dcd9b?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=d0tt1M-~cJJK5yeNSqhOosCaOy0Cr5gHFeI2Nqgy8P8LnRCBajnfpgTR2o9gsaOw5GbVA6wgGhKUYRswddZNLDuuEKvMBpe5t3P69887rWQby6X0nwE0-6Vjc0ic7d452O80U9xtm7cs2vmXQ8gcZLN7G0tDoW6jFrc-B2jP46Bm52KaJYlVHzs1dkcqIrbxT-Lg-L8sHd8DMlfRydGIUI2s~nKxvnpzOS3LzoC5LNO23gbPEnpFJ50FqyT1XuT-uqPGrnPpyTpiTIB~P15wJU3II3-OweUGqaG~PuHYvEuE41Hl860e9AM3QyccNhe-V4otdMoUIebKRjfsi3gQRQ__"
+                  src={userData?.image ? s3Url + userData?.image : ""}
                   alt=""
                   className="size-full object-cover shrink-0"
                 />
