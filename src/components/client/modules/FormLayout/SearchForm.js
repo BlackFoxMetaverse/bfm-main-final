@@ -178,16 +178,16 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     <div
       style={{ width: width }}
       onKeyDown={handleKeyDown}
-      className="xl:w-3/4 w-11/12 max-w-[1920px] flex justify-center items-center"
+      className="xl:w-3/4 sm:w-11/12 w-full max-w-[1920px] flex justify-center items-center"
     >
       <form
         action=""
         onSubmit={handleSearch}
-        className="w-full  inline-flex flex-col items-center gap-2.5 rounded-[10px] relative"
+        className="w-full inline-flex flex-col items-center gap-2.5 rounded-[10px] relative"
       >
         <Location onLocationChange={handleLocationChange} />
-        <div className="flex justify-center items-center gap-10 h-full w-full bg-white border-[color:var(--Foundation-Grey-grey-50,#E9E9E9)] relative shadow-[0px_1px_4px_0px_rgba(0,0,0,0.10)] lg:px-[25px] lg:py-3 px-4 py-1.5 rounded-[10px] border-2 border-solid">
-          <div className="flex items-center gap-4 flex-grow relative">
+        <div className="flex justify-center items-center lg:gap-10 sm:gap-5 gap-2.5 h-full w-full bg-white border-[color:var(--Foundation-Grey-grey-50,#E9E9E9)] relative shadow-[0px_1px_4px_0px_rgba(0,0,0,0.10)] lg:px-[25px] lg:py-3 px-4 py-1.5 rounded-[10px] border-2 border-solid">
+          <div className="flex items-center lg:gap-4 sm:gap-2 gap-1 flex-grow relative">
             <label htmlFor="search">
               <BsSearch />
             </label>
@@ -199,12 +199,12 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               onClick={handleSearchDropdownToggle}
-              className="lg:min-w-[294px] w-full h-full text-base font-[450] leading-[150.687%] focus:outline-none"
+              className="lg:min-w-[294px] size-full text-base font-[450] leading-[150.687%] focus:outline-none"
               placeholder="Search by profession..."
             />
             {showSuggestions &&
               (suggestions.length > 0 ? (
-                <div className="suggestion-dropdown absolute left-0 z-20 w-[200%] flex flex-col gap-2 top-full translate-y-10 bg-white rounded-md py-10 px-5 max-h-80 overflow-y-scroll">
+                <div className="suggestion-dropdown absolute left-0 z-20 lg:w-[200%] sm:w-full w-[175%] flex flex-col gap-2 top-full translate-y-10 bg-white rounded-md py-10 px-5 max-h-80 overflow-y-scroll">
                   {suggestions
                     .filter((suggestion) =>
                       suggestion
@@ -234,9 +234,9 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
             <div className="flex justify-end items-center gap-[21px]">
               <label
                 htmlFor="range"
-                className="w-9 h-[26px] shrink-0 text-[#737579]"
+                className="lg:w-9 w-5 h-[26px] shrink-0 text-[#737579]"
               >
-                <HiMiniSignal className="w-full h-full" />
+                <HiMiniSignal className="size-full" />
               </label>
               <div
                 onClick={handleRangeDropdownToggle}
@@ -287,7 +287,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
               )}
               <label
                 htmlFor="location"
-                className="w-9 h-[26px] shrink-0 text-[#737579]"
+                className="lg:w-9 w-5 h-[26px] shrink-0 text-[#737579]"
               >
                 <IoLocationOutline className="w-full h-full" />
               </label>
@@ -304,10 +304,10 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                 />
               </button>
               {isLocation && (
-                <div className="lg:w-[165%] w-full h-80 space-y-5 z-50 bg-white rounded-lg absolute inset-x-0 top-full translate-y-2 lg:translate-y-7 px-10 py-16">
+                <div className="lg:w-[165%] w-full space-y-5 z-50 bg-white rounded-lg absolute inset-x-0 top-full translate-y-2 lg:translate-y-7 lg:px-10 py-8 px-5 lg:py-16">
                   <label
                     htmlFor="search-city"
-                    className="w-full p-3 bg-zinc-100 rounded-[37.96px] justify-center items-center gap-[7.59px] inline-flex text-black text-xs font-normal "
+                    className="w-full p-3 bg-zinc-100 rounded-[37.96px] justify-center items-center sm:gap-[7.59px] gap-0.5 inline-flex text-black text-xs font-normal"
                   >
                     <FaSearch className="text-neutral-500" />
                     <input
@@ -316,7 +316,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
                       id="search-city"
                       value={cityTerm}
                       onChange={handleCitySearch}
-                      className="w-full bg-transparent text-xl focus:outline-none"
+                      className="w-full bg-transparent whitespace-nowrap text-xl focus:outline-none"
                       placeholder="search"
                     />
                   </label>

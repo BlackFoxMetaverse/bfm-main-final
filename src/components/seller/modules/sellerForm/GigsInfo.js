@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BsCheckCircleFill } from "react-icons/bs";
-import { FaDribbble, FaLinkedinIn } from "react-icons/fa6";
+import { FaDribbble, FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { IoAdd, IoCloseCircleSharp } from "react-icons/io5";
-import { MdOutlineUploadFile } from "react-icons/md";
 import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
 import { TbCaretDownFilled } from "react-icons/tb";
@@ -26,11 +24,36 @@ const SocialTypes = [
     name: "Dribble",
     icon: <FaDribbble />,
   },
+  {
+    name: "Github",
+    icon: <FaGithub />,
+  },
 ];
 
 const s3Urls = "https://bucketbfm.s3.ap-south-1.amazonaws.com/";
 
 const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
+  const [showSocialOptions, setShowSocialOptions] = useState(false);
+
+  const handleSocialSelect = (socialType) => {
+    if (!inputData.socialMediaLinks.includes(socialType)) {
+      const updatedSocials = [...inputData.socialMediaLinks, socialType];
+      setInputData({ ...inputData, socialMediaLinks: updatedSocials });
+    }
+    setShowSocialOptions(false);
+  };
+
+  const handleRemoveSocial = (socialType) => {
+    const updatedSocials = inputData.socialMediaLinks.filter(
+      (social) => social !== socialType
+    );
+    setInputData({ ...inputData, socialMediaLinks: updatedSocials });
+  };
+
+  const isSocialSelected = (socialType) => {
+    return inputData.socialMediaLinks.includes(socialType);
+  };
+
   function handleSubmit(e) {
     e.preventDefault();
     if (inputData.experienceDetails.length === 0) return false;
@@ -77,6 +100,58 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
             maxLength={1000}
           ></textarea>
         </div>
+        <div className="flex flex-col items-start gap-[5px] w-full">
+          <label
+            htmlFor="socialMediaLinks"
+            className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
+          >
+            Social Types
+          </label>
+          <div className="w-full flex justify-between items-center gap-5">
+            <div
+              onClick={() => setShowSocialOptions(!showSocialOptions)}
+              className="flex gap-2 relative flex-grow items-center bg-white w-full pr-3.5 text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none cursor-pointer"
+            >
+              <p className="w-full">Select a social</p>
+              <TbCaretDownFilled />
+              {showSocialOptions && (
+                <ul className="absolute capitalize z-10 top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2">
+                  {SocialTypes.map((option) => (
+                    <li
+                      key={option.name}
+                      onClick={() => handleSocialSelect(option.name)}
+                      className={`cursor-pointer flex items-center gap-2 w-full px-4 py-2 ${
+                        isSocialSelected(option.name)
+                          ? "bg-indigo-500 text-white"
+                          : "hover:bg-gray-200"
+                      }`}
+                    >
+                      {option.icon} {option.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="flex gap-2 items-center h-full">
+              {inputData.socialMediaLinks.map((selectedSocial, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-1 h-full bg-indigo-500 text-white p-3 rounded"
+                >
+                  <IoCloseCircleSharp
+                    onClick={() => handleRemoveSocial(selectedSocial)}
+                  />
+                  {
+                    SocialTypes.find((social) => social.name === selectedSocial)
+                      ?.icon
+                  }
+                  {/* <span className="whitespace-nowrap">{selectedSocial}</span> */}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {inputData?.experienceDetails?.map((_, index) => (
           <div
             key={index}
