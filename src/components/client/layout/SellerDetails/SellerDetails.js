@@ -210,7 +210,6 @@ const SellerDataDetails = ({ params }) => {
           },
         }
       );
-      console.log(response);
       window.location.reload();
     } catch (error) {
       console.error(error?.response?.status);
@@ -272,7 +271,7 @@ const SellerDataDetails = ({ params }) => {
     }
   };
 
-  console.log(proposalStatus);
+  console.log(sellerData);
 
   return (
     <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-32 py-24 mx-auto">
@@ -325,25 +324,27 @@ const SellerDataDetails = ({ params }) => {
             {showDetails && (
               <div className="w-full flex-col justify-start items-start gap-7 flex">
                 <div className="flex-col w-full justify-start items-start gap-0.5 flex">
-                  <div className="text-black text-xl font-bold">
-                    Phones Number
-                  </div>
-                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
-                    {sellerData?.gender === "female" &&
-                    sellerData?.phone_number !== null ? (
-                      sellerData?.phone_number
-                    ) : (
-                      <button
-                        type="button"
-                        disabled={proposalSent ? true : false}
-                        onClick={() => setShowProposalModal(true)}
-                        className={`px-7 py-1 border ${
-                          proposalSent ? "bg-green-500" : "bg-black"
-                        } rounded text-white flex items-center justify-center gap-2`}
-                      >
-                        {!proposalSent ? "Request Contact" : "Request Sent"}
-                      </button>
+                  {sellerData.gender === "male" &&
+                    sellerData?.phone_number !== null && (
+                      <div className="text-black text-xl font-bold">
+                        Phones Number
+                      </div>
                     )}
+                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
+                    {sellerData?.phone_number !== null
+                      ? sellerData?.phone_number
+                      : sellerData?.gender === "female" && (
+                          <button
+                            type="button"
+                            disabled={proposalSent ? true : false}
+                            onClick={() => setShowProposalModal(true)}
+                            className={`px-7 py-1 border ${
+                              proposalSent ? "bg-green-500" : "bg-black"
+                            } rounded text-white flex items-center justify-center gap-2`}
+                          >
+                            {!proposalSent ? "Request Contact" : "Request Sent"}
+                          </button>
+                        )}
                     {showProposalModal && (
                       <ProposalModal
                         close={() => setShowProposalModal(false)}
@@ -365,13 +366,15 @@ const SellerDataDetails = ({ params }) => {
                     </div>
                   </div>
                 )}
-                <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
-                  {sellerData?.socialMediaLinks?.map((link, index) => (
-                    <Link key={index} href={link}>
-                      <FaGithub />
-                    </Link>
-                  ))}
-                </div>
+                {sellerData?.socialMediaLinks?.length > 0 && (
+                  <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
+                    {sellerData?.socialMediaLinks?.map((link, index) => (
+                      <Link key={index} href={link}>
+                        <FaGithub />
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
