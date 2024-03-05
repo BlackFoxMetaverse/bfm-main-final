@@ -47,15 +47,14 @@ const Login = ({ close, register, setUId, message }) => {
     generateRecaptcha();
     let appVerifier = window.recaptchaVerifier;
     const phoneNumber = `${countryCode}${number}`;
-    console.log(phoneNumber);
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
-        console.log(confirmationResult);
+        // console.log(confirmationResult);
         setFilled(true);
       })
       .catch((error) => {
-        console.log("send otp error:", error);
+        console.error("send otp error:", error);
       });
   };
 
@@ -89,12 +88,12 @@ const Login = ({ close, register, setUId, message }) => {
               setUId(data?.uid);
             }
           })
-          .catch((err) => console.log(err));
+          .catch((err) => console.error(err));
 
         return () => clearTimeout(timer);
       })
       .catch((error) => {
-        console.log("user login error:", error);
+        console.error("user login error:", error);
       });
   };
 

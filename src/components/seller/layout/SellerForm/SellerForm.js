@@ -44,7 +44,7 @@ const SellerForm = () => {
     coordinates: {},
   });
 
-  const [formCount, setCount] = useState(3);
+  const [formCount, setCount] = useState(1);
   const [userNameValid, setUserNameValid] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
   const [userData, setUserData] = useState(null);

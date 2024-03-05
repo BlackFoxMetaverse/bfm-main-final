@@ -13,7 +13,7 @@ export function getUserPreciseLocation() {
         function (position) {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
-          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+          // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
           resolve({ longitude, latitude });
         },
         function (error) {

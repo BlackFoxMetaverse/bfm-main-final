@@ -5,20 +5,35 @@ import SearchForm from "../../modules/FormLayout/SearchForm";
 import ServicesCard from "../../modules/ServicesCard/ServicesCard";
 import NoResultsFound from "@/components/layouts/Errors/NoResults";
 import instance from "@/utils/axios";
+import { getUserPreciseLocation } from "@/utils/location";
+import { fetchUserData } from "@/utils/userData";
 
 const SellerLists = ({ params }) => {
   const [searchInput, setSearchInput] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
   const [recomendations, setRecommendations] = useState([]);
+  const [uid, setUid] = useState(null);
+
+  useEffect(() => {
+    fetchUserData()
+      .then((data) => setUid(data?.uid))
+      .catch(() => setUid(null));
+  }, []);
 
   async function fetchNearbyData() {
     try {
+      const location = await getUserPreciseLocation();
       const response = await instance.get(
-        `search/recommendation?longitude=${searchInput?.longitude}&latitude=${searchInput?.latitude}&page=1`
+        `search/recommendation?longitude=${location?.longitude}&latitude=${location?.latitude}&page=1`
       );
 
-      setRecommendations(response?.data?.data);
-      console.log(response?.data?.message);
+      setRecommendations(
+        response?.data?.data?.filter((data) => {
+          if (data?.uid !== uid) {
+            return data;
+          }
+        })
+      );
     } catch (error) {
       console.error(error);
     }
@@ -26,7 +41,7 @@ const SellerLists = ({ params }) => {
 
   useEffect(() => {
     fetchNearbyData();
-  }, [searchInput?.latitude]);
+  }, [uid]);
 
   function handleSearchAgain() {
     window.scrollTo({
@@ -52,6 +67,7 @@ const SellerLists = ({ params }) => {
             searchInputData={setSearchInput}
             handleSubmit={(e) => e.preventDefault()}
             data={setSearchResult}
+            uid={uid}
           />
         </div>
       </section>

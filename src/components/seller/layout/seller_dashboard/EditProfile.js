@@ -100,8 +100,6 @@ const EditProfile = () => {
     fetchUserData();
   }, []);
 
-  console.log(inputData);
-
   const handleSubmitGigs = async () => {
     try {
       const bodyObj = await filterUpdates(res.seller, inputData);

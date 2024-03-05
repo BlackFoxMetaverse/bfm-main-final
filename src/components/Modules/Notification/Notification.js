@@ -1,40 +1,47 @@
 import React from "react";
+import Moment from "react-moment";
 
 const NotificationItem = ({
-  imageSrc,
-  altText,
-  title,
-  description,
+  // imageSrc,
+  // altText,
+  subject,
+  purpose,
   buttonText,
-  buttonClassName,
-  time,
+  buttonClassName = "bg-indigo-500",
+  date_time,
+  status,
 }) => (
   <section className="flex gap-3.5 items-start self-center px-5 max-md:flex-wrap max-md:max-w-full">
-    <img
-      loading="lazy"
-      src={imageSrc}
-      alt={altText}
-      className="w-11 aspect-square"
-    />
+    {/* {imageSrc && (
+      <img
+        loading="lazy"
+        src={imageSrc}
+        alt={altText}
+        className="w-11 aspect-square"
+      />
+    )} */}
     <div className="flex flex-col flex-1 self-stretch max-md:max-w-full">
       <div className="leading-[140%] text-slate-700 max-md:max-w-full">
-        <strong>{title}</strong> {description}
+        <strong>{subject}</strong> {purpose} {status}
       </div>
       <div className="flex gap-2 self-start py-0.5 mt-2.5 whitespace-nowrap font-[450] leading-[150%]">
-        <div
+        <button
+          type="button"
           className={`grow justify-center px-5 py-1.5 text-white rounded ${buttonClassName}`}
         >
           {buttonText}
-        </div>
+        </button>
       </div>
     </div>
     <div className="flex flex-col whitespace-nowrap basis-0 leading-[150%] text-slate-600">
-      <div>{time}</div>
+      <Moment fromNow>{date_time}</Moment>
     </div>
   </section>
 );
 
 const Notification = ({ notifications }) => {
+  console.log(notifications);
+
   return (
     <div className="flex absolute top-full translate-y-5 right-0 w-full flex-col rounded lg:min-w-[753px] sm:min-w-[400px] min-w-[260px] bg-white p-5 overflow-scroll min-h-24">
       <header className="justify-center items-start py-6 pr-16 pl-7 w-full text-lg font-bold leading-7 whitespace-nowrap text-slate-800 max-md:px-5 max-md:max-w-full">
@@ -59,9 +66,19 @@ const Notification = ({ notifications }) => {
         </div>
       </div> */}
       <main className="">
-        {notifications?.map((item, index) => (
-          <NotificationItem key={index} {...item} />
-        ))}
+        {notifications?.lenth !== 0 ? (
+          notifications[0]?.map((item, index) => {
+            return (
+              <NotificationItem
+                key={index}
+                {...item}
+                buttonText={"See request"}
+              />
+            );
+          })
+        ) : (
+          <div className="w-full text-center">No Notifications</div>
+        )}
       </main>
     </div>
   );

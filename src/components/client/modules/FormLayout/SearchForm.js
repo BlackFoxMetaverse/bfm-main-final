@@ -1,6 +1,5 @@
 "use client";
 
-import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -10,13 +9,13 @@ import { FaChevronDown, FaRegCompass } from "react-icons/fa6";
 import { HiMiniSignal } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
 import servicesData from "../../../../utils/professionData/services.json";
+import { getUserPreciseLocation } from "@/utils/location";
 
 const dummyData = ["Photography", "Marketing", "Gaming", "Developer"];
 
-const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
+const SearchForm = ({ searchInputData, isShown, tags, width, data, uid }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const params = useSearchParams();
 
   const [rangeSection, setRangeSection] = useState(false);
   const [isLocation, setIsLocation] = useState(false);
@@ -90,13 +89,18 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     setSuggestions(professionSuggestions);
   }, []);
 
-  const handleLocationChange = (location) => {
-    setSearchData({
-      ...searchData,
-      latitude: location.latitude,
-      longitude: location.longitude,
-    });
-  };
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const location = await getUserPreciseLocation();
+      setSearchData({
+        ...searchData,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      });
+    };
+
+    fetchLocation();
+  }, []);
 
   if (tags) {
     dummyData.push(tags);
@@ -139,7 +143,13 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
         const response = await instance.get(
           `search/nearby${window.location.search}`
         );
-        return Promise.resolve(response?.data?.data);
+        return Promise.resolve(
+          response?.data?.data?.filter((data) => {
+            if (data?.uid !== uid) {
+              return data;
+            }
+          })
+        );
       }
     } catch (error) {
       return Promise.reject(error);
@@ -150,7 +160,7 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
     fetchData()
       .then((data) => setSearchResult(data))
       .catch((err) => console.error(err));
-  }, []);
+  }, [uid]);
 
   async function handleSearch(e) {
     e.preventDefault();
@@ -185,7 +195,6 @@ const SearchForm = ({ searchInputData, isShown, tags, width, data }) => {
         onSubmit={handleSearch}
         className="w-full inline-flex flex-col items-center gap-2.5 rounded-[10px] relative"
       >
-        <Location onLocationChange={handleLocationChange} />
         <div className="flex justify-center items-center lg:gap-10 sm:gap-5 gap-2.5 h-full w-full bg-white border-[color:var(--Foundation-Grey-grey-50,#E9E9E9)] relative shadow-[0px_1px_4px_0px_rgba(0,0,0,0.10)] lg:px-[25px] lg:py-3 px-4 py-1.5 rounded-[10px] border-2 border-solid">
           <div className="flex items-center lg:gap-4 sm:gap-2 gap-1 flex-grow relative">
             <label htmlFor="search">

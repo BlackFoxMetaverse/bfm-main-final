@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { BsCheckCircleFill, BsExclamationCircleFill } from "react-icons/bs";
@@ -18,7 +18,6 @@ const Toast = ({ type, message, timer = 5, onClose }) => {
         setRemainingTime(remainingTime - 0.2);
       }, 200);
       onClose;
-      // Clear the timeout when the component is unmounted
       return () => clearTimeout(timeout);
     } else {
       setVisible(false);

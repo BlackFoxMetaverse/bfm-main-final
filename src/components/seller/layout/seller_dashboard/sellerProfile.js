@@ -52,7 +52,7 @@ const SellerPortfolio = ({ params }) => {
     const token = localStorage.getItem("bfm-client-token");
     getSellerProfile(token)
       .then((data) => setUserData(data?.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   async function getFeedBack() {

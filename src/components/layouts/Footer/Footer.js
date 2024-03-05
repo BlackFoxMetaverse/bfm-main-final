@@ -108,7 +108,7 @@ const WebsiteFooter = () => {
       title: "Community",
       items: [
         { name: "Blog", href: "/blogs" },
-        { name: "Help Center", href: "#" },
+        { name: "Help Center", href: "help-center" },
       ],
     },
     {
@@ -117,7 +117,7 @@ const WebsiteFooter = () => {
         { name: "Privacy Policy", href: "/privacy-policy" },
         { name: "Refund Policy", href: "#" },
         { name: "Terms and Conditions", href: "/terms-and-conditions" },
-        { name: "Contact Us", href: "#" },
+        { name: "Contact Us", href: "/contact-us" },
       ],
     },
   ];

@@ -6,6 +6,7 @@ import "./globals.css";
 import { useEffect, useState } from "react";
 import localFont from "next/font/local";
 import OffLine from "@/components/layouts/Errors/OffLine";
+import getCity from "@/utils/getCity";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,6 +48,12 @@ export default function RootLayout({ children }) {
       setIsOffline(true);
     });
   }, [isOffline]);
+
+  useEffect(() => {
+    getCity()
+      .then((data) => sessionStorage.setItem("address", data))
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <html lang="en">

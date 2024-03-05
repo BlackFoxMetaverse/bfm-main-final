@@ -145,14 +145,7 @@ function HowItWorks() {
         <div className="mt-20 max-md:mt-10">
           <div className="flex justify-around gap-5 max-md:flex-col">
             {steps.map((step, index) => (
-              <StepItem
-                key={index}
-                stepNumber={step.stepNumber}
-                title={step.title}
-                description={step.description}
-                imageUrl={step.imageUrl}
-                altText={step.altText}
-              />
+              <StepItem key={index} {...step} />
             ))}
           </div>
         </div>
@@ -171,7 +164,6 @@ const Hero = () => {
     const token = localStorage.getItem("bfm-client-token");
     checkUserDataByToken(token)
       .then((data) => {
-        console.log(data);
         if (data?.isUser || data?.isSeller) {
           router.replace(
             `/seller/dashboard/${data?.data?.seller?.name}/${data?.data?.seller?.uid}`

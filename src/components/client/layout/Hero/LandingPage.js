@@ -9,11 +9,12 @@ import instance from "@/utils/axios";
 import Link from "next/link";
 import AuthModal from "@/components/layouts/Header/auth/AuthModal";
 import { getUserPreciseLocation } from "@/utils/location";
+import { fetchUserData } from "@/utils/userData";
 
 const services = [
   {
     color: "bg-slate-600",
-    title: "Programming",
+    title: "Programmer",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/e3a21e3d1fbdfa462abae318200cc62fe65c1bbcb997305d8e7abb3c51071985?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
     imageAlt: "Programming project example",
@@ -72,10 +73,23 @@ const services = [
 const LandingPage = () => {
   const [searchInput, setSearchInputData] = useState({});
   const [searchResult, setSearchResult] = useState([]);
+  const [uid, setUid] = useState(null);
   const [recommendations, setRecommendation] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
   const [isregistering, setIsRegistering] = useState(false);
+  const [showJoin, setShowJoin] = useState(true);
   const router = useRouter();
+  useEffect(() => {
+    fetchUserData()
+      .then((data) => {
+        setUid(data?.uid);
+        setShowJoin(false);
+      })
+      .catch((err) => {
+        setUid(null);
+        setShowJoin(true);
+      });
+  }, []);
 
   async function fetchRecomendation() {
     try {
@@ -84,8 +98,13 @@ const LandingPage = () => {
         `search/recommendation?longitude=${location?.longitude}&latitude=${location?.latitude}&page=1`
       );
 
-      setRecommendation(response?.data?.data);
-      console.log(response?.data?.message);
+      setRecommendation(
+        response?.data?.data?.filter((data) => {
+          if (data?.uid !== uid) {
+            return data;
+          }
+        })
+      );
     } catch (error) {
       console.error(error);
     }
@@ -93,10 +112,10 @@ const LandingPage = () => {
 
   useEffect(() => {
     fetchRecomendation();
-  }, []);
+  }, [uid]);
 
   return (
-    <main className="flex w-full flex-col items-center gap-[120px]">
+    <main className="flex w-full flex-col items-center gap-[120px] mb-20">
       {/* LandingPage */}
       <section className="relative flex w-full lg:py-40 py-32 min-h-screen flex-col justify-center items-center gap-2.5">
         <div className="absolute inset-0 -z-10 w-full h-full flex justify-center items-center overflow-hidden">
@@ -118,7 +137,10 @@ const LandingPage = () => {
             </span>
           </div>
           <Suspense>
-            <SearchForm isShown searchInputData={setSearchInputData} />
+            <SearchForm
+              data={setSearchResult}
+              searchInputData={setSearchInputData}
+            />
           </Suspense>
         </div>
       </section>
@@ -263,33 +285,35 @@ const LandingPage = () => {
           ))}
         </div>
       </section>
-      <div className="w-5/6 h-[293.71px] mb-20 relative bg-gradient-to-r from-black/40 to-black/5 overflow-hidden">
-        <img
-          src="https://miro.medium.com/v2/resize:fit:828/format:webp/0*MVU81WeBRsliVq3U"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover -z-10"
-        />
-        <div className="w-11/12 mx-auto py-[37.94px] flex-col justify-start items-start gap-[5.37px] flex">
-          <div className="text-neutral-50 xl:text-[39.16px] text-3xl font-bold leading-normal">
-            Build a strong online presence
-          </div>
-          <div className="text-neutral-50 xl:text-[22.03px] text-lg font-normal leading-normal">
-            Boost your business with this course on personal branding
-            techniques.
-          </div>
-        </div>
-        <div className="w-11/12 mx-auto">
-          <button
-            onClick={() => setShowAuth(!showAuth)}
-            type="button"
-            className="px-8 py-4 bg-white rounded border-2 justify-center items-center gap-2 inline-flex"
-          >
-            <div className="text-indigo-500 text-xl leading-tight">
-              Join BFM
+      {showJoin && (
+        <div className="w-5/6 h-[293.71px] relative bg-gradient-to-r from-black/40 to-black/5 overflow-hidden">
+          <img
+            src="https://miro.medium.com/v2/resize:fit:828/format:webp/0*MVU81WeBRsliVq3U"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover -z-10"
+          />
+          <div className="w-11/12 mx-auto py-[37.94px] flex-col justify-start items-start gap-[5.37px] flex">
+            <div className="text-neutral-50 xl:text-[39.16px] text-3xl font-bold leading-normal">
+              Build a strong online presence
             </div>
-          </button>
+            <div className="text-neutral-50 xl:text-[22.03px] text-lg font-normal leading-normal">
+              Boost your business with this course on personal branding
+              techniques.
+            </div>
+          </div>
+          <div className="w-11/12 mx-auto">
+            <button
+              onClick={() => setShowAuth(!showAuth)}
+              type="button"
+              className="px-8 py-4 bg-white rounded border-2 justify-center items-center gap-2 inline-flex"
+            >
+              <div className="text-indigo-500 text-xl leading-tight">
+                Join BFM
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       <AuthModal
         onClose={() => setShowAuth(!showAuth)}
         animation={showAuth ? "translate-x-0" : "translate-x-full"}

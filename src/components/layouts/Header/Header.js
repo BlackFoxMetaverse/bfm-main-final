@@ -1,11 +1,10 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import logo from "../../../../public/logos/white_fox.svg";
 import Image from "next/image";
 import { FaAngleDown } from "react-icons/fa6";
-import Location from "@/components/DeviceLocation/location";
 import instance from "@/utils/axios";
 import {
   IoLocationOutline,
@@ -15,6 +14,8 @@ import {
 import Link from "next/link";
 import AuthModal from "./auth/AuthModal";
 import Notification from "@/components/Modules/Notification/Notification";
+import { getUserPreciseLocation } from "@/utils/location";
+import getCity from "@/utils/getCity";
 
 const UserProfile = ({
   name,
@@ -121,49 +122,34 @@ const Header = ({ isSeller }) => {
   const [isregistering, setIsRegistering] = useState(false);
   const [showMenu, setMenu] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [notification, setNotification] = useState([
-    {
-      imageSrc:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/2bd7ea0b327db1dfcef9be5d491bcc1d2cd38f83fca77ff268b742605f58ed15?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
-      altText: "Ashwin Bose's profile picture",
-      title: "Ashwin Bose",
-      description: "is requesting access to your contact information.",
-      buttonText: "Accept",
-      buttonClassName: "bg-indigo-500",
-      time: "2m",
-    },
-    {
-      imageSrc:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/abe06b77cd388025fa93196028798eefb4b548aaf5784f2e5c43c388bede219a?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
-      altText: "Patrick's profile picture",
-      title: "Patrick",
-      description: "added a comment on your portfolio.",
-      buttonText: "View",
-      buttonClassName: "bg-blue-600",
-      time: "8h",
-    },
-    {
-      imageSrc:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/43d9260dbeed603549ffc53e7b933a844daaec92d005e33c16ebeeca26d41004?apiKey=91ddce01d5c046adbb0d93d1184c8d50&",
-      altText: "Feature notification icon",
-      title: "New Feature Alert!",
-      description:
-        "We’re pleased to introduce the latest enhancements in our templating experience.",
-      buttonText: "Try now",
-      buttonClassName: "bg-blue-600",
-      time: "14h",
-    },
-  ]);
+  const [address, setAddress] = useState("");
+  const [token, setToken] = useState(null);
+  const [notification, setNotification] = useState([]);
 
   const router = useRouter();
 
-  const handleLocationChange = (location) => {
-    setUserLocation(location);
-  };
+  useEffect(() => {
+    setToken(localStorage.getItem("bfm-client-token"));
+  });
+
+  const getAddress = useCallback(() => {
+    setAddress(sessionStorage.getItem("address"));
+  });
+
+  useEffect(() => {
+    getAddress();
+  }, []);
+
+  useEffect(() => {
+    const handleLocationChange = async () => {
+      const location = await getUserPreciseLocation();
+      setUserLocation(location);
+    };
+    handleLocationChange();
+  }, []);
 
   async function fetchUserData() {
     try {
-      const token = localStorage.getItem("bfm-client-token");
       const res = await instance.get("/main/user", {
         headers: {
           token: token,
@@ -186,7 +172,24 @@ const Header = ({ isSeller }) => {
 
   useEffect(() => {
     fetchUserData();
-  }, [isLogin]);
+  }, [token]);
+
+  const getRequests = async () => {
+    try {
+      const response = await instance.get("main/request", {
+        headers: {
+          token: token,
+        },
+      });
+      setNotification([...notification, response?.data?.data]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getRequests();
+  }, [token]);
 
   useEffect(() => {
     const scrolling = () => {
@@ -209,6 +212,10 @@ const Header = ({ isSeller }) => {
       className={`flex flex-col justify-end items-center top-0 w-full fixed z-50 transition-all duration-500 ease-in-out ${
         pathname.startsWith("/client/slug") ||
         pathname.startsWith("/client/settings") ||
+        pathname.startsWith("/contact-us") ||
+        pathname.startsWith("/terms-and-conditions") ||
+        pathname.startsWith("/privacy-policy") ||
+        pathname.startsWith("/help-center") ||
         pathname.startsWith("/seller")
           ? "bg-black"
           : isScrolling
@@ -216,7 +223,6 @@ const Header = ({ isSeller }) => {
           : "bg-transparent"
       }`}
     >
-      <Location onLocationChange={handleLocationChange} />
       <div
         className={`mx-auto w-11/12 max-w-[1920px] h-[5rem] flex items-center justify-between rounded-b-xl`}
       >
@@ -233,7 +239,7 @@ const Header = ({ isSeller }) => {
                 <IoLocationOutline className="text-lg" />
               </div>
               <div className="text-white whitespace-nowrap 3xl:text-lg md:text-base text-sm font-normal leading-[14px]">
-                New Delhi, India
+                {address}
               </div>
             </div>
           )}
@@ -243,7 +249,7 @@ const Header = ({ isSeller }) => {
           {!userData?.isSeller && !pathname.startsWith("/seller") && (
             <button
               onClick={() => router.push("/seller")}
-              className="bg-white rounded 2xl:w-48 w-40 aspect-[5/1] 2xl:text-[19px] text-base font-medium leading-[12.80px]"
+              className="bg-white rounded px-3 aspect-[4/1] 2xl:text-[19px] text-base font-medium leading-[12.80px]"
             >
               Become a Seller
             </button>
@@ -252,7 +258,7 @@ const Header = ({ isSeller }) => {
             <div className="flex justify-center items-center">
               <button
                 type="button"
-                className={`2xl:px-6 2xl:py-2 sm:px-3 sm:py-0.5 aspect-[2/1] rounded sm:border border-white flex items-center gap-3 justify-center`}
+                className={`sm:px-3 aspect-[2/1] rounded sm:border border-white flex items-center gap-3 justify-center`}
               >
                 <svg
                   width="20"
@@ -297,7 +303,7 @@ const Header = ({ isSeller }) => {
                 <button
                   onClick={() => setShowNotification(!showNotification)}
                   type="button"
-                  className="mr-2 ml-3 text-white"
+                  className="mr-2 ml-3 text-white text-2xl"
                 >
                   <IoNotificationsSharp />
                 </button>

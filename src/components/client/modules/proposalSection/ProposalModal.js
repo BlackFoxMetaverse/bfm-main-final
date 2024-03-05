@@ -3,17 +3,26 @@
 import React, { useRef } from "react";
 import { BsCheck } from "react-icons/bs";
 
-const ProposalModal = ({ inputData, handleSubmit, setInputData, sent, close }) => {
+const ProposalModal = ({
+  inputData,
+  handleSubmit,
+  setInputData,
+  sent,
+  close,
+}) => {
   const modalRef = useRef(null);
 
   const handleCloseModal = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       close();
     }
-  }
+  };
 
   return (
-    <div onClick={handleCloseModal} className="w-full h-screen fixed inset-0 z-50 flex justify-center items-center bg-black/50">
+    <div
+      onClick={handleCloseModal}
+      className="w-full h-screen fixed inset-0 z-50 flex justify-center items-center bg-black/50"
+    >
       <form
         action=""
         method="post"
@@ -48,17 +57,17 @@ const ProposalModal = ({ inputData, handleSubmit, setInputData, sent, close }) =
           />
         </div>
         <div className="mt-9">
-          <label htmlFor="feedback" className="text-gray-500 block">
-            Additional feedback
+          <label htmlFor="purpose" className="text-gray-500 block">
+            Additional purpose
           </label>
           <textarea
             type="text"
-            name="feedback"
-            id="feedback"
+            name="purpose"
+            id="purpose"
             placeholder="Please describe your purpose in brief"
-            value={inputData?.feedback}
+            value={inputData?.purpose}
             onChange={(e) =>
-              setInputData({ ...inputData, feedback: e.target.value })
+              setInputData({ ...inputData, purpose: e.target.value })
             }
             rows={4}
             className="px-3.5 py-3 mt-1 block w-full capitalize rounded-lg border border-solid border-gray-300 focus:outline-none resize-none"

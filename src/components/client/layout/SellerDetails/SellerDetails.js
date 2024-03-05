@@ -16,6 +16,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import FeedBackCard from "../../modules/FeedBackSection/FeedBackCard";
 import ProposalModal from "../../modules/proposalSection/ProposalModal";
 import instance from "@/utils/axios";
+import { fetchUserData } from "@/utils/userData";
 import Toast from "@/components/Modules/Toast/Toast";
 
 const ImageComponent = ({ src, alt, className, onClick }) => (
@@ -52,20 +53,13 @@ const FeedBackModal = ({ close, uid_for }) => {
           token: token,
         },
       });
-      console.log(response);
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       close();
     }
   };
-
-  // useEffect(() => {
-  //   feedbackData(feedback);
-  // },[feedback])
-
-  console.log(feedback);
 
   return (
     <div
@@ -136,25 +130,26 @@ const SellerDataDetails = ({ params }) => {
   const [error, setError] = useState(null);
   const [sellerData, setSellerData] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoggedin, setIsLogin] = useState(false);
   const [showImage, setShowImage] = useState(true);
   const [addFeedBack, setAddFeedback] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [proposalStatus, setProposalStatus] = useState(null);
+  const [token, setToken] = useState(null);
   const [proposalInput, setProposal] = useState({
+    uid_for: params.id,
     subject: "",
-    feedback: "",
+    purpose: "",
   });
   const [proposalSent, setProposalSent] = useState(false);
   const [feedbackData, setFeedBackData] = useState(null);
-  const image = [
-    "https://s3-alpha-sig.figma.com/img/088d/f14d/a208675f602fab1876f249bacd792579?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Kvks0aVQm6JuAEkVZSA11e7lEy4NReDZbC1mhMfCleDvwiiH~-wmw48Bzd7ZL867hevFWK9Ni5iGk96lyLzvyS9PMFkfFAkyiH3bXuDDJIBv9xUMqaXqpLjiLj2DsxYqS647eV~SGPsWXxDoVNS3dHP0wWapBhYTxbxBiQ3QpxxcsxtDbfytR38j1T-JmYGmxaBQP5wxMGaN1lG1FO7pdc18wsHi1-iIi5n1zqfKD3EdHgdHe6yTOQS9U9JWjFW2gyh51pcNkJNUSbh9q1DKdABohwyowYDtF9Ydf5Uul9sMrE~V15T3S4Ee9lJKNH1-Hr5XLeGBlamh7jAkGdA1tA__",
-    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
-    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
-    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
-    "https://s3-alpha-sig.figma.com/img/c331/a812/7750c29f8d0cf3730aad79f209110593?Expires=1709510400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LjIUjVWXz7nIJO9NU1GlR8PI3zH9Dd~zEBkPM3qqRJcBKoezBM~ATk0uNvMwbzTS9Q3nxjE-FNhrITho0Ey5CK3vDCW33mNz3ysR4oPiAcaQOIenF1~kicDh8yTiw6vIb1MzoHXQBiflJZTA1VOZAuKf4J8iic7eQtBvKqP5SLoBU3C4aJV1I~sflddqb0m6rFh-vBQjJo7gPGMV8qp~sy9CKsJQw7ThaVdgteimqWmoH9LjqlTrF4a1gCJzuxIfQ1vipUYy3CJa4SeUzzdOIkv06BzLfwZpLgGFCS721wy7ZtMKJ1CL9zU1Lm8PF1YZCaDabq4hVw~~quaCj9kX3g__",
-  ];
+
+  useEffect(() => {
+    setToken(localStorage.getItem("bfm-client-token"));
+  }, []);
+
   const openModal = () => {
     setShowModal(true);
   };
@@ -170,16 +165,28 @@ const SellerDataDetails = ({ params }) => {
     setModalImageUrl(null);
   };
 
+  useEffect(() => {
+    fetchUserData()
+      .then(() => setIsLogin(true))
+      .catch(() => setIsLogin(false));
+  }, [token]);
+
   async function fetchSellerData() {
     try {
       const response = await instance.get(
-        `/main/sellerProfile?uid=${params.id}`
+        `/main/sellerProfile?seller_uid=${params.id}&isLoggedin=${isLoggedin}`,
+        {
+          headers: {
+            token: token,
+          },
+        }
       );
 
       // if (response?.data?.message === "Seller with free data") {
       //   setShowDetails(true);
       // }
       setSellerData(response?.data?.data);
+      setShowDetails(response?.data?.data?.isRevealed);
     } catch (error) {
       console.error(error?.response?.data);
       setError("Something went wrong");
@@ -191,13 +198,12 @@ const SellerDataDetails = ({ params }) => {
 
   useEffect(() => {
     fetchSellerData();
-  }, []);
+  }, [showDetails, isLoggedin]);
 
   async function handleRevealInfo() {
     try {
-      const token = localStorage.getItem("bfm-client-token");
       const response = await instance.get(
-        `main/revealInfo?seller_uid=${params?.id}&seller_field=phone_number`,
+        `main/revealInfo?seller_uid=${params.id}`,
         {
           headers: {
             token: token,
@@ -205,31 +211,26 @@ const SellerDataDetails = ({ params }) => {
         }
       );
       console.log(response);
-
-      setShowDetails(response?.data?.payLoad?.isTransaction);
-      setProposalStatus(response?.data?.payLoad?.status);
+      window.location.reload();
     } catch (error) {
       console.error(error?.response?.status);
       setShowDetails(false);
 
       if (error?.response?.status === 400) {
+        setError("You don't have enough tokens to reveal a contact.");
+      } else if (error?.response?.status === 401) {
         setError("You Need to login Here 👆 to see the contact info");
       } else {
         setError("Something went wrong Can't reveal the Information");
       }
       setTimeout(() => {
-        setError("");
+        setError(null);
       }, 6000);
     }
   }
 
-  // useEffect(() => {
-  //   handleRevealInfo();
-  // }, []);
-
   async function getFeedBack() {
     try {
-      const token = localStorage.getItem("bfm-client-token");
       const response = await instance.get(
         `/main/sellerFeedback?uid=${params?.id}`,
         {
@@ -247,9 +248,31 @@ const SellerDataDetails = ({ params }) => {
 
   useEffect(() => {
     getFeedBack();
-  }, []);
+  }, [token]);
 
-  console.log(sellerData);
+  const handleProposalSubmit = async (e) => {
+    e?.preventDefault();
+    try {
+      const response = await instance.post(
+        "/main/createRequest",
+        proposalInput,
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+      setProposalStatus({ ...response?.data });
+      setProposalSent(true);
+      setTimeout(() => {
+        setShowProposalModal(false);
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  console.log(proposalStatus);
 
   return (
     <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-32 py-24 mx-auto">
@@ -267,9 +290,7 @@ const SellerDataDetails = ({ params }) => {
               </div>
               <div className="flex-col w-2/3 justify-between h-full items-start 3xl:gap-2 gap-1 inline-flex">
                 <div className="text-black 3xl:text-2xl 2xl:text-xl lg:text-lg text-lg font-bold whitespace-nowrap">
-                  {showDetails
-                    ? sellerData?.name
-                    : sellerData?.name.slice(0, 2) + "***"}
+                  {showDetails ? sellerData?.name : sellerData?.name + "***"}
                 </div>
                 <div className="flex-col justify-start items-start gap-[4.68px] flex">
                   <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
@@ -295,51 +316,45 @@ const SellerDataDetails = ({ params }) => {
                 <div className="justify-start items-start gap-2 inline-flex">
                   <BsStarFill className="w-[21.14px] h-[20.25px] text-orange-500 relative" />
                   <div className="w-[81px] text-black text-base leading-normal">
-                    4.2
+                    {sellerData?.rating?.value?.toString()?.slice(0, 3)} (
+                    {sellerData?.rating?.count})
                   </div>
                 </div>
               </div>
             </div>
             {showDetails && (
               <div className="w-full flex-col justify-start items-start gap-7 flex">
-                {sellerData?.phone_number && (
-                  <div className="flex-col w-full justify-start items-start gap-0.5 flex">
-                    <div className="text-black text-xl font-bold">
-                      Phones Number
-                    </div>
-                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
-                      {proposalStatus === "done" ? (
-                        sellerData?.phone_number
-                      ) : (
-                        <button
-                          type="button"
-                          disabled={proposalSent ? true : false}
-                          onClick={() => setShowProposalModal(true)}
-                          className={`px-7 py-1 border ${
-                            proposalSent ? "bg-green-500" : "bg-black"
-                          } rounded text-white flex items-center justify-center gap-2`}
-                        >
-                          {!proposalSent ? "Request Contact" : "Request Sent"}
-                        </button>
-                      )}
-                      {showProposalModal && (
-                        <ProposalModal
-                          close={() => setShowProposalModal(false)}
-                          handleSubmit={(e) => {
-                            e.preventDefault();
-                            setProposalSent(true);
-                            setTimeout(() => {
-                              setShowProposalModal(false);
-                            }, 2000);
-                          }}
-                          inputData={proposalInput}
-                          setInputData={setProposal}
-                          sent={proposalSent}
-                        />
-                      )}
-                    </div>
+                <div className="flex-col w-full justify-start items-start gap-0.5 flex">
+                  <div className="text-black text-xl font-bold">
+                    Phones Number
                   </div>
-                )}
+                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
+                    {sellerData?.gender === "female" &&
+                    sellerData?.phone_number !== null ? (
+                      sellerData?.phone_number
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={proposalSent ? true : false}
+                        onClick={() => setShowProposalModal(true)}
+                        className={`px-7 py-1 border ${
+                          proposalSent ? "bg-green-500" : "bg-black"
+                        } rounded text-white flex items-center justify-center gap-2`}
+                      >
+                        {!proposalSent ? "Request Contact" : "Request Sent"}
+                      </button>
+                    )}
+                    {showProposalModal && (
+                      <ProposalModal
+                        close={() => setShowProposalModal(false)}
+                        handleSubmit={handleProposalSubmit}
+                        inputData={proposalInput}
+                        setInputData={setProposal}
+                        sent={proposalSent}
+                      />
+                    )}
+                  </div>
+                </div>
                 {sellerData?.email && (
                   <div className="flex-col justify-start items-start gap-0.5 flex">
                     <div className="text-black text-xl font-bold">
@@ -351,9 +366,11 @@ const SellerDataDetails = ({ params }) => {
                   </div>
                 )}
                 <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
-                  <FaGithub />
-                  <FaLinkedinIn />
-                  <FaBehance />
+                  {sellerData?.socialMediaLinks?.map((link, index) => (
+                    <Link key={index} href={link}>
+                      <FaGithub />
+                    </Link>
+                  ))}
                 </div>
               </div>
             )}
@@ -411,19 +428,13 @@ const SellerDataDetails = ({ params }) => {
             ) : ( */}
       <div className="flex flex-col rounded w-full">
         {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
-        <ImageComponent
-          src={sellerData?.images[0] ? s3Url + sellerData.images[0] : image[0]}
-          alt=""
-          className="object-cover size-full rounded"
-        />
-        {/* <div className="flex relative justify-center items-center px-6 py-7 bg-white mt-[487px] rounded-[60px] w-[76px] max-md:px-5 max-md:mt-10">
-                <ImageComponent
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/b34758469970af54f152102a9eac40ed30f83b12bf512b468331bdb999e271e4?apiKey=91ddce01d5c046adbb0d93d1184c8d50&"
-                  alt="Profile icon"
-                  className="w-full aspect-[1.05]"
-                />
-              </div> */}
-        {/* </div> */}
+        {sellerData?.images[0] && (
+          <ImageComponent
+            src={s3Url + sellerData.images[0]}
+            alt=""
+            className="object-cover size-full rounded"
+          />
+        )}
         <div>
           <h2 className="mt-8 w-full text-3xl font-bold text-neutral-800 max-md:max-w-full">
             About Me
@@ -438,17 +449,17 @@ const SellerDataDetails = ({ params }) => {
             <div className="text-neutral-800 text-[32px] font-bold">
               Experience
             </div>
-            <div className="flex-col justify-start items-start gap-5 flex">
+            <div className="flex-col justify-start items-start gap-5 flex w-full">
               {sellerData?.experienceDetails?.map((exp, index) => (
                 <div
                   key={index}
-                  className="px-[30px] py-5 rounded-[10px] border border-zinc-300 flex-col justify-start items-start gap-2.5 flex"
+                  className="px-[30px] py-5 rounded-[10px] border border-zinc-300 w-full flex-col justify-start items-start gap-2.5 flex"
                 >
                   <div className="text-indigo-500 text-2xl leading-[27px]">
                     {exp?.title}
                   </div>
                   <div className="self-stretch text-neutral-600 text-lg font-normal leading-[27px]">
-                    {exp?.description}
+                    {exp?.content}
                   </div>
                   <Link
                     href={exp?.link}
@@ -481,7 +492,7 @@ const SellerDataDetails = ({ params }) => {
                     <ImageComponent
                       loading="lazy"
                       className="size-full cursor-pointer object-cover rounded"
-                      src={data ? s3Url + data : image[i]}
+                      src={s3Url + data}
                       alt=""
                       onClick={() => openImageModal(s3Url + data)}
                     />
@@ -517,13 +528,7 @@ const SellerDataDetails = ({ params }) => {
             >
               Give Feedback
             </button>
-          ) : (
-            feedbackData?.length > 5 && (
-              <button className="justify-center w-full items-center px-16 py-2.5 mt-7 text-sm font-bold text-black whitespace-nowrap bg-gray-100 rounded-md border border-solid border-neutral-200 max-md:px-5 max-md:max-w-full">
-                Load More
-              </button>
-            )
-          )}
+          ) : null}
         </section>
       </div>
       {/* )} */}
