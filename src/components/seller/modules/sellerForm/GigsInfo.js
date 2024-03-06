@@ -38,13 +38,22 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
   const [socialLink, setSocialLink] = useState();
 
   function addSocials({ type, link }) {
-    setInputData({
-      ...inputData,
-      socialMediaLinks: [
-        ...inputData.socialMediaLinks,
-        { platformType: type, link: link },
-      ],
+    setInputData((prev) => {
+      return {
+        ...prev,
+        socialMediaLinks: [
+          ...prev.socialMediaLinks,
+          { platformType: type, link: link },
+        ],
+      };
     });
+    // setInputData({
+    //   ...inputData,
+    //   socialMediaLinks: [
+    //     ...inputData.socialMediaLinks,
+    //     { platformType: type, link: link },
+    //   ],
+    // });
     setSocialLink("");
     setSocialType("");
   }
