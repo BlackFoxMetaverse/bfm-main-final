@@ -57,7 +57,7 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
 
   function getIconByName(name) {
     const socialType = SocialTypes.find(
-      (social) => social.name.toLowerCase() === name.toLowerCase()
+      (social) => social.name.toLowerCase() === name?.toLowerCase()
     );
     return socialType ? socialType.icon : null;
   }
