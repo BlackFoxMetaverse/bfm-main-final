@@ -116,7 +116,7 @@ const SellerPortfolio = ({ params }) => {
                 <div className="justify-start items-start gap-2 inline-flex">
                   <BsStarFill className="w-[21.14px] h-[20.25px] text-orange-500 relative" />
                   <div className=" text-black text-base leading-normal">
-                    {userData?.rating?.value}
+                    {Number(userData?.rating?.value).toFixed(1)}
                   </div>
                   <div className=" text-black text-base leading-normal">
                     ({userData?.rating?.count})

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaDribbble, FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { IoAdd, IoCloseCircleSharp } from "react-icons/io5";
 import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
 import { TbCaretDownFilled } from "react-icons/tb";
+import { RxCross2 } from "react-icons/rx";
 
 const SocialTypes = [
   {
@@ -33,26 +34,33 @@ const SocialTypes = [
 const s3Urls = "https://bucketbfm.s3.ap-south-1.amazonaws.com/";
 
 const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
-  const [showSocialOptions, setShowSocialOptions] = useState(false);
+  const [socialType, setSocialType] = useState();
+  const [socialLink, setSocialLink] = useState();
 
-  const handleSocialSelect = (socialType) => {
-    if (!inputData.socialMediaLinks.includes(socialType)) {
-      const updatedSocials = [...inputData.socialMediaLinks, socialType];
-      setInputData({ ...inputData, socialMediaLinks: updatedSocials });
-    }
-    setShowSocialOptions(false);
-  };
+  function addSocials({ type, link }) {
+    setInputData({
+      ...inputData,
+      socialMediaLinks: [
+        ...inputData.socialMediaLinks,
+        { platformType: type, link: link },
+      ],
+    });
+    setSocialLink("");
+    setSocialType("");
+  }
 
-  const handleRemoveSocial = (socialType) => {
-    const updatedSocials = inputData.socialMediaLinks.filter(
-      (social) => social !== socialType
+  function removeSocials(index) {
+    let arr = inputData.socialMediaLinks;
+    arr.splice(index, 1);
+    setInputData({ ...inputData, socialMediaLinks: arr });
+  }
+
+  function getIconByName(name) {
+    const socialType = SocialTypes.find(
+      (social) => social.name.toLowerCase() === name.toLowerCase()
     );
-    setInputData({ ...inputData, socialMediaLinks: updatedSocials });
-  };
-
-  const isSocialSelected = (socialType) => {
-    return inputData.socialMediaLinks.includes(socialType);
-  };
+    return socialType ? socialType.icon : null;
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -107,48 +115,73 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
           >
             Social Types
           </label>
-          <div className="w-full flex justify-between items-center gap-5">
-            <div
-              onClick={() => setShowSocialOptions(!showSocialOptions)}
-              className="flex gap-2 relative flex-grow items-center bg-white w-full pr-3.5 text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none cursor-pointer"
-            >
-              <p className="w-full">Select a social</p>
-              <TbCaretDownFilled />
-              {showSocialOptions && (
-                <ul className="absolute capitalize z-10 top-full left-0 w-full bg-white border rounded-lg shadow-md mt-2">
-                  {SocialTypes.map((option) => (
-                    <li
-                      key={option.name}
-                      onClick={() => handleSocialSelect(option.name)}
-                      className={`cursor-pointer flex items-center gap-2 w-full px-4 py-2 ${
-                        isSocialSelected(option.name)
-                          ? "bg-indigo-500 text-white"
-                          : "hover:bg-gray-200"
-                      }`}
-                    >
-                      {option.icon} {option.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <div className="flex gap-2 items-center h-full">
-              {inputData.socialMediaLinks.map((selectedSocial, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-1 h-full bg-indigo-500 text-white p-3 rounded"
-                >
-                  <IoCloseCircleSharp
-                    onClick={() => handleRemoveSocial(selectedSocial)}
-                  />
-                  {
-                    SocialTypes.find((social) => social.name === selectedSocial)
-                      ?.icon
-                  }
-                  {/* <span className="whitespace-nowrap">{selectedSocial}</span> */}
+          <ul className="space-y-4">
+            {inputData?.socialMediaLinks?.map((social, index) => (
+              <li
+                key={index}
+                className="flex items-center p-2 rounded-lg shadow-md bg-white"
+              >
+                <div className="flex items-center">
+                  <div className="mr-4 bg-gray-200 rounded-full p-2">
+                    <div>{getIconByName(social.platformType)}</div>
+                  </div>
+                  <span className="font-semibold">{social.platformType}</span>
                 </div>
+                <div className="flex-grow flex justify-between ml-4">
+                  <span className="text-gray-700">{social.link}</span>
+                  <button
+                    className="text-red-500 focus:outline-none hover:text-red-600 mx-3"
+                    type="button"
+                    onClick={() => removeSocials(index)}
+                  >
+                    <RxCross2 />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex items-center space-x-4">
+            <select
+              className="border border-gray-300 rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              name="social-media"
+              id="social-media"
+              value={socialType}
+              onChange={(e) => setSocialType(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a platform
+              </option>
+              {SocialTypes.map((social, index) => (
+                <option key={index} value={social.name}>
+                  {social.name}
+                </option>
               ))}
-            </div>
+            </select>
+            <input
+              className="border border-gray-300 rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter your profile URL"
+              type="text"
+              value={socialLink}
+              onChange={(e) => setSocialLink(e.target.value)}
+            />
+            <button
+              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              type="button"
+              onClick={() => addSocials({ type: socialType, link: socialLink })}
+            >
+              Add
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50"
+              type="button"
+              onClick={() => {
+                setSocialLink("");
+                setSocialType("");
+              }}
+            >
+              Clear
+            </button>
           </div>
         </div>
 

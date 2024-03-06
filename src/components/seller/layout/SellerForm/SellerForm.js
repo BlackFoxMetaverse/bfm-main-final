@@ -264,6 +264,10 @@ const SellerForm = () => {
     }, 450);
   }
 
+  useEffect(() => {
+    console.log(inputData);
+  }, [inputData]);
+
   return (
     <main className="w-full mx-auto py-20 space-y-10">
       <section className="flex overflow-hidden relative flex-col justify-center items-center px-16 py-12 text-white min-h-[346px] max-md:px-5">
