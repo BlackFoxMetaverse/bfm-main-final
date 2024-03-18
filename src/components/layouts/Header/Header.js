@@ -16,6 +16,7 @@ import AuthModal from "./auth/AuthModal";
 import Notification from "@/components/Modules/Notification/Notification";
 import { getUserPreciseLocation } from "@/utils/location";
 import getCity from "@/utils/getCity";
+import PreLoader from "@/components/Modules/Preloader/preLoader";
 
 const UserProfile = ({
   name,
@@ -138,7 +139,7 @@ const Header = ({ isSeller }) => {
 
   useEffect(() => {
     getAddress();
-  }, []);
+  }, [address]);
 
   useEffect(() => {
     const handleLocationChange = async () => {
@@ -238,9 +239,13 @@ const Header = ({ isSeller }) => {
               <div className="w-6 h-6 justify-center items-center flex">
                 <IoLocationOutline className="text-lg" />
               </div>
-              <div className="text-white whitespace-nowrap 3xl:text-lg md:text-base text-sm font-normal leading-[14px]">
-                {address}
-              </div>
+              {address ? (
+                <div className="text-white whitespace-nowrap 3xl:text-lg md:text-base text-sm font-normal leading-[14px]">
+                  {address}
+                </div>
+              ) : (
+                <PreLoader size={16} color={"#fff"} />
+              )}
             </div>
           )}
         </div>

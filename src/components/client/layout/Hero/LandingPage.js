@@ -155,29 +155,40 @@ const LandingPage = () => {
               </span>
               <span className="text-neutral-900 text-xl">Near You</span>
             </p>
-            <button
-              type="button"
-              onClick={() => router.push(`/client/more`)}
-              className="w-[34.02px] h-[29.69px] px-[12.37px] py-[7.42px] bg-neutral-900 rounded border border-violet-50 justify-center items-center gap-[4.95px] inline-flex"
-            >
-              <FaAngleRight className="text-white" />
-            </button>
-          </div>
-          <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 relative grid-cols-1 items-start gap-5 w-full">
-            {recommendations?.length === 0 || !recommendations ? (
-              <p className="w-full text-center absolute inset-x-0">
-                <span className="text-neutral-900 text-xl">No </span>
-                <span className="text-neutral-900 text-[32px] font-bold">
-                  Professionals{" "}
-                </span>
-                <span className="text-neutral-900 text-xl">Near You</span>
-              </p>
-            ) : (
-              recommendations?.map((data, index) => (
-                <ServicesCard key={index} {...data} />
-              ))
+            {recommendations?.length > 5 && (
+              <button
+                type="button"
+                onClick={() => router.push(`/client/more`)}
+                className="w-[34.02px] h-[29.69px] px-[12.37px] py-[7.42px] bg-neutral-900 rounded border border-violet-50 justify-center items-center gap-[4.95px] inline-flex"
+              >
+                <FaAngleRight className="text-white" />
+              </button>
             )}
           </div>
+          {!recommendations ? (
+            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 relative grid-cols-1 items-start gap-5 w-full">
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+            </div>
+          ) : (
+            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 relative grid-cols-1 items-start gap-5 w-full">
+              {recommendations?.length === 0 ? (
+                <p className="w-full text-center absolute inset-x-0">
+                  <span className="text-neutral-900 text-xl">No </span>
+                  <span className="text-neutral-900 text-[32px] font-bold">
+                    Professionals{" "}
+                  </span>
+                  <span className="text-neutral-900 text-xl">Near You</span>
+                </p>
+              ) : (
+                recommendations?.map((data, index) => (
+                  <ServicesCard key={index} {...data} />
+                ))
+              )}
+            </div>
+          )}
         </div>
       </section>
 

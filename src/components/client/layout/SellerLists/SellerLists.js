@@ -11,7 +11,7 @@ import { fetchUserData } from "@/utils/userData";
 const SellerLists = ({ params }) => {
   const [searchInput, setSearchInput] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
-  const [recomendations, setRecommendations] = useState([]);
+  const [recomendations, setRecommendations] = useState(null);
   const [uid, setUid] = useState(null);
 
   useEffect(() => {
@@ -88,7 +88,14 @@ const SellerLists = ({ params }) => {
               {recomendations?.length <= 1 ? "result" : "results"}
             </div>
           </div>
-          {recomendations?.length === 0 ? (
+          {!recomendations ? (
+            <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+            </div>
+          ) : recomendations?.length === 0 ? (
             <div>No Result</div>
           ) : (
             <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
@@ -127,7 +134,14 @@ const SellerLists = ({ params }) => {
               {searchResult?.length <= 1 ? "result" : "results"}
             </div>
           </div>
-          {searchResult?.length !== 0 ? (
+          {!searchResult ? (
+            <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+              <ServicesCard />
+            </div>
+          ) : searchResult?.length > 0 ? (
             <div className="grid 3xl:grid-cols-5 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 items-start gap-5 w-full">
               {searchResult?.map((data, index) => (
                 <ServicesCard key={index} {...data} />

@@ -1,5 +1,6 @@
 "use client";
 
+import instance from "@/utils/axios";
 import s3FileUpload from "@/utils/imageUploader";
 import React, { useEffect, useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
@@ -7,68 +8,131 @@ import { MdOutlineUploadFile } from "react-icons/md";
 import { RxCrossCircled } from "react-icons/rx";
 
 const Experience = ["0-1", "1-3", "3-5", "5+"];
-const CollegeName = ["JNU", "DU", "DTU", "IIT Delhi", "NIT Delhi"];
-const profession = [
-  "Photographer",
-  "Designer",
-  "Developer",
-  "Software Developer",
-];
 
 const ProfessionalInfo = ({ inputData, setInputData, setCount, isShown }) => {
-  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
+  // const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   const [currentTag, setCurrentTag] = useState("");
   const [currentService, setCurrentService] = useState("");
   const [document, setDocument] = useState(null);
+  const [skillInput, setSkillInput] = useState("");
+  const [serviceInput, setServiceInput] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [services, setServices] = useState([]);
+  const [profession, setProfession] = useState([]);
+  const [colleges, setColleges] = useState([]);
 
   useEffect(() => {
     setDocument(window.document);
   }, []);
 
-  const handleTagInputChange = (e) => {
-    setCurrentTag(e.target.value);
-  };
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await instance.get(
+          `/suggestion/skills?keyword=${skillInput}`
+        );
+        setSkills(
+          response.data?.skills?.filter(
+            (skill) => !inputData.skills.includes(skill.tag)
+          )
+        );
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
+    };
 
-  const handleTagInputKeyPress = (e) => {
-    if (e.key === " " && currentTag.trim() !== "") {
-      e.preventDefault();
-      setCurrentTag("");
-      setInputData((prevData) => ({
-        ...prevData,
-        skills: [...prevData.skills, currentTag.trim()],
-      }));
+    if (skillInput) {
+      fetchSkills();
+    } else {
+      setSkills([]);
     }
+  }, [skillInput, inputData.skills]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await instance.get(
+          `/suggestion/services?keyword=${serviceInput}`
+        );
+        setServices(
+          response.data?.services?.filter(
+            (service) => !inputData.services.includes(service.tag)
+          )
+        );
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      }
+    };
+
+    if (serviceInput) {
+      fetchServices();
+    } else {
+      setServices([]);
+    }
+  }, [serviceInput, inputData.services]);
+
+  const handleAddSkills = (skill) => {
+    setInputData((prev) => ({
+      ...prev,
+      skills: [...prev.skills, skill],
+    }));
+    setSkillInput("");
   };
 
-  const handleTagRemove = (tagToRemove) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      skills: prevData.skills.filter((skill) => skill !== tagToRemove),
+  const handleAddServices = (service) => {
+    setInputData((prev) => ({
+      ...prev,
+      services: [...prev.services, service],
+    }));
+    setServiceInput("");
+  };
+
+  const handleRemoveSkills = (index) => {
+    setInputData((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((_, i) => i !== index),
     }));
   };
 
-  const handleServiceInputChange = (e) => {
-    setCurrentService(e.target.value);
-  };
-
-  const handleServiceInputKeyPress = (e) => {
-    if (e.key === " " && currentService.trim() !== "") {
-      e.preventDefault();
-      setCurrentService("");
-      setInputData((prevData) => ({
-        ...prevData,
-        services: [...prevData.services, currentService.trim()],
-      }));
-    }
-  };
-
-  const handleServiceRemove = (ServiceToRemove) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      services: prevData.services.filter(
-        (service) => service !== ServiceToRemove
-      ),
+  const handleRemoveServices = (index) => {
+    setInputData((prev) => ({
+      ...prev,
+      services: prev.services.filter((_, i) => i !== index),
     }));
+  };
+
+  async function getProfession(e) {
+    try {
+      const profession = e.target.value;
+      setInputData({ ...inputData, profession: profession });
+      const res = await instance.get(
+        `/suggestion/professions?keyword=${profession}`
+      );
+      setProfession(res.data?.professions);
+    } catch (error) {
+      console.error("Error fetching profession:", error);
+    }
+  }
+
+  const handleProfessionSelection = (selectedProfession) => {
+    setInputData({ ...inputData, profession: selectedProfession });
+    setProfession([]);
+  };
+
+  async function getColleges(e) {
+    try {
+      const college = e.target.value;
+      setInputData({ ...inputData, collegeName: college });
+      const res = await instance.get(`/suggestion/colleges?keyword=${college}`);
+      setColleges(res.data?.colleges);
+    } catch (error) {
+      console.error("Error fetching colleges:", error);
+    }
+  }
+
+  const handleCollegesSelection = (selectedProfession) => {
+    setInputData({ ...inputData, collegeName: selectedProfession });
+    setColleges([]);
   };
 
   function handleSubmit(e) {
@@ -125,132 +189,176 @@ const ProfessionalInfo = ({ inputData, setInputData, setCount, isShown }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col items-start justify-center gap-[5px]">
+          <div className="flex flex-col items-start gap-[5px] relative">
             <label
               htmlFor="profession"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
               profession
             </label>
-            <select
+            <input
+              type="text"
               name="profession"
               id="profession"
               value={inputData?.profession}
-              onChange={(e) =>
-                setInputData({ ...inputData, profession: e.target.value })
-              }
+              onChange={(e) => getProfession(e)}
               required
-              className="flex items-center focus:outline-none w-full p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-            >
-              <option value="" className="text-[#9F9F9F]">
-                Select Profession
-              </option>
-              {profession?.map((profession, index) => (
-                <option key={index} value={profession}>
-                  {profession}
-                </option>
-              ))}
-            </select>
+              placeholder="Developer"
+              className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
+            />
+            {inputData?.profession !== "" && profession.length > 0 && (
+              <div className="absolute inset-x-0 z-10 bg-white py-2 px-3 top-full overflow-auto max-h-[200px] flex flex-col gap-1">
+                {profession?.map((profession, index) => (
+                  <div
+                    key={index}
+                    className="flex px-4 py-2 items-center gap-2 self-stretch cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#4461f2] hover:text-white"
+                    onClick={() => handleProfessionSelection(profession["tag"])}
+                  >
+                    {profession["tag"]}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
+          <div className="flex flex-col col-span-2 items-start justify-center relative gap-[5px]">
             <label
               htmlFor="services"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
-              services
+              Services Provided
             </label>
-            <div className="flex items-center content-center bg-white rounded-lg gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-[5.781px]-[1.445px]">
-              {inputData?.services.map((service, index) => (
-                <div
-                  key={index}
-                  className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleServiceRemove(service)}
+            {inputData.services.length > 0 && (
+              <div className="flex items-center content-centerrounded-lg gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-[5.781px]-[1.445px]">
+                {inputData.services.map((service, index) => (
+                  <div
+                    key={index}
+                    className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
                   >
-                    <RxCrossCircled />
-                  </button>
-                  <span className="">{service}</span>
-                </div>
-              ))}
-              <input
-                type="text"
-                name="services"
-                id="services"
-                placeholder="Developement"
-                value={currentService}
-                onChange={handleServiceInputChange}
-                onKeyPress={handleServiceInputKeyPress}
-                className={`text-sm not-italic font-normal leading-[100%] bg-transparent w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
-                  inputData?.services.length === 7 ? "hidden" : "block"
-                }`}
-              />
-            </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveServices(index)}
+                    >
+                      <RxCrossCircled />
+                    </button>
+                    <span>{service}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <input
+              type="text"
+              name="services"
+              id="services"
+              placeholder="Enter Service"
+              className={`text-sm not-italic font-normal leading-[100%] bg-white w-full h-full p-3 rounded-md tracking-[-0.7px] flex-grow focus:outline-none ${
+                inputData?.services.length === 7 ? "hidden" : "block"
+              }`}
+              value={serviceInput}
+              onChange={(e) => setServiceInput(e.target.value)}
+            />
+            {serviceInput !== "" && services.length > 0 && (
+              <div className="absolute inset-x-0 bg-white py-2 px-3 top-full overflow-auto max-h-[200px] z-10 flex flex-col gap-1">
+                {services.map((service, index) => (
+                  <div
+                    key={index}
+                    className="flex px-4 py-2 items-center gap-2 self-stretch cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#4461f2] hover:text-white"
+                    onClick={() => handleAddServices(service.tag)}
+                  >
+                    {service.tag}
+                  </div>
+                ))}
+              </div>
+            )}
             <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
               Maximum 4-7 services
             </p>
           </div>
-          <div className="flex flex-col col-span-2 items-start justify-center gap-[5px]">
+          <div className="flex flex-col col-span-2 items-start relative justify-center gap-[5px]">
             <label
               htmlFor="skills"
               className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
             >
-              skills
+              Skills Provided
             </label>
-            <div className="flex items-center content-center gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-lg bg-white">
-              {inputData?.skills.map((tag, index) => (
-                <div
-                  key={index}
-                  className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-                >
-                  <button type="button" onClick={() => handleTagRemove(tag)}>
-                    <RxCrossCircled />
-                  </button>
-                  <span className="">{tag}</span>
-                </div>
-              ))}
-              <input
-                type="text"
-                name="skills"
-                id="skills"
-                placeholder="Frontend_Developer"
-                value={currentTag}
-                onChange={handleTagInputChange}
-                onKeyPress={handleTagInputKeyPress}
-                className={`text-sm not-italic font-normal leading-[100%] w-fit h-full p-1 tracking-[-0.7px] flex-grow focus:outline-none ${
-                  inputData?.skills.length === 7 ? "hidden" : "block"
-                }`}
-              />
-            </div>
+            {inputData.skills.length > 0 && (
+              <div className="flex items-center content-center rounded-lg gap-[3.613px] self-stretch flex-wrap px-[10.116px] py-[7.226px] rounded-[5.781px]-[1.445px]">
+                {inputData.skills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className="flex h-6 justify-center items-center gap-0.5 bg-[#C5CEFB] pl-1.5 pr-2 py-1 rounded-xl text-[#4461F2] border border-[#4461F2] text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSkills(index)}
+                    >
+                      <RxCrossCircled />
+                    </button>
+                    <span>{skill}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <input
+              type="text"
+              name="skills"
+              id="skills"
+              placeholder="Enter Skills"
+              className={`text-sm not-italic font-normal leading-[100%] bg-white w-full h-full p-3 rounded-md tracking-[-0.7px] flex-grow focus:outline-none ${
+                inputData?.skills.length === 7 ? "hidden" : "block"
+              }`}
+              value={skillInput}
+              onChange={(e) => setSkillInput(e.target.value)}
+            />
+            {skillInput !== "" && skills.length > 0 && (
+              <div className="absolute inset-x-0 bg-white py-2 z-10 px-3 top-full overflow-auto max-h-[200px] flex flex-col gap-1">
+                {skills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className="flex px-4 py-2 items-center gap-2 self-stretch cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#4461f2] hover:text-white"
+                    onClick={() => handleAddSkills(skill.tag)}
+                  >
+                    {skill.tag}
+                  </div>
+                ))}
+              </div>
+            )}
             <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px] capitalize">
               Maximum 4-7 skills
             </p>
           </div>
         </div>
-        <div className="flex flex-col w-full items-start gap-[5px]">
+        <div className="flex flex-col items-start gap-[5px] col-span-2 w-full relative">
           <label
-            htmlFor="collegeName"
+            htmlFor="college"
             className="text-[color:var(--Main-Colors-Gray-4,#292929)] md:text-base text-[12.226px] not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize"
           >
-            College name
+            college
           </label>
-          <select
-            name="collegeName"
-            id="collegeName"
+          <input
+            type="text"
+            name="college"
+            id="college"
             value={inputData?.collegeName}
-            onChange={(e) =>
-              setInputData({ ...inputData, collegeName: e.target.value })
-            }
-            className="flex items-center w-full focus:outline-none p-3.5 rounded-lg text-sm not-italic font-normal leading-[100%] tracking-[-0.7px]"
-          >
-            <option value="">Select your college</option>
-            {CollegeName?.map((college, index) => (
-              <option value={college} key={index}>
-                {college}
-              </option>
-            ))}
-          </select>
+            onChange={(e) => getColleges(e)}
+            required
+            placeholder="Enter Your College Name"
+            className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
+          />
+          {inputData?.collegeName !== "" && colleges.length > 0 && (
+            <div className="absolute inset-x-0 z-10 bg-white py-2 px-3 top-full overflow-auto max-h-[200px] flex flex-col gap-1">
+              {colleges?.map((college, index) => (
+                <div
+                  key={index}
+                  className="flex px-4 py-2 items-center gap-2 self-stretch cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#4461f2] hover:text-white"
+                  onClick={() =>
+                    handleCollegesSelection(college["College Name"])
+                  }
+                >
+                  {college["College Name"]}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex h-11 items-center gap-10 justify-between self-stretch-[#909090] mt-7 p-3.5 rounded-lg bg-white relative w-full">
           <label
@@ -279,19 +387,12 @@ const ProfessionalInfo = ({ inputData, setInputData, setCount, isShown }) => {
             type="file"
             name="resume"
             id="resume"
+            accept=".doc, .docx, .pdf"
             onChange={(e) =>
               setInputData({ ...inputData, resume: e.target.files[0] })
             }
             className="hidden"
           />
-          {/* <button
-            type="button"
-            onClick={() => document?.getElementById("certification")?.click()}
-            className="flex h-[31.259px] justify-center items-center gap-[2.605px] pl-[7.815px] pr-[10.42px] py-[5.21px] rounded-[15.63px] bg-[#E9DFFC] text-[color:var(--Main-Colors-Purple-6,#784DC7)] text-[18.235px] not-italic font-normal leading-[100%] tracking-[-0.912px]"
-          >
-            <MdOutlineUploadFile />
-            Upload
-          </button> */}
           <button
             type="button"
             onClick={() => document?.getElementById("resume")?.click()}

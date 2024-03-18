@@ -164,10 +164,12 @@ const Hero = () => {
     const token = localStorage.getItem("bfm-client-token");
     checkUserDataByToken(token)
       .then((data) => {
-        if (data?.isUser || data?.isSeller) {
+        if (data?.isSeller) {
           router.replace(
             `/seller/dashboard/${data?.data?.seller?.name}/${data?.data?.seller?.uid}`
           );
+        } else if (data?.isUser) {
+          router.push("/seller/form");
         } else {
           setShowAuth(!showAuth);
         }

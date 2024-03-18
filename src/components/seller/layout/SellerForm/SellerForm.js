@@ -43,16 +43,21 @@ const SellerForm = () => {
     images: [null, null, null, null, null, null],
     coordinates: {},
   });
-
   const [formCount, setCount] = useState(1);
-  const [userNameValid, setUserNameValid] = useState(true);
-  const [emailValid, setEmailValid] = useState(true);
+  const [userNameValid, setUserNameValid] = useState(false);
+  const [emailValid, setEmailValid] = useState({
+    is: false,
+    error: null,
+    color: null,
+  });
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("bfm-client-token");
     checkUserDataByToken(token)
-      .then((data) => setUserData(data))
+      .then((data) => {
+        setUserData(data);
+      })
       .catch((err) => console.error(err));
   }, []);
 
@@ -233,10 +238,18 @@ const SellerForm = () => {
       instance
         .get(`check/email?uid=${userData?.uid}&email=${email}`)
         .then((response) => {
-          setEmailValid(response.data);
+          setEmailValid({
+            is: response.data,
+            error: response?.data ? "Email validated" : "Email already taken",
+            color: response.data ? "green-500" : "red-500",
+          });
         })
         .catch((error) => {
-          console.error("Error checking email:", error);
+          setEmailValid({
+            is: false,
+            error: error?.response?.data?.errors[0]?.msg,
+            color: "red-500",
+          });
         })
         .finally(() => {
           emailTimeout = null;

@@ -63,6 +63,7 @@ const Register = ({ close, uid }) => {
         close();
         if (pathname === "/seller") {
           router.push("/seller/form");
+          router.refresh();
         } else {
           window.location.reload();
         }
