@@ -6,12 +6,15 @@ import OtpInput from "@/components/Modules/Otp/OtpInput";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../firebase";
 import { checkUserDataByToken } from "../../../utils/userData";
+import PreLoader from "@/components/Modules/Preloader/preLoader";
 
 const Login = ({ close, register, setUId, message }) => {
   const [countryCode, setCountryCode] = useState("+91");
   const [number, setNumber] = useState("");
   const [numberLength, setLength] = useState(0);
   const [isFilled, setFilled] = useState(false);
+  const [clicked, setCliced] = useState(false);
+  const [verifying, setVerifiying] = useState(false);
   const [otp, setOtp] = useState("");
 
   const pathname = usePathname();
@@ -44,6 +47,7 @@ const Login = ({ close, register, setUId, message }) => {
 
   const handleNumberSubmit = (e) => {
     e.preventDefault();
+    setCliced(!clicked);
     generateRecaptcha();
     let appVerifier = window.recaptchaVerifier;
     const phoneNumber = `${countryCode}${number}`;
@@ -78,7 +82,7 @@ const Login = ({ close, register, setUId, message }) => {
                 window.location.reload();
               } else if (pathname === "/seller" && data?.isUser) {
                 router.push(`/seller/form`);
-                window.location.reload();
+                // window.location.reload();
               } else {
                 window.location.reload();
               }
@@ -87,9 +91,12 @@ const Login = ({ close, register, setUId, message }) => {
               register();
               setUId(data?.uid);
             }
+            setVerifiying(true);
           })
-          .catch((err) => console.error(err));
-
+          .catch((err) => {
+            console.error(err);
+            setVerifiying(false);
+          });
         return () => clearTimeout(timer);
       })
       .catch((error) => {
@@ -146,9 +153,9 @@ const Login = ({ close, register, setUId, message }) => {
             disabled={numberLength !== 10}
             className={`${numberLength !== 10 ? "cursor-not-allowed" : ""} ${
               isFilled ? "scale-y-0 hidden" : "scale-y-100 block"
-            } transform transition-all duration-300 gap-2 self-stretch px-8 py-3 w-2/3 rounded-xl bg-white text-black text-center text-base not-italic font-bold leading-6`}
+            } transform transition-all flex justify-center items-center duration-300 gap-2 self-stretch px-8 py-3 w-2/3 rounded-xl bg-white text-black text-center text-base not-italic font-bold leading-6`}
           >
-            Send OTP
+            {clicked ? <PreLoader color={"#000"} size={"20px"} /> : "Send OTP"}
           </button>
         </form>
         <form
@@ -171,9 +178,14 @@ const Login = ({ close, register, setUId, message }) => {
           <div className=" w-full flex">
             <button
               type="submit"
-              className="w-3/4 gap-2 self-stretch px-8 py-3 rounded-xl bg-white text-black text-center text-base not-italic font-bold leading-6"
+              disabled={verifying}
+              className="w-3/4 gap-2 self-stretch px-8 py-3 flex justify-center items-center rounded-xl bg-white text-black text-center text-base not-italic font-bold leading-6"
             >
-              Verify
+              {verifying ? (
+                <PreLoader color={"#000"} size={"20px"} />
+              ) : (
+                "Verify"
+              )}
             </button>
           </div>
         </form>
