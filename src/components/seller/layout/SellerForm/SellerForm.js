@@ -41,9 +41,10 @@ const SellerForm = () => {
     socialMediaLinks: [],
     experienceDetails: [],
     images: [null, null, null, null, null, null],
+    video: [null, null, null, null, null, null],
     coordinates: {},
   });
-  const [formCount, setCount] = useState(1);
+  const [formCount, setCount] = useState(3);
   const [userNameValid, setUserNameValid] = useState(false);
   const [emailValid, setEmailValid] = useState({
     is: false,
