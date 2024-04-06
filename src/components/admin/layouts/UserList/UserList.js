@@ -50,19 +50,18 @@ const UserList = ({ data }) => {
     }
   };
 
-  // JSX for rendering user profiles
   const renderUserProfiles = () => {
     return currentUsers?.map((user, index) => (
       <tr className=" text-center hover:bg-gray-100 cursor-pointer" key={index}>
         <td className=" py-4">{index + 1}</td>
         <td className=" py-4">{user?.name}</td>
-        <td className=" py-4">{user?.userName}</td>
+        <td className=" py-4">{user?.token}</td>
         <td className=" py-4">{user?.email}</td>
         <td className=" py-4">{user?.phone_number}</td>
         <td
           onClick={() =>
             handleRoute(
-              user?.userName,
+              user?.name,
               user?.uid,
               user?.phone_number,
               user?.email,
@@ -78,7 +77,6 @@ const UserList = ({ data }) => {
     ));
   };
 
-  // JSX for pagination buttons
   const renderPaginationButtons = () => {
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(data?.length / usersPerPage); i++) {
@@ -192,7 +190,7 @@ const UserList = ({ data }) => {
               <tr>
                 <th className="px-4 py-3">Sr</th>
                 <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">User Name</th>
+                <th className="px-4 py-3">Token</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-2">Contact Number</th>
                 <th className="px-4 py-3">Action</th>

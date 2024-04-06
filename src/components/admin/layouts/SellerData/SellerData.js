@@ -26,7 +26,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
     const fetchData = async () => {
       try {
         const response = await instance.get(
-          `/super_user/getUserProfile?uid=${id}`,
+          `/super_user/seller?uid=${id}`,
           {
             headers: {
               token: accessToken,
@@ -34,15 +34,16 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
           }
         );
         // const data = await response.json();
-        if (data.message === "Admin token has expired") {
-          router.replace("/admin/auth/login");
-        } else if (data?.message === `user with ${id} not found !`) {
-          setNotFound(true);
-        } else {
-          setNotFound(false);
-        }
-        setUserData(data?.userProfile);
-        setImages(data?.userProfile.images);
+        // if (data.message === "Admin token has expired") {
+        //   router.replace("/admin/auth/login");
+        // } else if (data?.message === `user with ${id} not found !`) {
+        //   setNotFound(true);
+        // } else {
+        //   setNotFound(false);
+        // }
+        console.log("data",response?.data?.data)
+        setUserData(response?.data?.data);
+        setImages(response?.data?.data?.images);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -186,7 +187,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
                   </p>
 
                   <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]">
-                    {decodeURIComponent(designation)}
+                    {userData?.profession}
                   </p>
 
                   {/* <p className="flex text bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
@@ -315,9 +316,9 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
                       loading="lazy"
                       key={index}
                       className="w-[100%] h-[100%] cursor-pointer"
-                      src={s3Url + image}
+                      src={image}
                       alt=""
-                      onClick={() => openModal(s3Url + image)}
+                      onClick={() => openModal(image)}
                     />
                   </div>
                 ))}

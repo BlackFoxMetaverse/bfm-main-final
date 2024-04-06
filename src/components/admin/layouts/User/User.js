@@ -24,7 +24,8 @@ const User = () => {
         } else if (response.data.message === "token is required !!!") {
           router.replace("/admin/auth/login");
         }
-        setUserData(response.data.users);
+        setUserData(response.data.data);
+        console.log("user data ",response.data.data)
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
