@@ -280,7 +280,7 @@ const SellerDataDetails = ({ params }) => {
             <div className="w-full h-full items-start shrink-0 gap-[22.29px] flex">
               <div className="w-1/3 aspect-square rounded-2xl shrink-0 overflow-hidden relative bg-stone-300">
                 <img
-                  src={sellerData?.image ? s3Url + sellerData?.image : null}
+                  src={sellerData?.image ? sellerData?.image : null}
                   alt=""
                   className="size-full object-cover shrink-0"
                 />
@@ -430,8 +430,8 @@ const SellerDataDetails = ({ params }) => {
       <div className="flex flex-col rounded w-full">
         {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
         {sellerData?.images[0] && (
-          <ImageComponent
-            src={s3Url + sellerData.images[0]}
+          <video
+            src={sellerData.images[0]}
             alt=""
             className="object-cover size-full rounded"
           />
@@ -478,6 +478,28 @@ const SellerDataDetails = ({ params }) => {
             </div>
           </div>
         )}
+        <div
+          style={{
+            margin: 0,
+          }}
+          className="grid grid-cols-1 justify-center py-7 items-center w-full gap-2"
+        >
+          {sellerData?.videos
+            ?.slice(1, sellerData?.videos?.length)
+            ?.map((data, i) =>
+              data ? (
+                <div key={i} className={`relative`}>
+                  <video
+                    loading="lazy"
+                    className="size-full cursor-pointer object-cover rounded"
+                    src={data}
+                    alt=""
+                    onClick={() => openImageModal(data)}
+                  />
+                </div>
+              ) : null
+            )}
+        </div>
         {showImage ? (
           <div
             style={{
@@ -493,9 +515,9 @@ const SellerDataDetails = ({ params }) => {
                     <ImageComponent
                       loading="lazy"
                       className="size-full cursor-pointer object-cover rounded"
-                      src={s3Url + data}
+                      src={data}
                       alt=""
-                      onClick={() => openImageModal(s3Url + data)}
+                      onClick={() => openImageModal(data)}
                     />
                   </div>
                 ) : null

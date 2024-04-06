@@ -7,10 +7,11 @@ import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
 import { TbCaretDownFilled } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
+import { getUserPreciseLocation } from "@/utils/location";
 
 const SocialTypes = [
   {
-    name: "Linked In",
+    name: "LinkedIn",
     icon: <FaLinkedinIn />,
   },
   {
@@ -37,6 +38,38 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
   const [socialType, setSocialType] = useState();
   const [socialLink, setSocialLink] = useState();
 
+  const createFileUrl = (file) => {
+    return URL.createObjectURL(file);
+  };
+
+  const handlePlay = (e) => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  };
+
+  function validateURL(url) {
+    try {
+      const isUrl = new URL(url);
+      if (
+        socialType.toLowerCase() ===
+        (isUrl.hostname.includes("www")
+          ? isUrl.hostname.split(".")[1]
+          : isUrl.hostname.split(".")[0])
+      ) {
+        return true;
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      return false;
+    }
+  }
+
   function addSocials({ type, link }) {
     setInputData((prev) => {
       return {
@@ -47,13 +80,6 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
         ],
       };
     });
-    // setInputData({
-    //   ...inputData,
-    //   socialMediaLinks: [
-    //     ...inputData.socialMediaLinks,
-    //     { platformType: type, link: link },
-    //   ],
-    // });
     setSocialLink("");
     setSocialType("");
   }
@@ -124,22 +150,18 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
           >
             Social Types
           </label>
-          <ul className="space-y-4">
+          <ul className="gap-4 flex items-center">
             {inputData?.socialMediaLinks?.map((social, index) => (
               <li
                 key={index}
                 className="flex items-center p-2 rounded-lg shadow-md bg-white"
               >
-                <div className="flex items-center">
-                  <div className="mr-4 bg-gray-200 rounded-full p-2">
-                    <div>{getIconByName(social.platformType)}</div>
-                  </div>
-                  <span className="font-semibold">{social.platformType}</span>
+                <div className="bg-gray-200 rounded-full p-2">
+                  {getIconByName(social.platformType)}
                 </div>
-                <div className="flex-grow flex justify-between ml-4">
-                  <span className="text-gray-700">{social.link}</span>
+                <div className="flex-grow flex justify-between">
                   <button
-                    className="text-red-500 focus:outline-none hover:text-red-600 mx-3"
+                    className="text-red-500 focus:outline-none hover:text-red-600 p-2"
                     type="button"
                     onClick={() => removeSocials(index)}
                   >
@@ -149,10 +171,9 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
               </li>
             ))}
           </ul>
-
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center w-full gap-4 relative">
             <select
-              className="border border-gray-300 rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border border-gray-300 w-full rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none border-none"
               name="social-media"
               id="social-media"
               value={socialType}
@@ -161,36 +182,46 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
               <option value="" disabled>
                 Select a platform
               </option>
-              {SocialTypes.map((social, index) => (
+              {SocialTypes?.filter(
+                (social) => social !== inputData?.socialMediaLinks
+              ).map((social, index) => (
                 <option key={index} value={social.name}>
                   {social.name}
                 </option>
               ))}
             </select>
             <input
-              className="border border-gray-300 rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`border w-full border-gray-300 transition-all duration-500 absolute inset-x-0 transform ${
+                socialType ? "translate-y-full" : "scale-y-0"
+              } rounded-md px-4 py-2 bg-white shadow-sm focus:outline-none border-none`}
               placeholder="Enter your profile URL"
               type="text"
               value={socialLink}
               onChange={(e) => setSocialLink(e.target.value)}
             />
-            <button
-              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              type="button"
-              onClick={() => addSocials({ type: socialType, link: socialLink })}
-            >
-              Add
-            </button>
-            <button
-              className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50"
-              type="button"
-              onClick={() => {
-                setSocialLink("");
-                setSocialType("");
-              }}
-            >
-              Clear
-            </button>
+            {socialType && validateURL(socialLink) && (
+              <button
+                className={`bg-blue-500 text-white px-6 py-2 transform rounded-md shadow-sm hover:bg-blue-600`}
+                type="button"
+                onClick={() =>
+                  addSocials({ type: socialType, link: socialLink })
+                }
+              >
+                Add
+              </button>
+            )}
+            {socialType && (
+              <button
+                className={`bg-gray-300 text-gray-700 px-6 py-2 rounded-md shadow-sm hover:bg-gray-400`}
+                type="button"
+                onClick={() => {
+                  setSocialLink("");
+                  setSocialType("");
+                }}
+              >
+                Clear
+              </button>
+            )}
           </div>
         </div>
 

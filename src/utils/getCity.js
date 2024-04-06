@@ -16,9 +16,9 @@ async function getCity() {
     const city = cityArr[1];
     const country = dataArr[2];
 
-    const address = `${city}, ${country}`;
+    const address = country ? `${city}, ${country}` : `${city}`;
 
-    return Promise.resolve(`${city}, ${country}`);
+    return Promise.resolve(address);
   } catch (error) {
     return Promise.reject(error);
   }
