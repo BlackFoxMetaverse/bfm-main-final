@@ -2,15 +2,22 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { BsExclamationCircleFill } from "react-icons/bs";
+import { BsExclamationCircleFill, BsStarFill } from "react-icons/bs";
 import { CiFacebook, CiHeart, CiLocationOn } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
-import { FaAngleRight, FaHeart, FaLinkedin, FaYoutube } from "react-icons/fa6";
+import {
+  FaAngleRight,
+  FaGithub,
+  FaHeart,
+  FaLinkedin,
+  FaYoutube,
+} from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import ImageModal from "../../Modules/ImageModal/ImageModal";
 import Link from "next/link";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
 import instance from "@/utils/axios";
+import { IoLocationOutline } from "react-icons/io5";
 const ActivityHistory = [];
 const PurchaseHistory = ["", "", "", "", "", "", ""];
 const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
@@ -25,14 +32,11 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
     const accessToken = localStorage.getItem("bfm-admin-token");
     const fetchData = async () => {
       try {
-        const response = await instance.get(
-          `/super_user/seller?uid=${id}`,
-          {
-            headers: {
-              token: accessToken,
-            },
-          }
-        );
+        const response = await instance.get(`/super_user/seller?uid=${id}`, {
+          headers: {
+            token: accessToken,
+          },
+        });
         // const data = await response.json();
         // if (data.message === "Admin token has expired") {
         //   router.replace("/admin/auth/login");
@@ -41,7 +45,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
         // } else {
         //   setNotFound(false);
         // }
-        console.log("data",response?.data?.data)
+        console.log("data", response?.data?.data);
         setUserData(response?.data?.data);
         setImages(response?.data?.data?.images);
       } catch (error) {
@@ -66,352 +70,307 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
     fetchAdminData();
     fetchData();
   }, []);
+  const handleDeleteSellerData = async (uid) => {
+    const accessToken = localStorage.getItem("bfm-admin-token");
 
-  const openModal = (imageUrl) => {
-    setModalImageUrl(imageUrl);
+    try {
+      const response = await instance.delete(`/super_user/seller?uid=${uid}`, {
+        headers: {
+          token: accessToken,
+        },
+      });
+      console.log(response);
+      console.log("Seller data deleted successfully");
+    } catch (error) {
+      console.error("Error deleting seller data:", error);
+    }
   };
-
-  const closeModal = () => {
-    setModalImageUrl(null);
-  };
+  const ImageComponent = ({ src, alt, className, onClick }) => (
+    <img
+      loading="eager"
+      src={src}
+      alt={alt}
+      onClick={onClick}
+      className={className}
+    />
+  );
 
   return (
     <main className={`${name}'s_detail h-full pb-10`}>
-      <div className="space-y-10 h-full">
-        <div className="max-w-[1603px] min-h-[3.2rem] flex items-center shrink-0 bg-[#7F63F4]/10">
+      <div className="max-w-[1603px] min-h-[3.2rem] bg-blue-50 fixed w-[84%] z-50 flex items-center justify-between shrink-0 bg-[#7F63F4]/10">
+        <div>
           <p className="max-w-[849px] text-[#7F63F4] 3xl:text-[22px] 2xl:text-xl xl:text-lg lg:text-base not-italic font-semibold leading-[54px] mx-8">
             User Management / user profile
           </p>
         </div>
-        <div className="w-11/12 space-y-6 mx-auto">
-          <p className="text-black 3xl:text-[40px] 2xl:text-3xl xl:text-xl lg:text-lg not-italic font-medium leading-[100%]">
-            Seller Profile
-          </p>
-          <div className="flex items-center gap-8 h-[13rem]">
-            <div className="max-w-[63.4rem] w-2/3 py-7 bg-white h-full shrink-0 rounded-[1.5rem]">
-              <div className="w-5/6 mx-auto h-full">
-                <p className="text-black 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]">
-                  User Login/Activity History
-                </p>
-                {ActivityHistory.length === 0 ? (
-                  <div className="w-full h-full flex justify-center gap-2 items-center">
-                    <BsExclamationCircleFill className="text-red-600" />
-                    <span>No Data</span>
+        <div className=" space-x-5 px-10">
+          <button
+            type="button"
+            disabled={
+              adminPrevilages?.data?.sub_admin_privilege?.user?.has?.update
+                ? true
+                : false
+            }
+            className={`text-white px-4 py-1 rounded ${
+              adminPrevilages?.data?.sub_admin_privilege?.user?.has?.update
+                ? "opacity-1 cursor-pointer"
+                : "opacity-50 cursor-not-allowed"
+            } bg-[#374fcb] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            disabled={
+              adminPrevilages?.data?.sub_admin_privilege?.user?.has?.update
+                ? true
+                : false
+            }
+            className={`text-white px-4 py-1 rounded ${
+              adminPrevilages?.data?.sub_admin_privilege?.user?.has?.update
+                ? "opacity-1 cursor-pointer"
+                : "opacity-50 cursor-not-allowed"
+            } bg-[#f25350] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
+          >
+            Suspend{" "}
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDeleteSellerData(userData?.uid)}
+            className={`text-white px-4 py-1 rounded 3xl:text-2xl
+                      
+                         opacity-1 cursor-pointer
+                      
+                     bg-[#E53935] 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-10 py-24 mx-auto">
+        {/* {error !== null && <Toast type={"error"} message={error} />} */}
+        <div className="flex gap-7 xl:w-[40%] w-full items-start lg:sticky static inset-y-28 h-full">
+          <div className="space-y-5 w-full">
+            <div className="w-full flex flex-col overflow-hidden gap-8 rounded-lg justify-center bg-white p-7 items-center">
+              <div className="w-full h-full items-start shrink-0 gap-[22.29px] flex">
+                <div className="w-1/3 aspect-square rounded-2xl shrink-0 overflow-hidden relative bg-stone-300">
+                  <img
+                    src={userData?.image ? userData?.image : null}
+                    alt=""
+                    className="size-full object-cover shrink-0"
+                  />
+                </div>
+                <div className="flex-col w-2/3 justify-between h-full items-start 3xl:gap-2 gap-1 inline-flex">
+                  <div className="text-black 3xl:text-2xl 2xl:text-xl lg:text-lg text-lg font-bold whitespace-nowrap">
+                    {userData?.name}
                   </div>
-                ) : (
-                  <div></div>
+                  <div className="flex-col justify-start items-start gap-[4.68px] flex">
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                      {/* {params?.username
+                      ? decodeURIComponent(params?.username)
+                      : "Username"} */}
+                    </div>
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                      {userData?.profession}{" "}
+                    </div>
+                  </div>
+                  {/* <div className="w-[72.45px] h-[25.03px] pl-[9.82px] pr-[8.63px] pt-[4.91px] pb-[5.12px] bg-gray-200 rounded-xl justify-center items-center inline-flex">
+                    <div className="text-zinc-700 text-[13px] font-normal font-['Work Sans']">
+                      Available
+                    </div>
+                  </div> */}
+                  <div className="px-2 py-1 bg-black rounded-xl justify-center items-center gap-1 inline-flex">
+                    <div className="text-white text-base font-normal whitespace-nowrap">
+                      {userData?.city}
+                    </div>
+                    <IoLocationOutline className="text-white" />
+                  </div>
+                  <div className="justify-start items-start gap-2 inline-flex">
+                    <BsStarFill className="w-[21.14px] h-[20.25px] text-orange-500 relative" />
+                    <div className="w-[81px] text-black text-base leading-normal">
+                      {userData?.rating?.value?.toString()?.slice(0, 3)} (
+                      {userData?.rating?.count})
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full flex-col justify-start items-start gap-7 flex">
+                <div className="flex-col w-full justify-start items-start gap-0.5 flex">
+                  <div className="text-black text-xl font-bold">
+                    Phones Number
+                  </div>
+
+                  <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
+                    {userData?.phone_number}
+                  </div>
+                </div>
+                {userData?.email && (
+                  <div className="flex-col justify-start items-start gap-0.5 flex">
+                    <div className="text-black text-xl font-bold">
+                      Email Address
+                    </div>
+                    <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal">
+                      {userData?.email}
+                    </div>
+                  </div>
+                )}
+                {userData?.socialMediaLinks?.length > 0 && (
+                  <div className="w-full text-3xl justify-start items-start gap-[18px] inline-flex">
+                    {userData?.socialMediaLinks?.map((link, index) => (
+                      <Link key={index} href={link}>
+                        <FaGithub />
+                      </Link>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
-            <div className="max-w-[30.5rem] w-1/3 h-full py-5 bg-white shrink rounded-[25px]">
-              <div className="w-5/6 mx-auto flex flex-col justify-between items-start h-full">
-                <p className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]">
-                  Actions
-                </p>
-                <div className="flex items-end flex-grow justify-between w-full">
-                  <button
-                    type="button"
-                    disabled={
-                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
-                        ?.update
-                        ? true
-                        : false
-                    }
-                    className={`text-white px-4 py-2 rounded ${
-                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
-                        ?.update
-                        ? "opacity-1 cursor-pointer"
-                        : "opacity-50 cursor-not-allowed"
-                    } bg-[#374fcb] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    disabled={
-                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
-                        ?.update
-                        ? true
-                        : false
-                    }
-                    className={`text-white px-4 py-2 rounded ${
-                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
-                        ?.update
-                        ? "opacity-1 cursor-pointer"
-                        : "opacity-50 cursor-not-allowed"
-                    } bg-[#f25350] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
-                  >
-                    Suspend{" "}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={
-                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
-                        ?.delete
-                        ? true
-                        : false
-                    }
-                    className={`text-white px-4 py-2 rounded 3xl:text-2xl${
-                      adminPrevilages?.data?.sub_admin_privilege?.user?.has
-                        ?.delete
-                        ? "opacity-1 cursor-pointer"
-                        : "opacity-50 cursor-not-allowed"
-                    } bg-[#E53935] 2xl:text-xl xl:text-base not-italic font-bold leading-[normal]`}
-                  >
-                    Delete
-                  </button>
+
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <div className="max-w-[295px] text-stone-500 text-base font-normal leading-[27px]">
+                  Service Provided
+                </div>
+                <div className="flex items-center flex-wrap gap-2">
+                  {userData?.services?.map((service, index) => (
+                    <div
+                      key={index}
+                      className="px-[12.95px] pt-[4.35px] pb-[3.52px] rounded-[20.03px] border border-stone-950 justify-center items-center inline-flex"
+                    >
+                      <p className="text-stone-950 text-sm leading-normal">
+                        {service}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="max-w-[295px] text-stone-500 text-base font-normal leading-[27px]">
+                  Skills
+                </div>
+                <div className="flex items-center flex-wrap gap-2">
+                  {userData?.skills?.map((skill, index) => (
+                    <div
+                      key={index}
+                      className="px-[12.95px] pt-[4.35px] pb-[3.52px] rounded-[20.03px] border border-stone-950 justify-center items-center inline-flex"
+                    >
+                      <p className="text-stone-950 text-sm leading-normal">
+                        {skill}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="flex w-11/12 gap-5 mx-auto shrink-0 rounded-[20px]">
-          <div className="w-1/3 space-y-5 ">
-            <div className="w-full overflow-hidden px-5 p-4 bg-white gap-8 rounded-[25.636px] items-center">
-              <div className=" p-4 bg-white flex gap-8 rounded-[25.636px] items-center">
-                {decodeURIComponent(image) === "img" ? (
-                  <div className="w-20 h-20 rounded-full bg-purple-500 flex justify-center items-center text-3xl font-bold text-white">
-                    {decodeURIComponent(name).charAt(0).toUpperCase()}
-                  </div>
-                ) : (
-                  <img
-                    src={s3Url + decodeURIComponent(image)}
-                    onClick={() => openModal(s3Url + image)}
-                    className="flex cursor-pointer object-cover 3xl:w-[9.17rem] 2xl:w-[7rem] xl:w-[5rem] lg:w-[3rem] aspect-square justify-center items-center shrink-0 rounded-full"
-                    alt=""
-                  />
-                )}
-                <div className="space-y-1">
-                  <p className="text-black  whitespace-pre-wrap break-words 3xl:text-[20px] 2xl:text-xl xl:text-base lg:text-medium not-italic font-bold leading-[normal] capitalize">
-                    {decodeURIComponent(name)}
-                  </p>
 
-                  <p className="text-[#696969] 3xl:text-xl 2xl:text-base xl:text-base not-italic font-normal leading-[36.814px]">
-                    {userData?.profession}
-                  </p>
-
-                  {/* <p className="flex text bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                    Available
-                  </p> */}
-                </div>
-              </div>
-
-              <div className=" px-5 space-y-9">
-                {/* <div className=" flex justify-center text-gray-600 items-center  bg-gray-200 gap-[4.866px] pl-[12.164px] pr-[9.732px] py-[6.082px] rounded-full">
-                  Faridabad, Haryana <CiLocationOn />
-                </div> */}
-                <div>
-                  <p className="flex text-green-500 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]">
-                    Available
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                    Phone Number
-                  </p>
-                  <p className="self-stretch text-[#696969] text-lg not-italic font-normal leading-[27px]">
-                    {decodeURIComponent(phone)}
-                  </p>
-                </div>
-                <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                  <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                    Email Address
-                  </p>
-                  <p className="self-stretch text-[#696969] text-lg not-italic font-normal leading-[27px]">
-                    {decodeURIComponent(email)}
-                  </p>
-                </div>
-                <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                  <p>Social Media</p>
-                  <div className="flex gap-3">
-                    {/* <div className="bg-gray-100 p-2 rounded-full">
-                      <FaInstagram />
-                    </div>
-                    <div className="bg-gray-100 p-2 rounded-full">
-                      <CiFacebook />
-                    </div>
-                    <div className="bg-gray-100 p-2 rounded-full">
-                      <FaYoutube />
-                    </div> */}
-
-                    {/* <Link
-                      target=" "
-                      href={userData?.socialMediaLinks}
-                      className="bg-gray-100 p-2 rounded-full"
-                    >
-                      <FaLinkedin />
-                    </Link> */}
-                  </div>
-                </div>
-                {/* <div className="self-stretch space-y-4 text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                  <p className="self-stretch  text-[#696969] text-xl not-italic font-bold leading-[27px]">
-                    Rating
-                  </p>
-                  <div className="flex gap-4">
-                    <FaHeart className="text-red-500" />
-                    <FaHeart className="text-red-500" />
-                    <FaHeart className="text-red-500" />
-                    <FaHeart className="text-red-100" />
-                    <FaHeart className="text-red-100" />
-                    <p className=" text-gray-500">3022</p>
-                  </div>
-                </div> */}
-              </div>
-            </div>
-            <div className=" px-5 space-y-5 overflow-hidden p-4 bg-white gap-8 rounded-[25.636px] items-center">
-              <div className="flex justify-center items-center w-full">
-                <select className="p-2 bg-transparent outline-none shrink-0 border-blue-600 text-blue-600  px-[20px]  rounded-[15px] border-[1.5px] border-solid">
-                  <option value="Action order">Action order</option>
-                </select>
-              </div>
-              <p className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] text-xl not-italic font-bold leading-[normal]">
-                Active Order : 0
-              </p>
-            </div>
+        <div className="flex flex-col rounded w-full">
+          {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
+          {userData?.images[0] && (
+            <video
+              src={userData.images[0]}
+              alt=""
+              className="object-cover size-full rounded"
+            />
+          )}
+          <div>
+            <h2 className="mt-8 w-full text-3xl font-bold text-neutral-800 max-md:max-w-full">
+              About Me
+            </h2>
+            <p className="mt-2.5 w-full text-lg leading-7 text-neutral-600 text-justify max-md:max-w-full">
+              {userData?.description}
+            </p>
           </div>
-          {notFound ? (
-            <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-hidden justify-center items-center space-x-10 bg-white p-10 rounded-[20px]">
-              404 Not Found
-            </div>
-          ) : (
-            <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-y-scroll space-x-10 bg-white p-10 rounded-[20px]">
-              <div className="  space-y-8">
-                {/* <div>
-                    <div className=" shrink-0 text-[color:var(--Black,#000)] text-[40.35px] not-italic font-semibold leading-[140%] tracking-[-0.807px]">
-                      Galactic skull Luminescence
-                    </div>
-                  </div> */}
-                <div>
-                  <p className="shrink-0 text-[color:var(--Davys-Grey,#4D4D4D)] text-[15.413px] not-italic font-normal leading-[160%]">
-                    {userData?.description}
-                  </p>
-                </div>
-                <div className="border w-full"></div>
-                <div className="flex gap-3">
-                  {userData?.tags?.map((tag, index) => (
-                    <p
-                      key={index}
-                      className="flex text-green-600 bg-gray-200 text-xs bg- justify-center items-center pl-[7.452px] pr-[6.548px] pt-[3.726px] pb-[4.274px] rounded-[8.943px]"
-                    >
-                      {tag}
-                    </p>
-                  ))}
-                </div>
-                {/* <div className="flex gap-8">
-                    <div className="flex gap-1 justify-center items-center ">
-                      <CiHeart />
-                      <p>3,245</p>
-                    </div>
-                    <div>
-                      <p className="text-[color:var(--Davys-Grey,#4D4D4D)] text-[13.211px] not-italic font-bold leading-[160%]">
-                        Sep 12, 2021
-                      </p>
-                    </div>
-                  </div> */}
+          {/* Experience */}
+          {userData?.experienceDetails && (
+            <div className="flex-col justify-start items-start gap-2.5 mt-7 inline-flex">
+              <div className="text-neutral-800 text-[32px] font-bold">
+                Experience
               </div>
-              <div className="grid grid-cols-2  w-full p-10 gap-2">
-                {getImages?.map((image, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      loading="lazy"
-                      key={index}
-                      className="w-[100%] h-[100%] cursor-pointer"
-                      src={image}
-                      alt=""
-                      onClick={() => openModal(image)}
-                    />
+              <div className="flex-col justify-start items-start gap-5 flex w-full">
+                {userData?.experienceDetails?.map((exp, index) => (
+                  <div
+                    key={index}
+                    className="px-[30px] py-5 rounded-[10px] border border-zinc-300 w-full flex-col justify-start items-start gap-2.5 flex"
+                  >
+                    <div className="text-indigo-500 text-2xl leading-[27px]">
+                      {exp?.title}
+                    </div>
+                    <div className="self-stretch text-neutral-600 text-lg font-normal leading-[27px]">
+                      {exp?.content}
+                    </div>
+                    <Link
+                      href={exp?.link}
+                      target="_blank"
+                      type="button"
+                      className="px-7 py-2.5 rounded border border-black justify-center items-center gap-2.5 inline-flex"
+                    >
+                      <div className="text-black text-lg font-bold font-['Helvetica Neue'] leading-7">
+                        Look At the Project
+                      </div>
+                      <FaAngleRight />
+                    </Link>
                   </div>
                 ))}
-                {modalImageUrl && (
-                  <ImageModal
-                    imageUrl={modalImageUrl}
-                    closeModal={closeModal}
-                  />
-                )}
               </div>
             </div>
           )}
-        </div>
-        {/* <div className="max-w-[96rem] w-11/12 bg-white mx-auto min-h-[25.25rem] shrink-0 rounded-[20px]">
-          <div className="w-11/12 mx-auto py-14">
-            <div className="flex-col text-center justify-center items-center">
-              <h1 className="text-black 3xl:text-3xl 2xl:text-2xl xl:text-xl lg:text-lg not-italic font-bold leading-[normal]">
-                Priority Orders
-              </h1>
-              
-            </div>
-            <table className="table-auto mt-9 w-full">
-              <thead>
-                <tr className="flex items-center gap-4 justify-between pt-[0.75rem] px-[0.75rem]">
-                  <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                    Section
-                  </th>
-                  <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                    Buyer
-                  </th>
-                  <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                    Gig
-                  </th>
-                  <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] pr-10 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                    Due On
-                  </th>
-                  <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                    Total
-                  </th>
-                  <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                    Note
-                  </th>
-                  <th className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <hr className="w-full h-px bg-black my-4" />
-              <tbody className=" flex-col justify-center items-center">
-                {PurchaseHistory.length === 0 ? (
-                  <tr className="flex w-full h-full justify-center items-center gap-2">
-                    <BsExclamationCircleFill className="text-red-500" />
-                    No Data
-                  </tr>
-                ) : (
-                  PurchaseHistory?.map((history, index) => (
-                    <tr
-                      key={index}
-                      className="flex w-full gap-4 justify-between items-center my-[1.5rem] pt-[0.75rem] px-[0.75rem]"
-                    >
-                      <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                        {index + 1}
-                      </td>
-                      <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                        Harsh Singh
-                      </td>
-                      <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                        23.11.23
-                      </td>
-                      <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                        Yes
-                      </td>
-                      <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                        Yes
-                      </td>
-                      <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                        Yes
-                      </td>
-                      <td className="text-[color:var(--Foundation-Grey-grey-400,#4D4D4D)] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]">
-                        <button
-                          type="button"
-                          className="flex justify-center items-center gap-[var(--numberLength,12.547px)] text-[color:var(--Foundation-Blue-blue-500,var(--Primary-1,#4461F2))] 3xl:text-2xl 2xl:text-xl xl:text-base not-italic font-normal leading-[36.09px]"
-                        >
-                          Action <FaAngleRight />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div
+            style={{
+              margin: 0,
+            }}
+            className="grid grid-cols-1 justify-center py-7 items-center w-full gap-2"
+          >
+            {userData?.videos
+              ?.slice(1, userData?.videos?.length)
+              ?.map((data, i) =>
+                data ? (
+                  <div key={i} className={`relative`}>
+                    <video
+                      loading="lazy"
+                      className="size-full cursor-pointer object-cover rounded"
+                      src={data}
+                      alt=""
+                      onClick={() => openImageModal(data)}
+                    />
+                  </div>
+                ) : null
+              )}
           </div>
-        </div> */}
+
+          <div
+            style={{
+              margin: 0,
+            }}
+            className="grid grid-cols-1 justify-center py-7 items-center w-full gap-2"
+          >
+            {userData?.images
+              ?.slice(1, userData?.images?.length)
+              ?.map((data, i) =>
+                data ? (
+                  <div key={i} className={`relative`}>
+                    <ImageComponent
+                      loading="lazy"
+                      className="size-full cursor-pointer object-cover rounded -z-20"
+                      src={data}
+                      alt=""
+                      onClick={() => openImageModal(data)}
+                    />
+                  </div>
+                ) : null
+              )}
+
+            {modalImageUrl && (
+              <ImageModal
+                imageUrl={modalImageUrl}
+                closeModal={closeImageModal}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </main>
   );

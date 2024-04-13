@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -7,9 +6,17 @@ import Logo from "../../../../assets/light_logo.svg";
 import OtpInput from "@/components/Modules/Otp/OtpInput";
 import axios from "axios";
 import PreLoader from "@/components/Modules/Preloader/preLoader";
-import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../../firebase";
-
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailLink,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+} from "firebase/auth";
+import instance from "@/utils/axios";
 const Login = () => {
   const [countryCode, setCountryCode] = useState("+91");
   const [number, setNumber] = useState("");
@@ -48,6 +55,34 @@ const Login = () => {
     //   setAdmin(false);
     //   setChecked(false);
     // }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const token = result.user.accessToken;
+      const userEmail = result.user.email;
+      console.log("User email:", userEmail);
+      const response = await instance.get("/super_user/login", {
+        headers: {
+          token: token,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log(response);
+        router.replace("/admin/user");
+
+        // setAdminPrevilages(response?.data);
+      } else {
+        // setAdminPrevilages("Internal Server Error");
+      }
+      localStorage.setItem("bfm-admin-token", token);
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      alert(error?.message);
+    }
   };
 
   const generateRecaptcha = () => {
@@ -184,6 +219,19 @@ const Login = () => {
                 Verify
               </button>
             </div>
+            {"or"}
+            <br />
+            {/* <button className="googleBtn" >
+                <img src="/logo_google.svg" alt="" />
+                Sign in with Google
+              </button> */}
+            <button
+              class="flex items-center bg-white  border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800  hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              onClick={handleGoogleSignIn}
+            >
+              
+              <span>Continue with Google</span>
+            </button>
           </form>
         ) : (
           <form
@@ -218,8 +266,22 @@ const Login = () => {
                 Verify
               </button>
             </div>
+            <button className="googleBtn" onClick={handleGoogleSignIn}>
+              <img src="/logo_google.svg" alt="" />
+              Sign in with Google
+            </button>
           </form>
         )}
+        {/* <button
+          onClick={handleGoogleSignIn}
+          className="gap-2 self-stretch px-8 py-3 rounded-xl bg-[#DB4437] text-[color:var(--mono-0,#FFF)] text-center text-base not-italic font-bold leading-6"
+        >
+          Sign in with Google
+        </button> */}
+        {/* <button className="googleBtn" onClick={handleGoogleSignIn}>
+              <img src="/logo_google.svg" alt="" />
+              Sign in with Google
+            </button> */}
       </div>
       <div className=" w-full flex flex-col items-center space-y-10 justify-center">
         <p className="self-stretch text-white text-center text-lg not-italic font-bold leading-[normal] uppercase">
