@@ -8,6 +8,8 @@ import { CiLogout } from "react-icons/ci";
 import { FaRegCircleUser } from "react-icons/fa6";
 import Link from "next/link";
 import axios from "@/utils/axios";
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase";
 import { usePathname, useRouter } from "next/navigation";
 const SideNavBar = () => {
   const [userData, setUserData] = useState(null);
@@ -32,6 +34,16 @@ const SideNavBar = () => {
 
     fetchData();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("bfm-admin-token");
+      router.replace("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <div className="fixed w-1/6 h-[90%] max-w-80 flex flex-col p-6 bg-white ">
@@ -147,16 +159,16 @@ const SideNavBar = () => {
             </p>
           </div>
         </div>
-        <div
-          onClick={() => {
-            localStorage.removeItem("bfm-admin-token");
-            router.replace("/admin/auth/login");
-          }}
+        {/* <button
+          onClick={()=>handleLogout}
           className="flex text-[#E53935] justify-center items-center cursor-pointer gap-2"
         >
           <CiLogout />
           <p>Logout</p>
-        </div>
+        </button> */}
+        <button onClick={handleLogout}>
+          logout
+        </button>
       </div>
     </div>
   );
