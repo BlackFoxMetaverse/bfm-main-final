@@ -78,7 +78,7 @@ const PersonalInfo = ({
                 <img
                   src={
                     typeof inputData?.image === "string"
-                      ? `${s3Url}${inputData?.image}`
+                      ? inputData?.image
                       : URL.createObjectURL(inputData?.image)
                   }
                   alt=""
@@ -220,19 +220,20 @@ const PersonalInfo = ({
             >
               email
             </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              required
-              value={inputData?.email}
-              onChange={(e) => {
-                setInputData({ ...inputData, email: e.target.value });
-                checkEmail(e.target.value);
-              }}
-              placeholder="12345@gmail.com"
-              className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
-            />
+            {inputData?.email ? (
+              <input
+                type="email"
+                name="email"
+                id="email"
+                required
+                disabled
+                value={inputData?.email}
+                placeholder="12345@gmail.com"
+                className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
+              />
+            ) : (
+              <div className="w-full p-6 rounded-lg skeletonLoader"></div>
+            )}
             {inputData?.email !== "" &&
               (emailValid?.is ? (
                 <div className="flex gap-3 items-center text-green-500 text-sm">
@@ -251,19 +252,26 @@ const PersonalInfo = ({
             >
               phone No
             </label>
-            {inputData?.phone_number ? (
-              <input
-                type="string"
-                name="phoneNo"
-                id="phoneNo"
-                value={inputData?.phone_number}
-                disabled={true}
-                required
-                className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
-              />
-            ) : (
-              <div className="w-full p-6 rounded-lg skeletonLoader"></div>
-            )}
+            <input
+              type="string"
+              name="phoneNo"
+              id="phoneNo"
+              value={inputData?.phone_number}
+              onChange={() => setInputData({ ...inputData, phone_number: "" })}
+              required
+              placeholder="1234567890"
+              className="flex items-center gap-[5px] w-full text-sm not-italic font-normal leading-[100%] tracking-[-0.7px] p-3.5 rounded-lg focus:outline-none bg-white"
+            />
+            {inputData?.phone_number !== "" &&
+              (emailValid?.is ? (
+                <div className="flex gap-3 items-center text-green-500 text-sm">
+                  <BsCheckCircleFill /> {emailValid?.error}
+                </div>
+              ) : (
+                <div className="flex gap-3 items-center text-red-500 text-sm">
+                  <RxCrossCircled /> {emailValid?.error}
+                </div>
+              ))}
           </div>
           <div className="flex flex-col items-start gap-[5px] relative">
             <label

@@ -19,7 +19,6 @@ import checkToken from "@/utils/api/checkToken";
 import { checkUserDataByToken } from "../../../../utils/userData";
 
 const SellerForm = () => {
-  const s3Url = process.env.NEXT_PUBLIC_S3_OBJ_URL;
   const router = useRouter();
 
   const [res, setRes] = useState();
@@ -44,7 +43,7 @@ const SellerForm = () => {
     video: [null, null, null, null, null, null],
     coordinates: {},
   });
-  const [formCount, setCount] = useState(3);
+  const [formCount, setCount] = useState(1);
   const [userNameValid, setUserNameValid] = useState(false);
   const [emailValid, setEmailValid] = useState({
     is: false,
@@ -230,14 +229,16 @@ const SellerForm = () => {
   let userNameTimeout;
   let emailTimeout;
 
-  function checkEmail(email) {
+  function checkEmail(phone_number) {
     if (emailTimeout) {
       clearTimeout(emailTimeout);
     }
 
     emailTimeout = setTimeout(() => {
       instance
-        .get(`check/email?uid=${userData?.uid}&email=${email}`)
+        .get(
+          `check/phone_number?uid=${userData?.uid}&phone_number=${phone_number}`
+        )
         .then((response) => {
           setEmailValid({
             is: response.data,
