@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaDribbble, FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { IoAdd, IoCloseCircleSharp } from "react-icons/io5";
 import { RiInstagramFill } from "react-icons/ri";
 import { SiBehance } from "react-icons/si";
-import { TbCaretDownFilled } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
-import { getUserPreciseLocation } from "@/utils/location";
 
 const SocialTypes = [
   {
@@ -23,7 +21,7 @@ const SocialTypes = [
     icon: <SiBehance />,
   },
   {
-    name: "Dribble",
+    name: "Dribbble",
     icon: <FaDribbble />,
   },
   {
@@ -32,11 +30,15 @@ const SocialTypes = [
   },
 ];
 
-const s3Urls = "https://bucketbfm.s3.ap-south-1.amazonaws.com/";
+// const s3Urls = "https://bucketbfm.s3.ap-south-1.amazonaws.com/";
 
 const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
   const [socialType, setSocialType] = useState();
   const [socialLink, setSocialLink] = useState();
+  const [descriptionwordCount, setDescriptionWordCount] = useState(0);
+
+  const imagesRef = useRef([]);
+  const videoRef = useRef(null);
 
   const createFileUrl = (file) => {
     return URL.createObjectURL(file);
@@ -97,6 +99,76 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
     return socialType ? socialType.icon : null;
   }
 
+  const handleAddExperinces = () => {
+    setInputData((prev) => {
+      return {
+        ...prev,
+        experienceDetails: [
+          ...prev.experienceDetails,
+          { title: "", link: "", content: "" },
+        ],
+      };
+    });
+  };
+
+  const handleExpFields = ({ index, field, value }) => {
+    setInputData((prev) => {
+      let expArr = prev.experienceDetails;
+      expArr[index][field] = value;
+      return { ...prev, experienceDetails: expArr };
+    });
+  };
+
+  const handleRemoveExp = (index) => {
+    setInputData((prev) => {
+      const newExpArr = prev.experienceDetails.filter((_, i) => i !== index);
+      return { ...prev, experienceDetails: newExpArr };
+    });
+  };
+
+  const handleMediaAdd = ({ index, file }) => {
+    const fileType = file?.type.split("/")[0];
+    if (fileType === "video") {
+      const video = document.createElement("video");
+      video.src = URL.createObjectURL(file);
+      video.onloadedmetadata = () => {
+        if (video.duration <= 60) {
+          setInputData((prev) => {
+            let imgsArr = prev.images;
+            imgsArr[index] = file;
+            return { ...prev, images: imgsArr };
+          });
+        } else {
+          alert("Please upload a video less than 1 minute in duration.");
+        }
+      };
+    } else {
+      setInputData((prev) => {
+        let imgsArr = prev.images;
+        imgsArr[index] = file;
+        return { ...prev, images: imgsArr };
+      });
+    }
+  };
+
+  const handleRemoveMedia = (index) => {
+    setInputData((prev) => {
+      let imgsArr = prev.images;
+      imgsArr[index] = null;
+      return { ...prev, images: imgsArr };
+    });
+
+    if (imagesRef.current[index] && imagesRef.current[index].current) {
+      imagesRef.current[index].current.value = "";
+    }
+  };
+
+  useEffect(() => {
+    setDescriptionWordCount(
+      inputData.description.length && inputData.description.split(" ").length
+    );
+  }, [inputData.description]);
+
   function handleSubmit(e) {
     e.preventDefault();
     if (inputData.experienceDetails.length === 0) return false;
@@ -142,6 +214,12 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
             minLength={100}
             maxLength={1000}
           ></textarea>
+          <div className="w-full flex justify-between items-center">
+            <div className="text-red-500/50">
+              Description should be of 50 to 300 words
+            </div>
+            <div>{descriptionwordCount} / 300 words</div>
+          </div>
         </div>
         <div className="flex flex-col items-start gap-[5px] w-full">
           <label
@@ -197,7 +275,24 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
               placeholder="Enter your profile URL"
               type="text"
               value={socialLink}
-              onChange={(e) => setSocialLink(e.target.value)}
+              onChange={(e) =>
+                setSocialLink(() => {
+                  if (e.target.value.trim() === "") {
+                    setSocialLink("");
+                    return;
+                  }
+
+                  if (
+                    !e.target.value.startsWith("http://") &&
+                    !e.target.value.startsWith("https://")
+                  ) {
+                    e.target.value = "https://" + e.target.value;
+                  }
+
+                  // Update the social link state
+                  setSocialLink(e.target.value);
+                })
+              }
             />
             {socialType && validateURL(socialLink) && (
               <button
@@ -301,19 +396,18 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
                 });
               }}
             ></textarea>
+            <button
+              type="button"
+              onClick={() => handleRemoveExp(index)}
+              className="flex w-full text-red-500 text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize border-4 bg-white border-[#ECEFFE] h-[46px] justify-center items-center content-center gap-[9px] flex-wrap p-[4.97px] rounded-[9.111px]"
+            >
+              <RxCross2 /> Remove Experience
+            </button>
           </div>
         ))}
         <button
           type="button"
-          onClick={() =>
-            setInputData({
-              ...inputData,
-              experienceDetails: [
-                ...inputData.experienceDetails,
-                { title: "", link: "", content: "" },
-              ],
-            })
-          }
+          onClick={handleAddExperinces}
           className="flex w-full text-[#4461F2] text-base not-italic font-normal leading-[100%] tracking-[-0.8px] capitalize bg-[#ECEFFE] h-[47px] justify-center items-center content-center gap-[9px] flex-wrap p-[4.97px] rounded-[9.111px]"
         >
           <IoAdd /> Add Experience
@@ -326,10 +420,10 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
             Upload Your Gigs
           </label>
           <p className="text-[color:var(--Main-Colors-Gray-0,#9F9F9F)] text-xs not-italic font-light leading-[100%] tracking-[-0.6px]">
-            Upload upto 6 Gigs in png, jpeg, jpg
+            Upload upto 6 Gigs in png, jpeg, jpg, mp4 or any media format
           </p>
           <div className="grid grid-cols-3 gap-2 w-full relativee">
-            {inputData?.images?.map((image, index) => (
+            {inputData?.images?.map((media, index) => (
               <div
                 key={index}
                 className={`${
@@ -338,29 +432,53 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
                     : "col-span-1 row-span-1"
                 } shrink-0 md:rounded-[10.477px] rounded overflow-hidden`}
               >
-                {image ? (
+                {media ? (
                   <div
                     className={`w-full aspect-square flex justify-center relative items-center overflow-hidden`}
                   >
-                    <img
-                      src={
-                        typeof image === "string"
-                          ? `${s3Urls}${image}`
-                          : URL.createObjectURL(image)
-                      }
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                    {typeof media === "string" ? (
+                      media.endsWith(
+                        ".mp4" ||
+                          ".mov" ||
+                          ".avi" ||
+                          ".wmv" ||
+                          ".avchd" ||
+                          "WebM" ||
+                          ".flv"
+                      ) ? (
+                        <video
+                          src={media}
+                          alt=""
+                          className="size-full object-cover cursor-pointer"
+                          ref={videoRef}
+                          onClick={handlePlay}
+                        />
+                      ) : (
+                        <img
+                          src={media}
+                          alt=""
+                          className="size-full object-cover cursor-pointer bg-black/10"
+                        />
+                      )
+                    ) : media.type && media.type.startsWith("video/") ? (
+                      <video
+                        src={createFileUrl(media)}
+                        alt=""
+                        className="size-full object-cover cursor-pointer"
+                        ref={videoRef}
+                        onClick={handlePlay}
+                      />
+                    ) : (
+                      <img
+                        src={createFileUrl(media)}
+                        alt=""
+                        className="size-full object-cover cursor-pointer bg-black/10"
+                      />
+                    )}
                     <div className="absolute group inset-2 flex">
                       <div
                         className="w-[28px] h-[28px] lg:group-hover:scale-y-[100%] transition-all duration-300 ease-in-out lg:scale-y-0 lg:transform flex justify-center items-center text-2xl rounded-xl shrink-0 bg-black/50 text-white"
-                        onClick={() => {
-                          setInputData((prev) => {
-                            const newData = { ...prev };
-                            newData.images[index] = null;
-                            return newData;
-                          });
-                        }}
+                        onClick={() => handleRemoveMedia(index)}
                       >
                         <IoCloseCircleSharp />
                       </div>
@@ -368,28 +486,21 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
                   </div>
                 ) : (
                   <label
-                    htmlFor={`imageInput${index}`}
+                    htmlFor={media}
                     className={`max-w-[100%]  self-stretch aspect-square object-cover bg-[#ECEFFE] text-[#4461F2] shrink-0 flex justify-center items-center rounded`}
                   >
                     <IoAdd className="lg:text-6xl sm:text-5xl text-3xl" />
                     <input
                       type="file"
-                      id={`imageInput${index}`}
-                      name={`imageInput${index}`}
+                      id={media}
+                      name={media}
                       className="hidden"
                       required={
-                        inputData.images[0] !== null ||
-                        inputData?.images.length > 0
-                          ? false
-                          : true
+                        inputData.images[0] === null ||
+                        inputData?.images.length === 0
                       }
-                      // required
                       onChange={(e) =>
-                        setInputData((prev) => {
-                          const newData = { ...prev };
-                          newData.images[index] = e.target.files[0];
-                          return newData;
-                        })
+                        handleMediaAdd({ index, file: e.target.files[0] })
                       }
                     />
                   </label>
@@ -398,7 +509,7 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
             ))}
           </div>
         </div>
-        <div className="flex items-center justify-center gap-1 w-full">
+        {/* <div className="flex items-center justify-center gap-1 w-full">
           <div className="flex w-[16.701px] h-[16.701px] justify-center items-center shrink-0">
             <input
               type="checkbox"
@@ -414,7 +525,7 @@ const GigsInfo = ({ inputData, setInputData, setCount, sellerSubmit }) => {
           >
             By checking this box, I agree to the terms and conditions.
           </label>
-        </div>
+        </div> */}
       </div>
       <button
         type="submit"
