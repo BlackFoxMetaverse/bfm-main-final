@@ -280,7 +280,11 @@ const SellerDataDetails = ({ params }) => {
             <div className="w-full h-full items-start shrink-0 gap-[22.29px] flex">
               <div className="w-1/3 aspect-square rounded-2xl shrink-0 overflow-hidden relative bg-stone-300">
                 <img
-                  src={sellerData?.image ? sellerData?.image : null}
+                  src={
+                    sellerData?.image
+                      ? sellerData?.image
+                      : "https://i.pinimg.com/564x/70/dd/61/70dd612c65034b88ebf474a52ccc70c4.jpg"
+                  }
                   alt=""
                   className="size-full object-cover shrink-0"
                 />
@@ -429,13 +433,30 @@ const SellerDataDetails = ({ params }) => {
             ) : ( */}
       <div className="flex flex-col rounded w-full">
         {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
-        {sellerData?.images[0] && (
-          <video
-            src={sellerData.images[0]}
-            alt=""
-            className="object-cover size-full rounded"
-          />
-        )}
+        {sellerData?.images[0] &&
+          (sellerData?.images[0]?.endsWith(
+            ".mp4" ||
+              ".avi" ||
+              ".wmv" ||
+              ".mov" ||
+              ".mkv" ||
+              ".flv" ||
+              ".webm" ||
+              ".avchd"
+          ) ? (
+            <video
+              src={sellerData.images[0]}
+              alt=""
+              controls
+              className="object-cover size-full rounded xl:aspect-video"
+            />
+          ) : (
+            <img
+              src={sellerData.images[0]}
+              alt=""
+              className="object-cover size-full rounded"
+            />
+          ))}
         <div>
           <h2 className="mt-8 w-full text-3xl font-bold text-neutral-800 max-md:max-w-full">
             About Me
@@ -478,28 +499,6 @@ const SellerDataDetails = ({ params }) => {
             </div>
           </div>
         )}
-        <div
-          style={{
-            margin: 0,
-          }}
-          className="grid grid-cols-1 justify-center py-7 items-center w-full gap-2"
-        >
-          {sellerData?.videos
-            ?.slice(1, sellerData?.videos?.length)
-            ?.map((data, i) =>
-              data ? (
-                <div key={i} className={`relative`}>
-                  <video
-                    loading="lazy"
-                    className="size-full cursor-pointer object-cover rounded"
-                    src={data}
-                    alt=""
-                    onClick={() => openImageModal(data)}
-                  />
-                </div>
-              ) : null
-            )}
-        </div>
         {showImage ? (
           <div
             style={{
@@ -511,15 +510,33 @@ const SellerDataDetails = ({ params }) => {
               ?.slice(1, sellerData?.images?.length)
               ?.map((data, i) =>
                 data ? (
-                  <div key={i} className={`relative`}>
-                    <ImageComponent
-                      loading="lazy"
-                      className="size-full cursor-pointer object-cover rounded"
+                  data?.endsWith(
+                    ".mp4" ||
+                      ".avi" ||
+                      ".wmv" ||
+                      ".mov" ||
+                      ".mkv" ||
+                      ".flv" ||
+                      ".webm" ||
+                      ".avchd"
+                  ) ? (
+                    <video
                       src={data}
                       alt=""
-                      onClick={() => openImageModal(data)}
+                      controls
+                      className="object-cover size-full rounded"
                     />
-                  </div>
+                  ) : (
+                    <div key={i} className={`relative`}>
+                      <ImageComponent
+                        loading="lazy"
+                        className="size-full cursor-pointer object-cover rounded"
+                        src={data}
+                        alt=""
+                        onClick={() => openImageModal(data)}
+                      />
+                    </div>
+                  )
                 ) : null
               )}
 

@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { BsStarFill } from "react-icons/bs";
-import { IoLocationOutline } from "react-icons/io5";
+import { IoCamera, IoLocationOutline, IoVideocam } from "react-icons/io5";
 
 const ServicesCard = ({
   userName,
@@ -30,23 +31,52 @@ const ServicesCard = ({
       }}
       className="flex flex-col cursor-pointer items-start w-full border bg-transparent rounded-md overflow-huidden"
     >
-      <div className="flex size-full items-center justify-center bg-gradient-to-b -z-10 from-black/25 to-white/75 overflow-hidden aspect-video relative">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="flex size-full items-center justify-center bg-gradient-to-b -z-10 from-black/25 to-white/75 overflow-hidden aspect-video relative"
+      >
+        {coverImage?.endsWith(
+          ".mp4" ||
+            ".avi" ||
+            ".wmv" ||
+            ".mov" ||
+            ".mkv" ||
+            ".flv" ||
+            ".webm" ||
+            ".avchd"
+        ) && (
+          <div className="bg-black/50 rounded-full p-1 absolute top-3 right-3">
+            <IoVideocam className="text-white" />
+          </div>
+        )}
         {uid ? (
-          <img
-            loading="eager"
-            src={
-              coverImage
-                ? coverImage
-                : "https://s3-alpha-sig.figma.com/img/5ca6/41d6/d9d3087f77befa738f3b738374c70659?Expires=1710115200&Key-Pair-uid=APKAQ4GOSFWCVNEHN3O4&Signature=WuyyuidfYLtxkaphdUE3nkuMWrxElbay11DcUq3bzbd-fu2OuidU~aMU5n~j3nd2er5L~26u3z9yMQvLGsCvDfeIHuGO6GKIgSU3dR~N6w43RKXMNY2q71~DSqq4-alU4R9G7t7tGnXYJQI5Y5TaEsOg-ERR32wZDLmXArziE9FjoB2PKkAQPbPC-rpI0sU7cVNX7Pqjvoq-lF1nx9HMKVBBjpBN-5FlUMxhYZmH8XgDmO~XYkgiVYiuBYSwn3gunY~Yz3uKjSmxNY14GOGni6qUiJipoZSVUrKSfURwdjrjdqggDV-Dgq-rVXecHmQe~dxceXnaAps3AnriBS9ypgIQ__"
-              // "https://s3-alpha-sig.figma.com/img/8039/1376/5c2bce496303f7ed9513ad5c392f334a?Expires=1709510400&Key-Pair-uid=APKAQ4GOSFWCVNEHN3O4&Signature=ZdhkXKkEMuJe5QUX7MH9NCRRihlc-JEb1G4GdegxSTE1m6mdmDDmtoybW2xP45zzaB~r-oNft~9IVoerFcZkfQ8u8uCXZX0EP6cksDQkV2nrf570mTjNFwVyz4wkVfc-ECBrmqCoFGLbgX9xXnDGfPbOTCIndQ7w3ecyurzKw7TgMf2Yo6TBbMMCgm3Jv9QyCZE-Mb79C0o0PNC4URNv3mg6VZkyaNz3YBPm2yQBO8vp7hX4qeIcwUSKhKZmR7TBa6oqSg0KkEOhGCfI3TFj4n8skfLRMyGIFrpKqzsykVzhchJnDfVQypLOcD9b97z5rg4lk-39TmzXZFJaqbyTow__"
-            }
-            alt=""
-            className={`${
-              coverImage
-                ? "size-full object-cover"
-                : "w-1/2 h-full p-30 object-contain"
-            }`}
-          />
+          coverImage ? (
+            coverImage?.endsWith(
+              ".mp4" ||
+                ".avi" ||
+                ".wmv" ||
+                ".mov" ||
+                ".mkv" ||
+                ".flv" ||
+                ".webm" ||
+                ".avchd"
+            ) ? (
+              <video
+                className="size-full object-cover -z-10"
+                src={coverImage}
+                alt=""
+                // controls
+              />
+            ) : (
+              <img src={coverImage} alt="" className="size-full object-cover" />
+            )
+          ) : (
+            <Image
+              src={require("../../../../../public/clients_images/service_placeholder.svg")}
+              alt=""
+              className="w-1/2 h-full p-30 object-contain"
+            />
+          )
         ) : (
           <div className="w-full min-h-2 rounded skeletonLoader"></div>
         )}
@@ -60,7 +90,7 @@ const ServicesCard = ({
                 src={
                   image
                     ? image
-                    : "../../../../../public/clients_images/placeholderImage.svg"
+                    : "https://i.pinimg.com/564x/70/dd/61/70dd612c65034b88ebf474a52ccc70c4.jpg"
                 }
                 alt=""
                 className="w-[25px] aspect-square shrink-0 rounded-full object-cover"
