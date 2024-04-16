@@ -524,6 +524,7 @@ const SellerDataDetails = ({ params }) => {
                       src={data}
                       alt=""
                       controls
+                      key={i}
                       className="object-cover size-full rounded"
                     />
                   ) : (
