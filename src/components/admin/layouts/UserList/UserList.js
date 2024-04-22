@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FaAngleRight } from "react-icons/fa6";
 import { FaAngleLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const UserList = ({ data }) => {
   const route = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,20 +60,13 @@ const UserList = ({ data }) => {
         <td className=" py-4">{user?.email}</td>
         <td className=" py-4">{user?.phone_number}</td>
         <td
-          onClick={() =>
-            handleRoute(
-              user?.name,
-              user?.uid,
-              user?.phone_number,
-              user?.email,
-              user?.profession,
-              user?.image
-            )
-          }
           className="text-green-500"
         >
+        <Link target="_blank" href={`/admin/user/name/phone/email/profession/img/seller/${ user?.uid}`} >
           Open profile
+        </Link>
         </td>
+
       </tr>
     ));
   };

@@ -96,8 +96,8 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
   );
 
   return (
-    <main className={`${name}'s_detail h-full pb-10`}>
-      <div className="max-w-[1603px] min-h-[3.2rem] bg-blue-50 fixed w-[84%] z-50 flex items-center justify-between shrink-0 bg-[#7F63F4]/10">
+    <main className={`${name}'s_detail h-full pb-10 `}>
+      <div className="max-w-[1603px] min-h-[3.2rem]  bg-blue-100 py-5 fixed w-[100%] z-50 flex items-center justify-between shrink-0 bg-[#7F63F4]/10">
         <div>
           <p className="max-w-[849px] text-[#7F63F4] 3xl:text-[22px] 2xl:text-xl xl:text-lg lg:text-base not-italic font-semibold leading-[54px] mx-8">
             User Management / user profile
@@ -148,7 +148,7 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
         </div>
       </div>
 
-      <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-10 py-24 mx-auto">
+      <div className="flex lg:flex-row flex-col w-11/12 justify-between max-w-[1920px] gap-14 lg:py-24 py-24 mx-auto">
         {/* {error !== null && <Toast type={"error"} message={error} />} */}
         <div className="flex gap-7 xl:w-[40%] w-full items-start lg:sticky static inset-y-28 h-full">
           <div className="space-y-5 w-full">
@@ -156,7 +156,11 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
               <div className="w-full h-full items-start shrink-0 gap-[22.29px] flex">
                 <div className="w-1/3 aspect-square rounded-2xl shrink-0 overflow-hidden relative bg-stone-300">
                   <img
-                    src={userData?.image ? userData?.image : null}
+                    src={
+                      userData?.image
+                        ? userData?.image
+                        : "https://i.pinimg.com/564x/70/dd/61/70dd612c65034b88ebf474a52ccc70c4.jpg"
+                    }
                     alt=""
                     className="size-full object-cover shrink-0"
                   />
@@ -198,10 +202,11 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
 
               <div className="w-full flex-col justify-start items-start gap-7 flex">
                 <div className="flex-col w-full justify-start items-start gap-0.5 flex">
-                  <div className="text-black text-xl font-bold">
-                    Phones Number
-                  </div>
-
+                  {
+                    <div className="text-black text-xl font-bold">
+                      Phones Number
+                    </div>
+                  }
                   <div className="text-stone-500 3xl:text-lg 2xl:text-base text-sm font-normal flex justify-between items-center w-full">
                     {userData?.phone_number}
                   </div>
@@ -266,16 +271,37 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
             </div>
           </div>
         </div>
-
+        {/* {notFound ? (
+              <div className="flex flex-col w-2/3 space-y-10 h-[650px] overflow-hidden justify-center items-center space-x-10 bg-white p-10 rounded-[20px]">
+                404 Not Found
+              </div>
+            ) : ( */}
         <div className="flex flex-col rounded w-full">
           {/* <div className="flex overflow-hidden aspect-video size-full relative px-10 pt-12 pb-8 max-md:px-5 max-md:max-w-full"> */}
-          {userData?.images[0] && (
-            <video
-              src={userData.images[0]}
-              alt=""
-              className="object-cover size-full rounded"
-            />
-          )}
+          {userData?.images[0] &&
+            (userData?.images[0]?.endsWith(
+              ".mp4" ||
+                ".avi" ||
+                ".wmv" ||
+                ".mov" ||
+                ".mkv" ||
+                ".flv" ||
+                ".webm" ||
+                ".avchd"
+            ) ? (
+              <video
+                src={userData.images[0]}
+                alt=""
+                controls
+                className="object-cover size-full rounded xl:aspect-video"
+              />
+            ) : (
+              <img
+                src={userData.images[0]}
+                alt=""
+                className="object-cover size-full rounded"
+              />
+            ))}
           <div>
             <h2 className="mt-8 w-full text-3xl font-bold text-neutral-800 max-md:max-w-full">
               About Me
@@ -318,28 +344,6 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
               </div>
             </div>
           )}
-          <div
-            style={{
-              margin: 0,
-            }}
-            className="grid grid-cols-1 justify-center py-7 items-center w-full gap-2"
-          >
-            {userData?.videos
-              ?.slice(1, userData?.videos?.length)
-              ?.map((data, i) =>
-                data ? (
-                  <div key={i} className={`relative`}>
-                    <video
-                      loading="lazy"
-                      className="size-full cursor-pointer object-cover rounded"
-                      src={data}
-                      alt=""
-                      onClick={() => openImageModal(data)}
-                    />
-                  </div>
-                ) : null
-              )}
-          </div>
 
           <div
             style={{
@@ -351,15 +355,34 @@ const SellerData = ({ name, id, phone, email, designation, image }) => {
               ?.slice(1, userData?.images?.length)
               ?.map((data, i) =>
                 data ? (
-                  <div key={i} className={`relative`}>
-                    <ImageComponent
-                      loading="lazy"
-                      className="size-full cursor-pointer object-cover rounded -z-20"
+                  data?.endsWith(
+                    ".mp4" ||
+                      ".avi" ||
+                      ".wmv" ||
+                      ".mov" ||
+                      ".mkv" ||
+                      ".flv" ||
+                      ".webm" ||
+                      ".avchd"
+                  ) ? (
+                    <video
                       src={data}
                       alt=""
-                      onClick={() => openImageModal(data)}
+                      controls
+                      key={i}
+                      className="object-cover size-full rounded"
                     />
-                  </div>
+                  ) : (
+                    <div key={i} className={`relative`}>
+                      <ImageComponent
+                        loading="lazy"
+                        className="size-full cursor-pointer object-cover rounded"
+                        src={data}
+                        alt=""
+                        onClick={() => openImageModal(data)}
+                      />
+                    </div>
+                  )
                 ) : null
               )}
 

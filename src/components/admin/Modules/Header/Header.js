@@ -8,7 +8,7 @@ import { AiFillBell } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 const Header = () => {
   return (
-    <div className=" w-full flex shrink-0 fill-white bg-white justify-center items-center sticky inset-x-0 top-0 z-50">
+    <div className=" w-full flex shrink-0 fill-white bg-white justify-center items-center fixed inset-x-0 top-0 z-50 mb-11">
       <div className="bg-black px-20 max-w-80 w-1/6 py-4">
         <Image src={Logo} className=" w-28 shrink-0 fill-white" alt=" " />
       </div>

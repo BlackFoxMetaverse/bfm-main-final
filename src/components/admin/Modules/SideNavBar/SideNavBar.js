@@ -46,7 +46,7 @@ const SideNavBar = () => {
   };
 
   return (
-    <div className="fixed w-1/6 h-[90%] max-w-80 flex flex-col p-6 bg-white ">
+    <div className="fixed w-1/6 h-[90%] max-w-80 mt-16 flex flex-col p-6 bg-white ">
       <div className="flex-grow  space-y-8">
         {userData?.data?.data?.super_user?.role === 2101 ||
         userData?.data?.data?.super_user?.role === 2001 ||
