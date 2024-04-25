@@ -39,7 +39,7 @@ const SideNavBar = () => {
     try {
       await signOut(auth);
       localStorage.removeItem("bfm-admin-token");
-      router.replace("/");
+      router.replace("/admin/auth/login");
     } catch (error) {
       console.error("Error signing out:", error);
     }

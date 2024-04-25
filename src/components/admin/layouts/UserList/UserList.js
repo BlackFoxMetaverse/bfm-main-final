@@ -62,9 +62,12 @@ const UserList = ({ data }) => {
         <td
           className="text-green-500"
         >
-        <Link target="_blank" href={`/admin/user/name/phone/email/profession/img/seller/${ user?.uid}`} >
+        <Link target="_blank" href={`https://portfolio.blackfoxmetaverse.io/#/profile/${user.userName}?uid=${user.uid}`} >
           Open profile
         </Link>
+        {/* <Link target="_blank" href={`/admin/user/name/phone/email/profession/img/seller/${ user?.uid}`} >
+          Open profile
+        </Link> */}
         </td>
 
       </tr>

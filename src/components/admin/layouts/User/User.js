@@ -14,7 +14,7 @@ const User = () => {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get("/super_user/users", {
+        const response = await axios.get("/super_user/sellers", {
           headers: {
             token: accessToken,
           },
