@@ -8,7 +8,7 @@ import { CiLogout } from "react-icons/ci";
 import { FaRegCircleUser } from "react-icons/fa6";
 import Link from "next/link";
 import axios from "@/utils/axios";
-import { signOut } from "firebase/auth";
+import { reload, signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { usePathname, useRouter } from "next/navigation";
 const SideNavBar = () => {
@@ -40,6 +40,7 @@ const SideNavBar = () => {
       await signOut(auth);
       localStorage.removeItem("bfm-admin-token");
       router.replace("/admin/auth/login");
+      window.location.reload();
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -163,10 +164,10 @@ const SideNavBar = () => {
           onClick={()=>handleLogout}
           className="flex text-[#E53935] justify-center items-center cursor-pointer gap-2"
         >
-          <CiLogout />
           <p>Logout</p>
         </button> */}
-        <button onClick={handleLogout}>
+        <button className="flex justify-center items-center gap-2 text-lg text-red-600 border px-3 border-red-600" onClick={handleLogout}>
+        <CiLogout />
           logout
         </button>
       </div>

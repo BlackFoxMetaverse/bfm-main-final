@@ -149,7 +149,7 @@ const UserList = ({ data }) => {
 
   return (
     <div className="w-full space-y-4">
-      <div className="flex w-full gap-x-5">
+      {/* <div className="flex w-full gap-x-5">
         <input
           type="text"
           placeholder="Search..."
@@ -177,7 +177,7 @@ const UserList = ({ data }) => {
           <option value="name">Name</option>
           <option value="more">More</option>
         </select>
-      </div>
+      </div> */}
 
       {/* User List Display */}
       <div className="w-full">
